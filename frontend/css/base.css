@@ -1,0 +1,627 @@
+/* Сброс */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f5f5;
+}
+
+/* ===== ОСНОВНОЙ LAYOUT ===== */
+.container {
+    display: grid;
+    grid-template-columns: 260px 1fr 300px;
+    height: 100vh;
+    max-width: 100%;
+    padding-right: 20px;
+}
+
+/* ===== ЛЕВАЯ КОЛОНКА ===== */
+.sidebar {
+    background: #fff;
+    border-right: 1px solid #eee;
+    padding: 16px;
+}
+
+.catalog-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+
+.category-list {
+    list-style: none;
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+
+    gap: 12px;
+}
+
+.category-item:hover {
+    background: #f2f2f2;
+}
+
+.category-icon {
+    width: 30px;
+    height: 30px;
+    background: #F5E5E5;
+    border-radius: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.category-icon img {
+    width: 20px;
+    height: 20px;
+}
+.category-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.category-arrow {
+    margin-left: 12px;
+    color: #999;
+}
+
+/* ===== ЦЕНТР ===== */
+.main-content {
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* ШАПКА */
+.page-header {
+    display: flex;
+    /* justify-content: space-between; */
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    width: 100%;
+
+}
+
+.page-title {
+    font-size: 24px;
+}
+
+.user-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Стили для адреса (если залогинен) */
+.address-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Розовая плашка с временем (как на скрине) */
+.delivery-badge {
+    background-color: #FF2D55; /* Розовый из Figma */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Кнопка входа (если НЕ залогинен) */
+.login-btn {
+    height: 40px;
+    padding: 0px 20px;
+    border: 1px solid #E0E0E0;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Контейнер теперь — это общая рамка для инпута и кнопки */
+.search-container {
+    display: flex;
+    align-items: center;
+    flex: 1;            /* Чтобы поиск занял всё свободное место в шапке */
+    max-width: 747px;   /* Ширина из Figma */
+    height: 37px;       /* Высота из Figma */
+    
+    background: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 20px;
+    padding: 2px 2px 2px 0px; /* Отступ слева для текста, справа — 4px для кнопки */
+    margin-bottom: 0;
+}
+
+.search-input {
+    flex: 1;            /* Инпут растягивается и выталкивает кнопку вправо */
+    border: none;       /* Убираем внутреннюю рамку */
+    outline: none;      /* Убираем синий контур при клике */
+    font-size: 16px;
+    background: transparent;
+    padding-left: 20px;
+}
+
+
+.search-button:hover {
+    background: #622bc4;
+}
+
+/* ===== ТОВАРЫ ===== */
+.products-area {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+/* ===== ПРАВАЯ КОЛОНКА ===== */ч
+.map-sidebar {
+    width: 375px;
+    background: #f5f5f5; /* серый фон как на макете */
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 80px; /* опускаем колонку до уровня строки поиска */
+    height: 100vh;         /* Ровно 100% высоты видимой части экрана */
+    margin-top: 0;
+    overflow-y: hidden;    /* Скрываем скролл, но сохраняем возможность прокрутки для внутренних элементов */
+    margin-left: 20px;     /* зазор слева, между центром и правой колонкой */
+}
+
+/* Внутренняя карточка */
+.map-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px; /* отступ от шапки */
+    flex-grow: 1;
+    margin-top: 20px;
+    margin-bottom: -16px;
+    height: 90%;
+}
+
+/* ===== АДРЕС ===== */
+.address-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.address-selector:hover {
+    opacity: 0.7;
+}
+
+.address-current {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.address-chevron {
+    font-size: 16px;
+    color: #999;
+}
+
+/* ===== КАРТА ===== */
+.map-container {
+    height: 375px;        /*250px;*/
+    background: #f2f2f2;
+    border-radius: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* заглушка карты */
+.map-placeholder {
+    text-align: center;
+    color: #888;
+}
+
+.map-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+/* ===== БЛОК С КОРЗИНОЙ ===== */
+.cart-info {
+    text-align: center;
+    margin-top: auto; /* прижимает вниз */
+}
+
+.cart-message {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* КНОПКА */
+.order-button {
+    margin-top: 12px;
+    padding: 12px;
+    width: 100%;
+
+    border-radius: 12px;
+    border: none;
+
+    background: #ff335f;
+    color: #fff;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cart-button:hover {
+    background: #e62e55;
+}
+
+/* Фон затемнения */
+.modal-overlay {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+
+    justify-content: flex-end;
+    align-items: center;
+}
+
+
+.address-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.close-btn {
+    cursor: pointer;
+    padding: 10px;       /* Увеличиваем зону клика */
+    font-size: 24px;
+    line-height: 1;
+    display: inline-block;
+    z-index: 10;         /* Чтобы не перекрывался заголовком */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Класс для отображения */
+.modal-overlay.active {
+    display: flex;
+}
+
+/* Для экранов меньше 600px (телефоны) */
+@media (max-width: 600px) {
+    .modal-content {
+        padding: 16px; /* Уменьшаем внутренние отступы */
+        border-radius: 12px; /* Чуть скругляем углы */
+    }
+
+    .modal-header h3 {
+        font-size: 18px; /* Уменьшаем заголовок */
+    }
+
+    .address-input {
+        padding: 10px;
+        font-size: 16px; /* Чтобы iOS не увеличивал масштаб при фокусе на инпут */
+    }
+}
+
+.address-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.address-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+}
+
+.address-main {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.address-sub {
+    color: #999;
+    font-size: 14px;
+}
+
+/* Стилизация индикатора выбора */
+.address-check {
+    width: 24px;
+    height: 24px;
+    background-color: #ff3366; /* Фирменный розовый */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.address-check.empty {
+    background-color: #f0f0f0;
+    color: transparent;
+}
+
+/* Кнопка "Новый адрес" */
+.add-address-btn {
+    width: 100%;
+    background-color: #ff3366;
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-address-btn:hover {
+    background-color: #e62e5c;
+}
+
+.modal-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-footer {
+    padding-top: 16px;
+    background: white;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+}
+
+/* Стили для списка городов */
+.city-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.city-item:hover {
+    color: #ff3366;
+}
+
+/* Настройка заголовка для экрана с картой */
+#map-screen .modal-header {
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* Убираем скролл у самого окна, чтобы работали внутренние скроллы */
+.modal-content {
+    overflow: hidden;
+}
+
+/* Специальный класс для широкого окна с картой */
+.modal-content.map-mode {
+    max-width: 900px;  /* Увеличиваем ширину для карты */
+    min-height: 700px; /* Увеличиваем высоту */
+}
+
+#street-field-group {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.address-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.address-item:hover {
+    background: #f5f5f5;
+}
+
+.address-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    position: relative;
+}
+
+/* выбранный */
+.address-item.active .address-checkbox {
+    border-color: #ff2d55;
+}
+
+.address-item.active .address-checkbox::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: #ff2d55;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.close-btn{
+    position: relative;
+    z-index: 2000;
+}
+
+
+/* Стили конкретно для этой кнопки */
+.login-btn-top {
+    align-self: flex-end;    /* Прижимает кнопку к правому краю */
+    background: #FF2D55;     /* Твой розовый цвет */
+    color: white;
+    border: none;
+    padding: 12px 80px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 37px;      /* Кнопка не растягивается на всю ширину */
+    margin-top: 0;        /* Отступ от шапки */;
+    flex: 1;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;           /* Расстояние между кнопками */
+    margin-top: 20px;    /* Отступ всей группы от верха */
+    width: 100%;
+}
+
+/* Кнопка поддержки */
+.support-btn {
+    width: 37px;         /* Ширина равна высоте для круглой/квадратной кнопки */
+    height: 37px;
+    background: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 12px; /* Или 50% для круга */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #555;         /* Цвет иконки */
+    transition: all 0.2s;
+}
+
+.support-btn:hover {
+    background: #f9f9f9;
+    color: #FF2D55;      /* Иконка розовеет при наведении */
+    border-color: #FF2D55;
+}
+
+.support-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+
+/* Общие стили для карточки */
+.map-card {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Чтобы футер можно было прижать вниз */
+}
+
+.cart-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 15px 0;
+}
+
+/* Список товаров */
+.cart-items-list {
+    flex-grow: 1; /* Список занимает всё свободное место */
+    overflow-y: auto; /* Если товаров много, появится прокрутка */
+    margin-bottom: 20px;
+}
+
+/* Строка одного товара */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.item-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.item-subinfo {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+}
+
+.item-total-price {
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* Подвал корзины */
+.cart-footer {
+    border-top: 2px solid #eee;
+    padding-top: 15px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.total-sum {
+    color: #000;
+}
+
+.order-button:hover {
+    background-color: #f5c200;
+}

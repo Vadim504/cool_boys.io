@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Левая панель с категориями -->
+        <aside class="sidebar">
+            <div class="catalog-header">
+                <h2 class="catalog-title">Каталог</h2>
+            </div>
+            <ul class="category-list">
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_ready_meal.svg" alt="Готовая еда"> </span>
+                    <span class="category-name">Готовая еда</span>
+                    <span class="category-arrow">›</span>
+                </li>
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_veg_fruit.svg" alt="Овощи и фрукты" class="category-icon">
+                    </span>
+                    <span class="category-name">Овощи и фрукты</span>
+                    <span class="category-arrow">›</span>
+                </li>
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_dairy.svg" alt="Молоко, яйца и сыр" class="category-icon">
+                    </span>
+                    <span class="category-name">Молоко, яйца и сыр</span>
+                    <span class="category-arrow">›</span>
+                </li>
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_bread.svg" alt="Хлеб и выпечка" class="category-icon">
+                    </span>
+                    <span class="category-name">Хлеб и выпечка</span>
+                    <span class="category-arrow">›</span>
+                </li>
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_meat.svg" alt="Мясо и птица" class="category-icon">
+                    </span>
+                    <span class="category-name">Мясо и птица</span>
+                    <span class="category-arrow">›</span>
+                </li>
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_fish.svg" alt="Рыба и морепродукты" class="category-icon">
+                    </span>
+                    <span class="category-name">Рыба и морепродукты</span>
+                    <span class="category-arrow">›</span>
+                </li>
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_frozen.svg" alt="Морозилка" class="category-icon">
+                    </span>
+                    <span class="category-name">Морозилка</span>
+                    <span class="category-arrow">›</span>
+                </li>
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_beverages.svg" alt="Вода и напитки" class="category-icon">
+                    </span>
+                    <span class="category-name">Вода и напитки</span>
+                    <span class="category-arrow">›</span>
+                </li>
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_sweets.svg" alt="Сладкое" class="category-icon">
+                    </span>
+                    <span class="category-name">Сладкое</span>
+                    <span class="category-arrow">›</span>
+                </li>
+                <li class="category-item">
+                    <span class="category-icon">
+                        <img src="../images/svg_files/icon_snacks.svg" alt="Снеки" class="category-icon">
+                    </span>
+                    <span class="category-name">Снеки</span>
+                    <span class="category-arrow">›</span>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="page-header">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Поиск...">
+                </div>
+            </div>
+
+            <!-- Здесь будут карточки товаров -->
+            <div class="products-area">
+                <!-- Карточки товаров будут добавлены здесь -->
+            </div>
+        </main>
+
+        <aside class="map-sidebar">
+            <div class="top-actions">
+                <button class="login-btn-top">Войти</button>
+                <button class="support-btn" title="Поддержка">
+                    <!-- Иконка сообщения (SVG) -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="map-card">
+                <div class="address-selector">
+                    <span class="address-current">улица Баумана, 1 к1</span>
+                    <span class="address-chevron">▾</span>
+                </div>
+
+                <!-- Заголовок корзины -->
+            <div class="cart-title">Корзина</div>
+
+            <!-- Список товаров -->
+            <div class="cart-items-list">
+                <!-- Пример одного товара -->
+                <div class="cart-item">
+                    <div class="item-details">
+                        <div class="item-name">Пицца Маргарита</div>
+                        <div class="item-subinfo">
+                            <span class="item-count">2 шт.</span> × 
+                            <span class="item-price-unit">450 ₽</span>
+                        </div>
+                    </div>
+                    <div class="item-total-price">900 ₽</div>
+                </div>
+
+                <!-- Еще один товар для примера -->
+                <div class="cart-item">
+                    <div class="item-details">
+                        <div class="item-name">Кока-кола 0.5л</div>
+                        <div class="item-subinfo">
+                            <span class="item-count">1 шт.</span> × 
+                            <span class="item-price-unit">120 ₽</span>
+                        </div>
+                    </div>
+                    <div class="item-total-price">120 ₽</div>
+                </div>
+            </div>
+
+            <!-- Итоговая сумма внизу -->
+            <div class="cart-footer">
+                <div class="total-row">
+                    <span>Итого:</span>
+                    <span class="total-sum">1020 ₽</span>
+                </div>
+                <button class="order-button">Оформить заказ</button>
+            </div>
+
+                <div class="cart-info">
+                    <p class="cart-message">
+                        Соберите корзину,<br>а мы всё быстро привезём
+                    </p>
+
+                </div>
+
+            </div>
+        </aside>
+    </div>
+    <div id="address-modal" class="modal-overlay">
+        <div class="modal-content">
+                <div id="selection-screen" style="display: flex; flex-direction: column; height: 100%;">
+                    <div class="modal-header">
+                        <h3>Выберите адрес доставки</h3>
+                        <span id="close-modal" class="close-btn">&times;</span>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="address-list">
+                            <div class="address-item active">
+                                <div class="address-info">
+                                    <div class="address-main">Деревня Универсиады, 4</div>
+                                    <div class="address-sub">Казань</div>
+                                </div>
+                                <div class="address-check">✔</div>
+                            </div>
+                            <div class="address-item">
+                                <div class="address-info">
+                                    <div class="address-main">Никольская улица, 10</div>
+                                    <div class="address-sub">Москва</div>
+                                </div>
+                                <div class="address-check empty"></div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="modal-footer">
+                    <button class="add-address-btn" id="go-to-map">Новый адрес</button>
+                </div>
+            </div>
+                <div id="map-screen" style="display: none; flex-direction: column; height: 100%;">
+                    <div class="modal-header">
+                        <button id="back-to-list" style="background:none; border:none; cursor:pointer; font-size: 20px;">←</button>
+                        <h3 style="flex: 1; margin-left: 10px;">Добавить адрес</h3>
+                        <span id="close-map-btn" class="close-btn" style="cursor:pointer; font-size: 30px; padding: 0 10px;">&times;</span>
+                        <!-- Крестик теперь имеет ID для закрытия -->
+                    </div>
+
+                    <div style="display: flex; flex: 1; gap: 20px; overflow: hidden; padding-top: 10px;">
+                        <div id="map-container" style="flex: 1.5; background: #eee; border-radius: 16px; position: relative; overflow: hidden;">
+                            <div id="leaflet-map" style="width: 100%; height: 100%;"></div>
+                        </div>
+
+                        <div id="address-form-fields" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                            <!-- ВЫБОР ГОРОДА -->
+                            <div id="city-selection-part">
+                                <input type="text" id="city-input-search" placeholder="Город" class="address-input" style="width: 100%;">
+                                <ul class="city-list" style="list-style: none; padding: 0; margin-top: 10px;">
+                                    <li class="city-item">Москва и рядом</li>
+                                    <li class="city-item">Санкт-Петербург</li>
+                                    <li class="city-item">Казань</li>
+                                    <li class="city-item">Екатеринбург</li>
+                                    <li class="city-item">Краснодар</li>
+                                </ul>
+                            </div>
+
+                            <!-- ВВОД УЛИЦЫ И ДЕТАЛЕЙ -->
+                            <div id="street-selection-part" style="display: none; flex-direction: column; gap: 10px;">
+                                <input type="text" id="selected-city-readonly" class="address-input" readonly 
+                                    style="background: #f5f5f5; color: #888; border-color: transparent;">
+                                
+                                <input type="text" id="street-input" placeholder="Улица и дом" class="address-input" autofocus>
+
+                                <!-- ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ (теперь с ID) -->
+                                <div id="final-address-details" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                        <input type="text" id="apt-input" placeholder="Квартира/офис" class="address-input">
+                                        <input type="text" id="floor-input" placeholder="Этаж" class="address-input">
+                                        <input type="text" id="entrance-input" placeholder="Подъезд" class="address-input">
+                                        <input type="text" id="intercom-input" placeholder="Домофон" class="address-input">
+                                    </div>
+
+                                    <input type="text" id="comment-input" placeholder="Комментарий" class="address-input">
+
+                                    <button id="save-address-btn" style="
+                                        background: #ff2d55; 
+                                        color: white; 
+                                        border: none; 
+                                        padding: 15px; 
+                                        border-radius: 15px; 
+                                        font-weight: bold; 
+                                        cursor: pointer; 
+                                        margin-top: 10px;
+                                    ">
+                                        Да, всё верно
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    let map; 
+    let clickMarker;
+    let savedAddresses = JSON.parse(localStorage.getItem('deliveryAddresses')) || [];
+
+    // Названия городов и координаты
+    const cityCoords = {
+        "Москва и рядом": [55.75, 37.61],
+        "Санкт-Петербург": [59.93, 30.33],
+        "Казань": [55.79, 49.12],
+        "Екатеринбург": [56.83, 60.60],
+        "Краснодар": [45.03, 38.97]
+    };
+
+    // Ждем полной загрузки документа, чтобы JS «увидел» все ID
+    document.addEventListener('DOMContentLoaded', () => {
+        const addressModal = document.getElementById('address-modal');
+        const modalContent = document.querySelector('.modal-content');
+        const addressBtn = document.querySelector('.address-selector');
+        const goToMapBtn = document.getElementById('go-to-map');
+        const backToListBtn = document.getElementById('back-to-list');
+        const selectionScreen = document.getElementById('selection-screen');
+        const mapScreen = document.getElementById('map-screen');
+        const citySelectionPart = document.getElementById('city-selection-part');
+        const streetSelectionPart = document.getElementById('street-selection-part');
+        const currentAddressText = document.querySelector('.address-current');
+        const finalDetails = document.getElementById('final-address-details');
+        const streetInput = document.getElementById('street-input');
+
+        // ЕДИНАЯ ФУНКЦИЯ ЗАКРЫТИЯ
+        function closeModel() {
+            console.log("крестик нажат");
+            console.log('Закрытие модального окна');
+            addressModal.classList.remove('active');
+            setTimeout(resetToInitialState, 300);
+        }
+
+        function resetToInitialState() {
+            modalContent.classList.remove('map-mode');
+            mapScreen.style.display = 'none';
+            selectionScreen.style.display = 'flex';
+            finalDetails.style.display = 'none';
+            streetSelectionPart.style.display = 'none';
+            citySelectionPart.style.display = 'block';
+            streetInput.value = '';
+        }
+
+        // РЕНДЕР СПИСКА
+        function renderAddresses() {
+            const container = document.querySelector('.address-list');
+            if (!container) return;
+            const currentActive = localStorage.getItem('lastSelectedAddress');
+            container.innerHTML = '';
+
+            savedAddresses.forEach((addr) => {
+                const isActive = addr === currentActive;
+                const div = document.createElement('div');
+                div.className = `address-item ${isActive ? 'active' : ''}`;
+                div.innerHTML = `
+                    <div class="address-text"><div class="address-main">${addr}</div></div>
+                    <div class="address-checkbox"></div>
+                `;
+                div.onclick = () => {
+                    if (currentAddressText) currentAddressText.textContent = addr;
+                    localStorage.setItem('lastSelectedAddress', addr);
+                    closeModel();
+                };
+                container.appendChild(div);
+            });
+        }
+
+        // ОБРАБОТЧИКИ КЛИКОВ НА КРЕСТИКИ
+        // Ищем по классу, чтобы работало сразу для всех крестиков
+        document.querySelectorAll('.close-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Чтобы клик не ушел на фон
+                closeModel();
+            });
+        });
+        // Добавь это внутри DOMContentLoaded
+        streetInput.addEventListener('input', (e) => {
+            if (e.target.value.length > 3) { // Если введено больше 3 символов
+                finalDetails.style.display = 'flex';
+            } else {
+                finalDetails.style.display = 'none';
+            }
+        });
+        
+        const saveAddressBtn = document.getElementById('save-address-btn');
+
+        saveAddressBtn.addEventListener('click', () => {
+            // 1. Собираем данные из всех полей
+            const street = document.getElementById('street-input').value;
+            const apt = document.getElementById('apt-input').value;
+            const floor = document.getElementById('floor-input').value;
+            const entrance = document.getElementById('entrance-input').value;
+            const intercom = document.getElementById('intercom-input').value;
+            const comment = document.getElementById('comment-input').value;
+
+            if (!street) {
+                alert("Пожалуйста, выберите адрес на карте или введите улицу");
+                return;
+            }
+
+            // 2. Формируем красивую строку адреса
+            // Пример: ул. Баумана, д. 1, кв. 10, под. 2, эт. 4
+            let fullAddress = street;
+            if (apt) fullAddress += `, кв. ${apt}`;
+            if (entrance) fullAddress += `, под. ${entrance}`;
+            if (floor) fullAddress += `, эт. ${floor}`;
+
+            // 3. Сохраняем в массив и LocalStorage
+            // Можно сохранять как строку, либо как объект (если нужно потом редактировать)
+            savedAddresses.push(fullAddress);
+            localStorage.setItem('deliveryAddresses', JSON.stringify(savedAddresses));
+            
+            // Делаем новый адрес "выбранным" по умолчанию
+            localStorage.setItem('lastSelectedAddress', fullAddress);
+            if (currentAddressText) currentAddressText.textContent = fullAddress;
+
+            // 4. Обновляем список адресов на первом экране модалки
+            renderAddresses();
+
+            // 5. Возвращаемся на экран списка
+            resetToInitialState();
+            
+            // (Опционально) Закрываем модалку совсем через полсекунды
+            // closeModel(); 
+        });
+                
+        // Находим все элементы городов в списке
+        const cityItems = document.querySelectorAll('.city-item');
+        const selectedCityReadonly = document.getElementById('selected-city-readonly');
+
+        cityItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const cityName = item.textContent.trim(); // Получаем название города (например, "Казань")
+                
+                // 1. Проверяем, есть ли такой город в нашем списке координат
+                if (cityCoords[cityName]) {
+                    const coords = cityCoords[cityName];
+
+                    // 2. Перемещаем карту к этому городу (зум 12 или 13 обычно оптимально)
+                    if (map) {
+                        map.setView(coords, 12);
+                    }
+
+                    // 3. Логика переключения интерфейса:
+                    // Скрываем выбор города, показываем ввод улицы
+                    citySelectionPart.style.display = 'none';
+                    streetSelectionPart.style.display = 'flex';
+                    
+                    // Записываем название города в невидимое/заблокированное поле
+                    if (selectedCityReadonly) {
+                        selectedCityReadonly.value = cityName;
+                    }
+
+                    // Фокусируемся на вводе улицы
+                    setTimeout(() => streetInput.focus(), 100);
+                } else {
+                    console.error("Координаты для города не найдены:", cityName);
+                }
+            });
+        });
+
+        // Клик по фону
+        addressModal.addEventListener('click', (e) => {
+            if (e.target === addressModal) closeModel();
+        });
+
+        // Открытие модалки
+        addressBtn?.addEventListener('click', () => {
+            addressModal.classList.add('active');
+            renderAddresses();
+        });
+
+        // Переход к карте
+        goToMapBtn?.addEventListener('click', () => {
+            selectionScreen.style.display = 'none';
+            mapScreen.style.display = 'flex';
+            initMap();
+        });
+
+        // Кнопка "Назад" на карте
+        backToListBtn?.addEventListener('click', () => {
+            if (finalDetails.style.display === 'flex') {
+                finalDetails.style.display = 'none';
+            } else if (streetSelectionPart.style.display === 'block') {
+                streetSelectionPart.style.display = 'none';
+                citySelectionPart.style.display = 'block';
+            } else {
+                resetToInitialState();
+            }
+        });
+
+        // Остальная логика (карта, сохранение) остается без изменений внутри DOMContentLoaded...
+        // [Здесь ваш код initMap и reverseGeocode]
+        
+        // Восстановление адреса при старте
+        const last = localStorage.getItem('lastSelectedAddress');
+        if (last && currentAddressText) currentAddressText.textContent = last;
+        renderAddresses();
+    });
+
+    // Функция карты (вне DOMContentLoaded или внутри, если вызывается там)
+    function initMap() {
+        if (map) { 
+            map.invalidateSize(); 
+            return; 
+        }
+
+        // Инициализация карты
+        map = L.map('leaflet-map').setView([55.75, 37.61], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Обработка клика по карте
+        map.on('click', async (e) => {
+            const { lat, lng } = e.latlng;
+
+            // 1. Ставим или перемещаем маркер
+            if (clickMarker) {
+                clickMarker.setLatLng(e.latlng);
+            } else {
+                clickMarker = L.marker(e.latlng).addTo(map);
+            }
+
+            // 2. Показываем блок с полями Квартира/Подъезд/Домофон
+            const finalDetails = document.getElementById('final-address-details');
+            if (finalDetails) finalDetails.style.display = 'flex';
+
+            // 3. ЗАПРОС К ГЕОКОДЕРУ (Nominatim)
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=ru`
+                );
+                const data = await response.json();
+
+                if (data && data.address) {
+                    const addr = data.address;
+                    // Формируем строку: Улица + Номер дома
+                    const street = addr.road || addr.street || '';
+                    const house = addr.house_number || '';
+                    
+                    const fullAddress = `${street}${street && house ? ', ' : ''}${house}`;
+                    
+                    // 4. Записываем результат в инпут
+                    const streetInput = document.getElementById('street-input');
+                    if (streetInput) {
+                        streetInput.value = fullAddress;
+                    }
+                }
+            } catch (error) {
+                console.error("Ошибка при получении адреса:", error);
+            }
+        });
+    }
+</script>
+</body>
+</html>
