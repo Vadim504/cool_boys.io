@@ -1,0 +1,163 @@
+/* Контейнер модального окна */
+.modal-content {
+    background: #ffffff;
+    width: 450px;
+    max-width: 450px;
+    height: auto;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-right: 2vw;
+    border-radius: 16px;
+}
+
+/* Большое окно для карты */
+.modal-content.map-mode {
+    width: 900px !important;
+    max-width: 900px !important;
+    height: 750px !important;
+    max-height: 90vh !important;
+}
+
+/* Список адресов */
+.address-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.address-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background 0.2s;
+}
+
+.address-item:hover {
+    background: #f5f5f5;
+}
+
+.address-main {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.address-sub {
+    color: #999;
+    font-size: 14px;
+}
+
+/* Индикатор выбора */
+.address-check {
+    width: 24px;
+    height: 24px;
+    background-color: #ff3366;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.address-check.empty {
+    background-color: #f0f0f0;
+    color: transparent;
+}
+
+/* Checkbox стиль */
+.address-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    position: relative;
+}
+
+.address-item.active .address-checkbox {
+    border-color: #ff2d55;
+}
+
+.address-item.active .address-checkbox::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: #ff2d55;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Кнопки */
+.add-address-btn {
+    width: 100%;
+    background-color: #ff3366;
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-address-btn:hover {
+    background-color: #e62e5c;
+}
+
+.save-btn {
+    width: 100%;
+    background: #ff2d55;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Список городов */
+.city-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.city-item:hover {
+    color: #ff3366;
+}
+
+/* Анимация полей */
+#street-field-group {
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Специфичные стили для экрана с картой */
+#map-screen .modal-header {
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* Увеличенный z-index для крестика */
+.close-btn {
+    position: relative;
+    z-index: 2000;
+}

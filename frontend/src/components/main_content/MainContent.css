@@ -1,0 +1,86 @@
+.main-content {
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* ШАПКА */
+.page-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    width: 100%;
+}
+
+.page-title {
+    font-size: 24px;
+}
+
+.user-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.address-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.delivery-badge {
+    background-color: #FF2D55;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.login-btn {
+    height: 40px;
+    padding: 0px 20px;
+    border: 1px solid #E0E0E0;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    max-width: 747px;
+    height: 37px;
+    background: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 20px;
+    padding: 2px 2px 2px 0px;
+    margin-bottom: 0;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+    padding-left: 20px;
+}
+
+.search-button:hover {
+    background: #622bc4;
+}
+
+/* ТОВАРЫ */
+.products-area {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}

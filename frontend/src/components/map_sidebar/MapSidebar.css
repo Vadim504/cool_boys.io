@@ -1,0 +1,205 @@
+.map-sidebar {
+    width: 375px;
+    background: #f5f5f5;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 80px;
+    height: 100vh;
+    margin-top: 0;
+    overflow-y: hidden;
+    margin-left: 20px;
+}
+
+.map-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    flex-grow: 1;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* Верхние кнопки */
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.login-btn-top {
+    align-self: flex-end;
+    background: #FF2D55;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    width: auto;
+    margin-left: auto;
+}
+
+.support-btn {
+    width: 37px;
+    height: 37px;
+    background: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.2s;
+}
+
+.support-btn:hover {
+    background: #f9f9f9;
+    color: #FF2D55;
+    border-color: #FF2D55;
+}
+
+.support-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* Адрес */
+.address-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.address-selector:hover {
+    opacity: 0.7;
+}
+
+.address-current {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.address-chevron {
+    font-size: 16px;
+    color: #999;
+}
+
+/* Карта-заглушка */
+.map-container {
+    height: 375px;
+    background: #f2f2f2;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-placeholder {
+    text-align: center;
+    color: #888;
+}
+
+.map-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+/* Корзина */
+.cart-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 15px 0;
+}
+
+.cart-items-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.item-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.item-subinfo {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+}
+
+.item-total-price {
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.cart-footer {
+    border-top: 2px solid #eee;
+    padding-top: 15px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.total-sum {
+    color: #000;
+}
+
+.order-button {
+    margin-top: 12px;
+    padding: 12px;
+    width: 100%;
+    border-radius: 12px;
+    border: none;
+    background: #ff335f;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.order-button:hover {
+    background: #e62e55;
+}
+
+.cart-info {
+    text-align: center;
+    margin-top: auto;
+}
+
+.cart-message {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.4;
+}
