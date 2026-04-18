@@ -1,0 +1,122 @@
+.selection-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 20px; /* Отступ сверху для крестика */
+}
+
+.selection-header h2 {
+  margin: 0 0 24px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #000;
+}
+
+.address-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.address-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #F8F9FA;
+  position: relative;
+}
+
+.address-card:hover {
+  background: #F2F3F5;
+}
+
+.address-card.active {
+  border-color: #FF3366;
+  background: #FFF0F3;
+}
+
+.address-texts {
+  flex: 1;
+}
+
+.street-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 4px;
+}
+
+.city-name {
+  font-size: 14px;
+  color: #888;
+}
+
+.radio-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.address-card.active .radio-circle {
+  background: #FF3366;
+  border-color: #FF3366;
+}
+
+.selection-footer {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.add-btn-main {
+  width: 100%;
+  padding: 18px 0;
+  background-color: #FF3366;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.add-btn-main:active {
+  transform: scale(0.98);
+}
+
+.empty-message {
+  text-align: center;
+  color: #888;
+  padding: 40px 20px;
+  font-size: 16px;
+}
+
+.delete-address-btn {
+  position: absolute;
+  top: 10px;
+  right: 40px; /* Чтобы не перекрывать radio-circle */
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #ccc;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.delete-address-btn:hover {
+  color: #ff4d4f; /* Красный цвет при наведении */
+}

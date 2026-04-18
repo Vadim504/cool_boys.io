@@ -1,0 +1,58 @@
+.sidebar {
+    background: #fff;
+    border-right: 1px solid #eee;
+    padding: 16px;
+}
+
+.catalog-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+
+.category-list {
+    list-style: none;
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    gap: 12px;
+}
+
+.category-item:hover {
+    background: #f2f2f2;
+}
+
+.category-icon {
+    width: 30px;
+    height: 30px;
+    background: #F5E5E5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.category-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.category-arrow {
+    margin-left: auto; /* изменено для прижатия к краю */
+    color: #999;
+}
+
+.category-item.active {
+    background: #f2f2f2; /* Серый фон для выбранного пункта */
+    border-left: 4px solid #ff3366; /* Розовая полоска слева (стиль Самоката) */
+}

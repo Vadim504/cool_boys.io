@@ -1,0 +1,40 @@
+.price-btn-initial {
+  background: #ff3366;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+.price-btn-counter {
+  background: #ff3366;
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+.price-btn-counter button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+/* Компактный вид для боковой панели */
+.price-btn-counter.compact {
+  width: 80px;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
