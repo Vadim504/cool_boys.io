@@ -48,11 +48,6 @@
 }
 
 .category-arrow {
-    margin-left: auto; /* изменено для прижатия к краю */
+    margin-left: 12px;
     color: #999;
-}
-
-.category-item.active {
-    background: #f2f2f2; /* Серый фон для выбранного пункта */
-    border-left: 4px solid #ff3366; /* Розовая полоска слева (стиль Самоката) */
 }

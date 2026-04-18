@@ -1,3 +1,4 @@
+
 // src/App.jsx
 import React from 'react';
 import Home from './pages/Home'; // Убедитесь, что путь верный
@@ -10,5 +11,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;

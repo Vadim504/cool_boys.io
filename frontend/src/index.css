@@ -1,0 +1,93 @@
+/* === СБРОС И БАЗА === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f5f5;
+}
+
+/* === ОСНОВНОЙ LAYOUT === */
+.container {
+    display: grid;
+    grid-template-columns: 260px 1fr 300px;
+    height: 100vh;
+    max-width: 100%;
+    padding-right: 20px;
+}
+
+/* === ОБЩИЕ СТИЛИ МОДАЛОК === */
+.modal-overlay {
+    display: none; 
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: flex-end;
+    align-items: stretch;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+/* Общие элементы форм */
+.address-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.close-btn {
+    cursor: pointer;
+    padding: 10px;
+    font-size: 24px;
+    line-height: 1;
+    display: inline-block;
+    z-index: 10;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-footer {
+    padding-top: 16px;
+    background: white;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+}
+
+/* Анимации */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 600px) {
+    .container {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+    
+    .sidebar, .map-sidebar {
+        display: none; /* Или сделать выдвижными */
+    }
+}
