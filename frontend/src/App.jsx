@@ -1,14 +1,15 @@
-
 // src/App.jsx
 import React from 'react';
-import Home from './pages/Home'; // Убедитесь, что путь верный
+import { BrowserRouter } from 'react-router-dom';
+import AppRouter from './routes/Router'; // Импортируй свой файл с маршрутами
 import './App.css';
 
 const App = () => {
   return (
-    <div className="app">
-      <Home />
-    </div>
+      <div className="app">
+        <AppRouter />
+      </div>
   );
 };
+
 export default App;

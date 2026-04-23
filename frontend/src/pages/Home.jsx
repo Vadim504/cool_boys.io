@@ -19,13 +19,29 @@ const Home = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { currentAddress, selectAddress } = useAddress();
 
-  const filteredProducts = useMemo(() => {
-    return productsData.filter(p => {
-      if (!categoryId) return true;  
-      return p.category.toLowerCase().trim() === categoryId.toLowerCase().trim();
-    });
-  }, [categoryId]); 
+  // const filteredProducts = useMemo(() => {
+  //   return productsData.filter(p => {
+  //     // 1. Проверка категории
+  //     const decodedCategory = categoryId ? decodeURIComponent(categoryId).toLowerCase().trim() : null;
+  //     const matchesCategory = !decodedCategory || p.category.toLowerCase().trim() === decodedCategory;
 
+  //     // 2. Проверка поиска
+  //     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase().trim());
+
+  //     // Должны выполняться ОБА условия
+  //     return matchesCategory && matchesSearch;
+  //   });
+  // }, [categoryId, searchQuery]); // ОБЯЗАТЕЛЬНО оба в одном массиве
+
+  const filteredProducts = useMemo(() => {
+  return productsData.filter(p => {
+    // В categoryId теперь сразу попадает "dairy"
+    const matchesCategory = !categoryId || p.category === categoryId;
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesCategory && matchesSearch;
+  });
+}, [categoryId, searchQuery]);
   return (
     <div className="container">
       <Sidebar 
