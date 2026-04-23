@@ -36,8 +36,6 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-<<<<<<< HEAD
-/* App.css */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -52,12 +50,11 @@ body {
 }
 
 .content-area {
-  flex: 1; /* Основная часть занимает всё свободное место */
+  flex: 1; 
 }
 
 .products-grid {
   display: grid;
-  /* Автоматически подбирает количество колонок по ширине */
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
   margin-top: 20px;

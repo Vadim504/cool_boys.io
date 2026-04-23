@@ -1,6 +1,4 @@
-// src/data/categories.js
-
-// 1. Импортируем все иконки сюда
+// src/constants/categories.js
 import iconReadyMeal from "../images/svg_files/icon_ready_meal.svg";
 import iconBeverages from "../images/svg_files/icon_beverages.svg";
 import iconBread from "../images/svg_files/icon_bread.svg";
@@ -12,16 +10,15 @@ import iconSnacks from "../images/svg_files/icon_snacks.svg";
 import iconSweets from "../images/svg_files/icon_sweets.svg";
 import iconFruit from "../images/svg_files/icon_veg_fruit.svg";
 
-// 2. Создаем и экспортируем массив
 export const CATEGORIES = [
-  { name: "Готовая еда", icon: iconReadyMeal },
-  { name: "Напитки", icon: iconBeverages },
-  { name: "Хлеб", icon: iconBread },
-  { name: "Молоко", icon: iconDairy },
-  { name: "Рыба", icon: iconFish },
-  { name: "Полуфабрикаты", icon: iconFrozen },
-  { name: "Мясо", icon: iconMeat },
-  { name: "Снеки", icon: iconSnacks },
-  { name: "Сладости", icon: iconSweets },
-  { name: "Фрукты", icon: iconFruit }
+  { id: 'ready-meal', name: "Готовая еда", icon: iconReadyMeal },
+  { id: 'beverages', name: "Напитки", icon: iconBeverages },
+  { id: 'bread-bakery', name: "Хлеб", icon: iconBread },
+  { id: 'dairy', name: "Молоко", icon: iconDairy },
+  { id: 'fish-seafood', name: "Рыба", icon: iconFish },
+  { id: 'frozen', name: "Полуфабрикаты", icon: iconFrozen },
+  { id: 'meat-poultry', name: "Мясо", icon: iconMeat },
+  { id: 'snacks', name: "Снеки", icon: iconSnacks },
+  { id: 'sweets', name: "Сладости", icon: iconSweets },
+  { id: 'vegetables-fruits', name: "Фрукты", icon: iconFruit }
 ];

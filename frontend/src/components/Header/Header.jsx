@@ -1,8 +1,13 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
 // Добавляем пропс onSearch
 const Header = ({ onSearch }) => {
+  const navigate = useNavigate();
+  const handleSearchChange = (e) => {
+    navigate(`/search?q=${text}`);
+  };
   return (
     <div className="page-header">
       <div className="search-container">
@@ -10,8 +15,7 @@ const Header = ({ onSearch }) => {
           type="text" 
           className="search-input" 
           placeholder="Поиск..." 
-          // Каждый раз, когда пользователь пишет, вызываем функцию из пропсов
-          onChange={(e) => onSearch(e.target.value)}
+          onChange={(e) => onSearch(e.target.value)} // Вызываем функцию при изменении текста
         />
       </div>
     </div>

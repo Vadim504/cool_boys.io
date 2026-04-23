@@ -1,34 +1,31 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, removeFromCart } from '../../store/cartSlice'; 
+import { addToCart, removeFromCart } from '../../store/cartSlice'; // Путь к вашему слайсу
 import './ProductCard.css';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onOpenDetail }) => {
   const dispatch = useDispatch();
-  
-  // Получаем текущее количество этого товара в корзине
+
+  // Получаем текущее количество товара в корзине из Redux
   const cartItem = useSelector(state => 
     state.cart.items.find(item => item.id === product.id)
   );
-  
   const count = cartItem ? cartItem.quantity : 0;
-  
-  // Проверка: можно ли добавить еще одну единицу товара
-  const canIncrement = count < product.stock;
+
+  // Логика проверки остатка на складе
+  const canIncrement = product.stock > count;
 
   const increment = () => {
     if (canIncrement) {
       dispatch(addToCart(product));
-    } else {
-      // Можно вывести уведомление или просто ничего не делать
-      console.log("Максимальное количество достигнуто");
     }
   };
 
   const decrement = () => dispatch(removeFromCart(product.id));
 
   return (
-    <div className="product-card">
+    // 1. Вешаем клик для открытия деталей на всю карточку
+    <div className="product-card" onClick={onOpenDetail}>
       <div className="product-image">
         <img src={product.image} alt={product.name} />
       </div>
@@ -40,24 +37,22 @@ const ProductCard = ({ product }) => {
         </div>
         <h3 className="product-name">{product.name}</h3>
         <p className="product-weight">{product.weight}</p>
-        {/* Опционально: показываем остаток */}
-        <p style={{fontSize: '12px', color: 'gray'}}>В наличии: {product.stock}</p>
       </div>
 
-      <div className="product-controls">
+      {/* 2. ВАЖНО: stopPropagation предотвращает открытие модалки при клике на кнопки */}
+      <div className="product-controls" onClick={(e) => e.stopPropagation()}>
         {count === 0 ? (
           <button 
             className="add-button" 
             onClick={increment}
-            disabled={product.stock === 0} // Отключаем, если товара нет на складе совсем
+            disabled={product.stock === 0}
           >
-            {product.stock === 0 ? 'Нет в наличии' : <span className="plus-icon">+</span>}
+            {product.stock === 0 ? 'Нет' : <span className="plus-icon">+</span>}
           </button>
         ) : (
           <div className="stepper">
             <button onClick={decrement}>−</button>
             <span className="count">{count}</span>
-            {/* Отключаем кнопку +, если достигли лимита склада */}
             <button 
               onClick={increment} 
               disabled={!canIncrement}

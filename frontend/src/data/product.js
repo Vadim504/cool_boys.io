@@ -5,16 +5,16 @@ export const productsData = [
     name: "Молоко 3.2%", 
     price: 89, 
     weight: "930 мл", 
-    category: "Молоко", 
+    category: "dairy", 
     image: "https://via.placeholder.com/150",
-    stock: 10 // Количество на складе
+    stock: 10 
   },
   { 
     id: 2, 
     name: "Йогурт Греческий", 
     price: 65, 
     weight: "150 г", 
-    category: "Молоко", 
+    category: "dairy", 
     image: "https://via.placeholder.com/150",
     stock: 5 
   },
@@ -23,7 +23,7 @@ export const productsData = [
     name: "Бананы", 
     price: 120, 
     weight: "1 кг", 
-    category: "Фрукты", 
+    category: "vegetables-fruits", 
     image: "https://via.placeholder.com/150",
     stock: 20 
   },
@@ -32,7 +32,7 @@ export const productsData = [
     name: "Яблоки Ред", 
     price: 95, 
     weight: "1 кг", 
-    category: "Фрукты", 
+    category: "vegetables-fruits", 
     image: "https://via.placeholder.com/150",
     stock: 15 
   },
@@ -41,7 +41,7 @@ export const productsData = [
     name: "Кока-кола", 
     price: 99, 
     weight: "500 мл", 
-    category: "Напитки", 
+    category: "beverages", 
     image: "https://via.placeholder.com/150",
     stock: 8 
   },
