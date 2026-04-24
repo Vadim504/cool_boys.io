@@ -1,19 +1,28 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux'; // Добавили useSelector
 import './CartSidebar.css';
 
-const CartSidebar = ({ currentAddress, onAddressClick }) => {
+const CartSidebar = ({ onAddressClick }) => {
   // 1. Берем товары из Redux
   const cartItems = useSelector(state => state.cart.items);
   
-  // 2. Считаем сумму
+  // 2. БЕРЕМ ВЫБРАННЫЙ АДРЕС ИЗ REDUX (это и есть решение)
+  const reduxSelectedAddress = useSelector(state => state.addresses.selectedAddress);
+  
+  // 3. Считаем сумму
   const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <aside className="map-sidebar">
-      <div className="address-selector" onClick={onAddressClick}>
-        <div className="address-current">{currentAddress}</div>
-        <div className="delivery-time">Доставка 15 минут</div>
+       <div className="address-selector" onClick={onAddressClick}>
+        <div className="address-info-block">
+          {/* Используем значение из Redux вместо пропса currentAddress */}
+          <div className="address-current">
+            {reduxSelectedAddress || "Укажите адрес доставки"}
+          </div>
+          <div className="delivery-time">Доставка 15 минут</div>
+        </div>
+        <div className="address-arrow">›</div>
       </div>
 
       <div className="cart-card">

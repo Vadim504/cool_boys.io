@@ -16,35 +16,32 @@ const initialState = {
   selectedAddress: localStorage.getItem('lastSelectedAddress') || 'улица Баумана, 1 к1',
 };
 
+// store/addressSlice.js
 const addressSlice = createSlice({
   name: 'addresses',
-  initialState,
+  initialState: {
+    items: JSON.parse(localStorage.getItem('deliveryAddresses')) || [],
+    selectedAddress: localStorage.getItem('lastSelectedAddress') || '',
+  },
   reducers: {
-    // Добавить новый адрес
     addAddress: (state, action) => {
-      state.items.push(action.payload);
-      state.selectedAddress = action.payload; // Сразу выбираем новый
-      localStorage.setItem('deliveryAddresses', JSON.stringify(state.items));
-      localStorage.setItem('lastSelectedAddress', action.payload);
-    },
-    // Удалить адрес
-    removeAddress: (state, action) => {
-      state.items = state.items.filter(addr => addr !== action.payload);
-      localStorage.setItem('deliveryAddresses', JSON.stringify(state.items));
-      
-      // Если удалили тот, что был выбран — сбрасываем выбор
-      if (state.selectedAddress === action.payload) {
-        state.selectedAddress = state.items[0] || '';
-        localStorage.setItem('lastSelectedAddress', state.selectedAddress);
+      // Проверяем на дубликаты
+      if (!state.items.includes(action.payload)) {
+        state.items.push(action.payload);
+        // Сохраняем в localStorage для надежности
+        localStorage.setItem('deliveryAddresses', JSON.stringify(state.items));
       }
     },
-    // Выбрать адрес из списка
     setSelectedAddress: (state, action) => {
       state.selectedAddress = action.payload;
       localStorage.setItem('lastSelectedAddress', action.payload);
+    },
+    removeAddress: (state, action) => {
+      state.items = state.items.filter(addr => addr !== action.payload);
+      localStorage.setItem('deliveryAddresses', JSON.stringify(state.items));
     }
   }
 });
 
-export const { addAddress, removeAddress, setSelectedAddress } = addressSlice.actions;
+export const { addAddress, setSelectedAddress, removeAddress } = addressSlice.actions;
 export default addressSlice.reducer;

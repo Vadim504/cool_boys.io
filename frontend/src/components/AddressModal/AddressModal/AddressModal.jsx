@@ -18,22 +18,39 @@ const AddressModal = ({ isOpen, onClose, onSelectFinalAddress }) => {
     }
   }, [isOpen]);
 
-  const addNewAddress = (newAddressString) => {
+ const addNewAddress = (newAddressString) => {
     const trimmedAddress = newAddressString.trim();
-    if (savedAddresses.includes(trimmedAddress)) {
-      setModalView('list'); 
+    if (!trimmedAddress) return;
+
+    // 1. Получаем свежайшие данные из localStorage перед обновлением
+    // Это гарантирует, что мы не потеряем данные при сбоях
+    const currentSaved = JSON.parse(localStorage.getItem('deliveryAddresses')) || [];
+    
+    if (currentSaved.includes(trimmedAddress)) {
+      setModalView('list');
       return;
     }
-    setSavedAddresses((prev) => {
-      const updated = [...prev, trimmedAddress];
-      localStorage.setItem('deliveryAddresses', JSON.stringify(updated));
-      return updated;
-    });
-    localStorage.setItem('lastSelectedAddress', trimmedAddress);
-    setCurrentAddress(trimmedAddress);
-    setModalView('list'); 
-  };
 
+    // 2. Создаем новый массив
+    const updated = [...currentSaved, trimmedAddress];
+
+    // 3. Сохраняем везде
+    localStorage.setItem('deliveryAddresses', JSON.stringify(updated));
+    localStorage.setItem('lastSelectedAddress', trimmedAddress);
+    
+    // 4. Обновляем стейты
+    setSavedAddresses(updated); // Обновляем список для AddressList
+    setCurrentAddress(trimmedAddress); // Ставим галочку
+
+    // 5. Передаем наверх в приложение (в корзину)
+    if (onSelectFinalAddress) {
+      onSelectFinalAddress(trimmedAddress);
+    }
+
+    // 6. Переходим к списку
+    console.log("Сейчас в списке адресов:", savedAddresses);
+    setModalView('list');
+  };
   const handleConfirmAddress = () => {
     const city = "Москва и рядом"; 
     const street = "Моховая улица"; 
