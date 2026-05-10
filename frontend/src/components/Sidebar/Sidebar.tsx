@@ -3,13 +3,15 @@ import './Sidebar.css';
 import { NavLink } from 'react-router-dom';
 import { CATEGORIES } from '../../constants/categories'; // Проверь путь (может быть один ../)
 
-export default function Sidebar() {
+// ОБЯЗАТЕЛЬНО добавь { onProfileClick } в аргументы функции здесь:
+export default function Sidebar({ onProfileClick }) {
   return (
     <aside className="sidebar">
       <div className="catalog-header">
         <h2 className="catalog-title">Каталог</h2>
       </div>
       <ul className="category-list">
+        {/* 1. Выводим категории */}
         {CATEGORIES.map((cat) => (
           <li key={cat.id}>
             <NavLink 
@@ -26,6 +28,7 @@ export default function Sidebar() {
             </NavLink>
           </li>
         ))}
+
       </ul>
     </aside>
   );

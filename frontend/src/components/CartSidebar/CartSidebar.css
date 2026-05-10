@@ -10,9 +10,56 @@
     padding: 0; /* Убираем общие падинги, настроим их внутри */
 }
 
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 20px 0;
+}
+
+.login-btn-top,
+.profile-btn-top {
+    flex: 1;
+    height: 42px;
+    border: none;
+    border-radius: 12px;
+    padding: 0 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.login-btn-top {
+    background: #FF2D55;
+    color: #fff;
+}
+
+.login-btn-top:hover {
+    background: #E0284B;
+}
+
+.profile-btn-top {
+    background: #F5F5F7;
+    color: #000;
+}
+
+.support-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 12px;
+    background: #F5F5F7;
+    cursor: pointer;
+    font-size: 18px;
+}
+
 /* Блок адреса сделаем как красивую карточку сверху */
 .address-selector {
-    margin: 20px;
+    margin: 12px 20px 20px;
     padding: 16px;
     background: #F5F5F7;
     border-radius: 16px;

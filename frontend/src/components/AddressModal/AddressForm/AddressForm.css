@@ -26,15 +26,18 @@
   width: 100%;
   height: 100%; /* Занимает всё пространство внутри .modal-content */
   background: #fff;
-  gap: 24px;
+  gap: 16px;
   box-sizing: border-box;
-  padding: 24px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
 }
 
 .map-section {
   flex: 1.5;
   position: relative;
   height: 100%;
+  min-width: 0;
   border-radius: 24px;
   overflow: hidden;
 }
@@ -50,9 +53,12 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 0 24px 24px 24px; 
+  min-width: 300px;
+  max-width: 360px;
+  padding: 0 16px 16px 16px; 
   box-sizing: border-box;
   background: #fff;
+  overflow-y: auto;
 }
 
 /* Шапка внутри формы должна выглядеть как часть окна, а не как отдельное окно */
@@ -98,10 +104,13 @@
   display: flex;
   flex-direction: column; /* Вертикальный стек элементов */
   height: 100%;
-  padding: 0 24px 24px 24px; /* Убираем padding сверху (0), оставляем по бокам и снизу */
+  min-width: 300px;
+  max-width: 360px;
+  padding: 0 16px 16px 16px; /* Убираем padding сверху (0), оставляем по бокам и снизу */
   box-sizing: border-box;
   background: #fff;
   border-left: none; /* Убеждаемся, что линии нет */
+  overflow-y: auto;
 }
 
 /* Заголовок и крестик */
@@ -192,4 +201,46 @@
   font-weight: 700;
   cursor: pointer;
   margin-top: auto; /* Прижмет кнопку к низу */
+}
+
+.confirm-button {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 14px;
+  background: #ff2d55;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: auto;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.confirm-button:hover {
+  background: #e0284b;
+}
+
+.confirm-button:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 900px) {
+  .address-modal-container {
+    flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .map-section {
+    height: 280px;
+    flex: none;
+  }
+
+  .form-section {
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+    padding: 0 8px 8px 8px;
+  }
 }

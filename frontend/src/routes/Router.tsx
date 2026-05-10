@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
-// import Profile from "../pages/Profile";
 import SearchPage from "../pages/SearchPage";
 
 
@@ -11,7 +10,6 @@ function AppRouter() {
       <Route path="/category/:categoryId" element={<Home />} />
       <Route path="/search" element={<SearchPage />} />
       {/* <Route path="/checkout" element={<Checkout />} />  */}
-      {/* <Route path="/profile" element={<Profile />} /> */}
   </Routes>
   );
 }

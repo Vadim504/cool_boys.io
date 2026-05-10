@@ -1,0 +1,107 @@
+.auth-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.auth-content {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    border-radius: 28px;
+    position: relative;
+    text-align: center;
+}
+
+.auth-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: none; border: none;
+    font-size: 30px; color: #ccc;
+    cursor: pointer;
+}
+
+.auth-step h2 {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.auth-step p {
+    color: #8e8e93;
+    font-size: 15px;
+    margin-bottom: 30px;
+    line-height: 1.4;
+}
+
+.phone-input-field {
+    background: #f2f2f7;
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.prefix { font-weight: 600; margin-right: 10px; }
+
+.phone-input-field input {
+    background: none; border: none; outline: none;
+    font-size: 20px; font-weight: 600; width: 100%;
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 18px;
+    background: #FF2D55; /* Розовый Самоката */
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.auth-btn:disabled {
+    background: #f2f2f7;
+    color: #aeaeb2;
+}
+
+.code-input {
+    width: 100%;
+    background: #f2f2f7;
+    border: none;
+    padding: 20px;
+    border-radius: 16px;
+    font-size: 32px;
+    text-align: center;
+    letter-spacing: 12px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.resend-info {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #8e8e93;
+}
+
+.resend-link {
+    color: #FF2D55;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.change-phone-btn {
+    background: none; border: none;
+    margin-top: 20px;
+    color: #8e8e93;
+    text-decoration: underline;
+    cursor: pointer;
+}
