@@ -1,18 +1,23 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux'; // Добавили useDispatch
 import { toggleProfile, toggleAuth } from '../../store/uiSlice'; // Импортируем экшены
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './CartSidebar.css';
 
-const CartSidebar = ({ onAddressClick, onSupportClick, onCheckoutClick }) => {
-  const dispatch = useDispatch();
+type CartSidebarProps = {
+  onAddressClick: () => void;
+  onSupportClick: () => void;
+  onCheckoutClick: () => void;
+};
+
+const CartSidebar = ({ onAddressClick, onSupportClick, onCheckoutClick }: CartSidebarProps) => {
+  const dispatch = useAppDispatch();
 
   // 1. Данные корзины и адреса
-  const cartItems = useSelector(state => state.cart.items);
-  const reduxSelectedAddress = useSelector(state => state.addresses.selectedAddress);
+  const cartItems = useAppSelector(state => state.cart.items);
+  const reduxSelectedAddress = useAppSelector(state => state.addresses.selectedAddress);
   const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   // 2. Данные авторизации
-  const { isAuth, phoneNumber } = useSelector((state) => state.auth);
+  const { isAuth, phoneNumber } = useAppSelector((state) => state.auth);
 
   // 3. Единая функция для клика по кнопке (Вход или Профиль)
   const handleUserAction = () => {

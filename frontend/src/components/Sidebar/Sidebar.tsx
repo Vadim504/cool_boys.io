@@ -1,10 +1,9 @@
 // src/components/Sidebar/Sidebar.jsx
 import './Sidebar.css';
 import { NavLink } from 'react-router-dom';
-import { CATEGORIES } from '../../constants/categories'; // Проверь путь (может быть один ../)
+import { CATEGORIES } from '../../constants/categories';
 
-// ОБЯЗАТЕЛЬНО добавь { onProfileClick } в аргументы функции здесь:
-export default function Sidebar({ onProfileClick }) {
+export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="catalog-header">

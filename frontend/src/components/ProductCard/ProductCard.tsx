@@ -1,13 +1,18 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeFromCart } from '../../store/cartSlice'; // Путь к вашему слайсу
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import type { Product } from '../../types';
 import './ProductCard.css';
 
-const ProductCard = ({ product, onOpenDetail }) => {
-  const dispatch = useDispatch();
+type ProductCardProps = {
+  product: Product;
+  onOpenDetail: () => void;
+};
+
+const ProductCard = ({ product, onOpenDetail }: ProductCardProps) => {
+  const dispatch = useAppDispatch();
 
   // Получаем текущее количество товара в корзине из Redux
-  const cartItem = useSelector(state => 
+  const cartItem = useAppSelector(state => 
     state.cart.items.find(item => item.id === product.id)
   );
   const count = cartItem ? cartItem.quantity : 0;

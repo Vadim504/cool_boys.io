@@ -1,13 +1,18 @@
-import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useMemo } from 'react';
 import { addToCart, removeFromCart } from '../../store/cartSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { productsData } from '../../data/product';
 import './CheckoutModal.css';
 
-const CheckoutModal = ({ isOpen, onClose }) => {
-  const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items);
-  const selectedAddress = useSelector((state) => state.addresses.selectedAddress);
+type CheckoutModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
+  const selectedAddress = useAppSelector((state) => state.addresses.selectedAddress);
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 

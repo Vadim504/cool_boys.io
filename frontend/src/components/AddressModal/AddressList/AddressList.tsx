@@ -64,26 +64,31 @@ const AddressList = ({ addresses, currentAddress, onSelectAddress, onGoToMap, on
 export default AddressList;
 */
 
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import type { MouseEvent } from 'react';
 import { setSelectedAddress, removeAddress } from '../../../store/addressSlice'; // проверьте путь к слайсу
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import './AddressList.css';
 
-const AddressList = ({ onGoToMap, onClose }) => {
-  const dispatch = useDispatch();
+type AddressListProps = {
+  onGoToMap: () => void;
+  onClose?: () => void;
+};
+
+const AddressList = ({ onGoToMap, onClose }: AddressListProps) => {
+  const dispatch = useAppDispatch();
   
   // 1. Берем данные напрямую из Redux
-  const addresses = useSelector((state) => state.addresses.items);
-  const currentAddress = useSelector((state) => state.addresses.selectedAddress);
+  const addresses = useAppSelector((state) => state.addresses.items);
+  const currentAddress = useAppSelector((state) => state.addresses.selectedAddress);
 
-  const handleSelect = (addr) => {
+  const handleSelect = (addr: string) => {
     // 2. Выбираем адрес в Redux
     dispatch(setSelectedAddress(addr));
     // Закрываем модалку (функция передана из AddressModal)
     if (onClose) onClose(); 
   };
 
-  const handleDelete = (e, addr) => {
+  const handleDelete = (e: MouseEvent<HTMLButtonElement>, addr: string) => {
     e.stopPropagation(); // Важно: чтобы при клике на крестик не сработал выбор адреса
     // 3. Удаляем адрес в Redux
     dispatch(removeAddress(addr));

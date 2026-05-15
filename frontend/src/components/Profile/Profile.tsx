@@ -1,7 +1,6 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../store/authSlice'; // Экшен, который мы создали в прошлом шаге
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './Profile.css';
 
 type ProfileProps = {
@@ -10,13 +9,12 @@ type ProfileProps = {
 };
 
 const Profile = ({ isOpen, onClose }: ProfileProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   
   // Достаем данные из Redux
-  // В файле Profile.jsx измени строку с useSelector:
-const { isAuth, phoneNumber } = useSelector((state) => state.auth || {});
-  const addresses = useSelector((state) => state.addresses.items);
+  const { isAuth, phoneNumber } = useAppSelector((state) => state.auth);
+  const addresses = useAppSelector((state) => state.addresses.items);
 
   if (!isOpen) return null;
 

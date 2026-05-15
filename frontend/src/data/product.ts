@@ -1,5 +1,7 @@
 // src/data/products.js
-export const productsData = [
+import type { Product } from '../types';
+
+export const productsData: Product[] = [
   { 
     id: 1, 
     name: "Молоко 3.2%", 

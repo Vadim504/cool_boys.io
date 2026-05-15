@@ -1,12 +1,17 @@
 // src/components/PriceButton/PriceButton.jsx
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeFromCart } from '../../store/cartSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import type { Product } from '../../types';
 import './PriceButton.css';
 
-const PriceButton = ({ product, isCompact = false }) => {
-  const dispatch = useDispatch();
-  const cartItem = useSelector(state => state.cart.items.find(i => i.id === product.id));
+type PriceButtonProps = {
+  product: Product;
+  isCompact?: boolean;
+};
+
+const PriceButton = ({ product, isCompact = false }: PriceButtonProps) => {
+  const dispatch = useAppDispatch();
+  const cartItem = useAppSelector(state => state.cart.items.find(i => i.id === product.id));
   const quantity = cartItem ? cartItem.quantity : 0;
 
   if (quantity === 0) {

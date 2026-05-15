@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
 import { loginSuccess } from '../../store/authSlice';
+import { useAppDispatch } from '../../store/hooks';
 import './AuthModal.css';
 
-const AuthModal = ({ isOpen, onClose }) => {
-  const dispatch = useDispatch();
+type AuthModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
+  const dispatch = useAppDispatch();
   const [step, setStep] = useState('phone'); // 'phone' или 'code'
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
@@ -12,7 +17,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
   // Таймер обратного отсчета
   useEffect(() => {
-    let interval;
+    let interval: ReturnType<typeof setInterval> | undefined;
     if (timer > 0) {
       interval = setInterval(() => setTimer(prev => prev - 1), 1000);
     }
@@ -54,7 +59,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                 placeholder="900 000 00 00" 
                 value={phone}
                 onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                maxLength="10"
+                maxLength={10}
               />
             </div>
             <button 
@@ -76,7 +81,7 @@ const AuthModal = ({ isOpen, onClose }) => {
               autoFocus
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-              maxLength="4"
+              maxLength={4}
             />
             <button 
               className="auth-btn" 

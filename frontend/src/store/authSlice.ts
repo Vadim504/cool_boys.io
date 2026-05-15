@@ -1,14 +1,21 @@
 // store/authSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+type AuthState = {
+  isAuth: boolean;
+  phoneNumber: string | null;
+};
+
+const initialState: AuthState = {
+  isAuth: localStorage.getItem('isAuth') === 'true',
+  phoneNumber: localStorage.getItem('userPhone') || null,
+};
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    isAuth: localStorage.getItem('isAuth') === 'true',
-    phoneNumber: localStorage.getItem('userPhone') || null,
-  },
+  initialState,
   reducers: {
-    loginSuccess: (state, action) => {
+    loginSuccess: (state, action: PayloadAction<string>) => {
       state.isAuth = true;
       state.phoneNumber = action.payload;
       localStorage.setItem('isAuth', 'true');
@@ -17,7 +24,8 @@ const authSlice = createSlice({
     logout: (state) => {
       state.isAuth = false;
       state.phoneNumber = null;
-      localStorage.clear();
+      localStorage.removeItem('isAuth');
+      localStorage.removeItem('userPhone');
     }
   }
 });

@@ -1,13 +1,10 @@
-import React from "react";
-import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
-// Добавляем пропс onSearch
-const Header = ({ onSearch }) => {
-  const navigate = useNavigate();
-  const handleSearchChange = (e) => {
-    navigate(`/search?q=${text}`);
-  };
+type HeaderProps = {
+  onSearch: (value: string) => void;
+};
+
+const Header = ({ onSearch }: HeaderProps) => {
   return (
     <div className="page-header">
       <div className="search-container">

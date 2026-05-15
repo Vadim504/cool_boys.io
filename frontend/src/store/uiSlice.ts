@@ -1,17 +1,24 @@
 // src/store/uiSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+type UiState = {
+  isProfileOpen: boolean;
+  isAuthOpen: boolean;
+};
+
+const initialState: UiState = {
+  isProfileOpen: false,
+  isAuthOpen: false,
+};
 
 const uiSlice = createSlice({
   name: 'ui',
-  initialState: {
-    isProfileOpen: false,
-    isAuthOpen: false,
-  },
+  initialState,
   reducers: {
-    toggleProfile: (state, action) => {
+    toggleProfile: (state, action: PayloadAction<boolean>) => {
       state.isProfileOpen = action.payload;
     },
-    toggleAuth: (state, action) => {
+    toggleAuth: (state, action: PayloadAction<boolean>) => {
       state.isAuthOpen = action.payload;
     },
   },

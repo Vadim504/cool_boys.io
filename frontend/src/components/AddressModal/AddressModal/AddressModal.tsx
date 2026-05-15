@@ -1,21 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState } from 'react';
 import AddressList from '../AddressList/AddressList';
 import AddressForm from '../AddressForm/AddressForm';
 import { addAddress, setSelectedAddress } from '../../../store/addressSlice';
+import { useAppDispatch } from '../../../store/hooks';
 import './AddressModal.css';
 
-const AddressModal = ({ isOpen, onClose, onSelectFinalAddress }) => {
-  const dispatch = useDispatch();
+type AddressModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelectFinalAddress?: (address: string) => void;
+};
+
+const AddressModal = ({ isOpen, onClose, onSelectFinalAddress }: AddressModalProps) => {
+  const dispatch = useAppDispatch();
   const [modalView, setModalView] = useState('list'); 
 
-  useEffect(() => {
-    if (isOpen) {
-      setModalView('list'); 
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setModalView('list');
+    onClose();
+  };
 
- const addNewAddress = (newAddressString) => {
+ const addNewAddress = (newAddressString: string) => {
     const trimmedAddress = newAddressString.trim();
     if (!trimmedAddress) return;
 
@@ -34,23 +39,22 @@ const AddressModal = ({ isOpen, onClose, onSelectFinalAddress }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay active" onClick={onClose}>
+    <div className="modal-overlay active" onClick={handleClose}>
       <div 
         className={`modal-content ${modalView === 'form' ? 'wide' : ''}`} 
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="modal-close-button" onClick={onClose}>
+        <button className="modal-close-button" onClick={handleClose}>
           ×
         </button>
 
         {modalView === 'list' ? (
           <AddressList 
             onGoToMap={() => setModalView('form')}
-            onClose={onClose}
+            onClose={handleClose}
           />
         ) : (
           <AddressForm 
-            onClose={onClose}
             onBackToList={() => setModalView('list')}
             onSaveNewAddress={(newAddr) => addNewAddress(newAddr)} 
           />

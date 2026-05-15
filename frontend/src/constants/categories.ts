@@ -1,4 +1,5 @@
 // src/constants/categories.js
+import type { Category } from "../types";
 import iconReadyMeal from "../images/svg_files/icon_ready_meal.svg";
 import iconBeverages from "../images/svg_files/icon_beverages.svg";
 import iconBread from "../images/svg_files/icon_bread.svg";
@@ -10,7 +11,7 @@ import iconSnacks from "../images/svg_files/icon_snacks.svg";
 import iconSweets from "../images/svg_files/icon_sweets.svg";
 import iconFruit from "../images/svg_files/icon_veg_fruit.svg";
 
-export const CATEGORIES = [
+export const CATEGORIES: Category[] = [
   { id: 'ready-meal', name: "Готовая еда", icon: iconReadyMeal },
   { id: 'beverages', name: "Напитки", icon: iconBeverages },
   { id: 'bread-bakery', name: "Хлеб", icon: iconBread },

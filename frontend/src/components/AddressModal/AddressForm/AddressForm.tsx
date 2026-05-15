@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './AddressForm.css';
@@ -10,17 +10,44 @@ const CITY_COORDS = {
   "Казань": [55.79, 49.12],
   "Екатеринбург": [56.83, 60.60],
   "Краснодар": [45.03, 38.97]
+} satisfies Record<string, [number, number]>;
+
+const CITY_NAMES = Object.keys(CITY_COORDS) as Array<keyof typeof CITY_COORDS>;
+
+type FormStep = 'city' | 'street';
+
+type FormValues = {
+  city: string;
+  street: string;
+  apt: string;
+  floor: string;
+  entrance: string;
+  intercom: string;
+  comment: string;
 };
 
-const AddressForm = ({ onClose, onBackToList, onSaveNewAddress }) => {
-  const [formStep, setFormStep] = useState('city'); // 'city' или 'street'
-  const [formValues, setFormValues] = useState({
+type NominatimResponse = {
+  address?: {
+    road?: string;
+    pedestrian?: string;
+    house_number?: string;
+  };
+};
+
+type AddressFormProps = {
+  onBackToList: () => void;
+  onSaveNewAddress: (newAddressString: string) => void;
+};
+
+const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
+  const [formStep, setFormStep] = useState<FormStep>('city'); // 'city' или 'street'
+  const [formValues, setFormValues] = useState<FormValues>({
     city: '', street: '', apt: '', floor: '', entrance: '', intercom: '', comment: ''
   });
 
-  const mapRef = useRef(null);
-  const mapInstance = useRef(null);
-  const markerRef = useRef(null);
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstance = useRef<L.Map | null>(null);
+  const markerRef = useRef<L.Marker | null>(null);
 
   // Инициализация карты
   useEffect(() => {
@@ -28,14 +55,14 @@ const AddressForm = ({ onClose, onBackToList, onSaveNewAddress }) => {
       mapInstance.current = L.map(mapRef.current, { zoomControl: false }).setView([55.75, 37.61], 12);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(mapInstance.current);
 
-      mapInstance.current.on('click', async (e) => {
+      mapInstance.current.on('click', async (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng;
         if (markerRef.current) { markerRef.current.setLatLng(e.latlng); } 
         else { markerRef.current = L.marker(e.latlng).addTo(mapInstance.current); }
 
         try {
           const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=ru`);
-          const data = await res.json();
+          const data: NominatimResponse = await res.json();
           if (data.address) {
             const street = data.address.road || data.address.pedestrian || '';
             const house = data.address.house_number || '';
@@ -47,7 +74,7 @@ const AddressForm = ({ onClose, onBackToList, onSaveNewAddress }) => {
     return () => { if (mapInstance.current) { mapInstance.current.remove(); mapInstance.current = null; } };
   }, []);
 
-  const handleCitySelect = (cityName) => {
+  const handleCitySelect = (cityName: keyof typeof CITY_COORDS) => {
     setFormValues({ ...formValues, city: cityName });
     setFormStep('street');
     if (mapInstance.current) {
@@ -95,7 +122,7 @@ const AddressForm = ({ onClose, onBackToList, onSaveNewAddress }) => {
           <div className="inputs-scroll-area">
             <input type="text" className="address-input" placeholder="Поиск города..." />
             <div className="city-selection-list">
-              {Object.keys(CITY_COORDS).map(city => (
+              {CITY_NAMES.map(city => (
                 <div key={city} className="city-item" onClick={() => handleCitySelect(city)}>
                   {city}
                 </div>

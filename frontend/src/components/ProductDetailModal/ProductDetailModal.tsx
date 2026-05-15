@@ -1,10 +1,10 @@
 // src/components/ProductDetailModal/ProductDetailModal.jsx
-import React from 'react';
 import './ProductDetailModal.css';
 import PriceButton from '../PriceButton/PriceButton';
 import { productsData } from '../../data/product';
+import type { Product } from '../../types';
 
-const CATEGORY_HINTS = {
+const CATEGORY_HINTS: Record<string, string> = {
   dairy: 'молочный продукт',
   beverages: 'напиток',
   'vegetables-fruits': 'свежий продукт',
@@ -28,18 +28,18 @@ const parseUnit = (weight = '') => {
   return 'г';
 };
 
-const buildAutoDescription = (product) => {
+const buildAutoDescription = (product: Product) => {
   if (product.description) return product.description;
   const type = CATEGORY_HINTS[product.category] || 'продукт';
   return `${product.name} — ${type} на каждый день. Подходит для быстрого перекуса, завтрака или дополнения к основному блюду. Удобный формат ${product.weight} и стабильное качество.`;
 };
 
-const buildAutoComposition = (product) => {
+const buildAutoComposition = (product: Product) => {
   const type = CATEGORY_HINTS[product.category] || 'продукт';
   return `Состав: сырье категории "${type}", питьевая вода, натуральные вкусо-ароматические компоненты. Без резких искусственных добавок, подходит для регулярного употребления.`;
 };
 
-const buildNutrition = (product) => {
+const buildNutrition = (product: Product) => {
   const weightNum = parseWeightNumber(product.weight);
   const unit = parseUnit(product.weight);
   const base = Math.max(1, Math.round(product.price / 8));
@@ -53,7 +53,12 @@ const buildNutrition = (product) => {
   };
 };
 
-const ProductDetailModal = ({ product, onClose }) => {
+type ProductDetailModalProps = {
+  product: Product;
+  onClose: () => void;
+};
+
+const ProductDetailModal = ({ product, onClose }: ProductDetailModalProps) => {
   const nutrition = buildNutrition(product);
   const description = buildAutoDescription(product);
   const composition = buildAutoComposition(product);

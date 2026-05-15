@@ -1,12 +1,19 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { CartItem, Product } from '../types';
+
+type CartState = {
+  items: CartItem[];
+};
+
+const initialState: CartState = {
+  items: [],
+};
 
 const cartSlice = createSlice({
   name: 'cart',
-  initialState: {
-    items: [], 
-  },
+  initialState,
   reducers: {
-    addToCart: (state, action) => {
+    addToCart: (state, action: PayloadAction<Product>) => {
       const item = state.items.find(i => i.id === action.payload.id);
       const maxStock = action.payload.stock; // Получаем лимит из данных товара
 
@@ -22,7 +29,7 @@ const cartSlice = createSlice({
         }
       }
     },
-    removeFromCart: (state, action) => {
+    removeFromCart: (state, action: PayloadAction<number>) => {
       const item = state.items.find(i => i.id === action.payload);
       if (item) {
         if (item.quantity > 1) {
