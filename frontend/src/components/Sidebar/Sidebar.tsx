@@ -16,7 +16,6 @@ export default function Sidebar({ onCatalogClick }: SidebarProps) {
         </NavLink>
       </div>
       <ul className="category-list">
-        {/* 1. Выводим категории */}
         {CATEGORIES.map((cat) => (
           <li key={cat.id}>
             <NavLink 
@@ -29,7 +28,6 @@ export default function Sidebar({ onCatalogClick }: SidebarProps) {
                 <img src={cat.icon} alt={cat.name} />
               </span>
               <span className="category-name">{cat.name}</span>
-              <span className="category-arrow">›</span>
             </NavLink>
           </li>
         ))}

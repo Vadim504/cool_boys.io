@@ -1,44 +1,88 @@
 .page-header {
     display: flex;
-    justify-content: center;
+    justify-content: stretch;
     align-items: center;
-    margin-bottom: 20px;
-    gap: 15px;
+    margin-bottom: 18px;
     width: 100%;
 }
 
 .search-container {
     display: flex;
     align-items: center;
+    gap: 10px;
     flex: 1;
-    max-width: 747px;
-    height: 37px;
-    background: #FFFFFF;
-    border: 1px solid #E0E0E0;
-    border-radius: 20px;
-    padding: 2px;
+    width: 100%;
+    min-height: 46px;
+    background: #fff;
+    border: 1px solid #ececf0;
+    border-radius: 14px;
+    padding: 0 10px 0 16px;
+    box-shadow: 0 1px 0 rgba(17, 17, 17, 0.03);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-.search-input {
+.search-container:focus-within {
+    border-color: #d9d9df;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 45, 85, 0.08);
+}
+
+.search-icon {
+    position: relative;
+    width: 15px;
+    height: 15px;
+    flex: 0 0 15px;
+    border: 2px solid #8e8e93;
+    border-radius: 50%;
+}
+
+.search-icon::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 2px;
+    right: -5px;
+    bottom: -3px;
+    border-radius: 999px;
+    background: #8e8e93;
+    transform: rotate(45deg);
+    transform-origin: center;
+}
+
+.catalog-search-input {
     flex: 1;
+    min-width: 0;
+    height: 44px;
     border: none;
     outline: none;
-    font-size: 16px;
+    font-size: 15px;
+    color: #111;
     background: transparent;
-    padding-left: 20px;
+    padding: 0 4px;
 }
 
-.search-button {
-    height: 100%;
-    padding: 0 16px;
-    background: #622bc4;
-    color: #fff;
+.catalog-search-input::placeholder {
+    color: #9b9ba1;
+}
+
+.search-clear-button {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
     border: none;
-    border-radius: 18px;
+    border-radius: 50%;
+    background: #f2f2f5;
+    color: #7a7a80;
     cursor: pointer;
-    font-weight: 500;
+    font-size: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.search-button:hover {
-    background: #4a1f9e;
+.search-clear-button:hover {
+    background: #e8e8ed;
+    color: #111;
 }

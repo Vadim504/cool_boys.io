@@ -127,16 +127,7 @@
     flex: 1;
     overflow-y: auto;
     margin-bottom: 20px;
-    padding-right: 5px;
-}
-
-/* Скроллбар сделаем тонким и аккуратным */
-.cart-items-list::-webkit-scrollbar {
-    width: 4px;
-}
-.cart-items-list::-webkit-scrollbar-thumb {
-    background: #E5E5E5;
-    border-radius: 10px;
+    padding-right: 0;
 }
 
 /* Стилизация каждого товара */
