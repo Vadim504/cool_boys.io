@@ -189,4 +189,33 @@
     }
 }
 
+@media (max-width: 767px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 8px;
+  }
+
+  .modal-content,
+  .modal-content.wide {
+    width: 100%;
+    max-width: none;
+    height: min(760px, calc(100dvh - 16px));
+    max-height: calc(100dvh - 16px);
+    border-radius: 20px;
+  }
+
+  .modal-content {
+    padding: 30px 18px 20px;
+  }
+
+  .modal-content.wide {
+    padding: 0;
+  }
+
+  .modal-close-button {
+    top: 14px;
+    right: 14px;
+  }
+}
+
 

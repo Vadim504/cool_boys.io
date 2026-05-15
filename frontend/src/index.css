@@ -10,15 +10,6 @@ body {
     background: #f5f5f5;
 }
 
-/* === ОСНОВНОЙ LAYOUT === */
-.container {
-    display: grid;
-    grid-template-columns: 260px 1fr 340px;
-    height: 100vh;
-    max-width: 100%;
-    padding-right: 20px;
-}
-
 /* === ОБЩИЕ СТИЛИ МОДАЛОК === */
 .modal-overlay {
     display: none; 
@@ -78,16 +69,4 @@ body {
 @keyframes slideUp {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-/* Сохраняем desktop-layout даже на узких экранах */
-@media (max-width: 600px) {
-    body {
-        overflow-x: auto;
-    }
-
-    .container {
-        min-width: 1100px;
-        padding-right: 20px;
-    }
 }

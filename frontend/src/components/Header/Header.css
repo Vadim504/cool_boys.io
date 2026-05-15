@@ -86,3 +86,20 @@
     background: #e8e8ed;
     color: #111;
 }
+
+@media (max-width: 767px) {
+    .page-header {
+        margin-bottom: 12px;
+    }
+
+    .search-container {
+        min-height: 44px;
+        border-radius: 13px;
+        padding-left: 14px;
+    }
+
+    .catalog-search-input {
+        height: 42px;
+        font-size: 14px;
+    }
+}

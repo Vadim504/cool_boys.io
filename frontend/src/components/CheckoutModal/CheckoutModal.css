@@ -193,3 +193,71 @@
     font-size: 28px;
   }
 }
+
+@media (max-width: 767px) {
+  .checkout-overlay {
+    align-items: flex-end;
+    padding: 8px;
+  }
+
+  .checkout-modal {
+    width: 100%;
+    max-height: calc(100dvh - 16px);
+    border-radius: 20px;
+    padding: 12px;
+  }
+
+  .checkout-title {
+    padding-right: 40px;
+    font-size: 23px;
+    line-height: 1.15;
+  }
+
+  .checkout-card,
+  .checkout-summary {
+    border-radius: 16px;
+    padding: 12px;
+  }
+
+  .checkout-card h3 {
+    font-size: 22px;
+  }
+
+  .checkout-item {
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "image info price"
+      ". stepper stepper";
+    align-items: start;
+  }
+
+  .checkout-item img {
+    grid-area: image;
+    width: 48px;
+    height: 48px;
+  }
+
+  .checkout-item-info {
+    grid-area: info;
+    min-width: 0;
+  }
+
+  .checkout-stepper {
+    grid-area: stepper;
+    justify-self: start;
+    margin-top: 4px;
+  }
+
+  .checkout-item-price {
+    grid-area: price;
+    white-space: nowrap;
+  }
+
+  .checkout-suggestions {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .checkout-total-row {
+    font-size: 24px;
+  }
+}

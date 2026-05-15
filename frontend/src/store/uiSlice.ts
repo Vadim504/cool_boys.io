@@ -7,6 +7,7 @@ type UiState = {
   isAddressOpen: boolean;
   isCheckoutOpen: boolean;
   isSupportOpen: boolean;
+  isCartOpen: boolean;
   selectedProductId: number | null;
 };
 
@@ -16,6 +17,7 @@ const initialState: UiState = {
   isAddressOpen: false,
   isCheckoutOpen: false,
   isSupportOpen: false,
+  isCartOpen: false,
   selectedProductId: null,
 };
 
@@ -47,6 +49,12 @@ const uiSlice = createSlice({
     closeSupport: (state) => {
       state.isSupportOpen = false;
     },
+    openCart: (state) => {
+      state.isCartOpen = true;
+    },
+    closeCart: (state) => {
+      state.isCartOpen = false;
+    },
     openProductDetail: (state, action: PayloadAction<number>) => {
       state.selectedProductId = action.payload;
     },
@@ -65,6 +73,8 @@ export const {
   closeCheckout,
   openSupport,
   closeSupport,
+  openCart,
+  closeCart,
   openProductDetail,
   closeProductDetail,
 } = uiSlice.actions;

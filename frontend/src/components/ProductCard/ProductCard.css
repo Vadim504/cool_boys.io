@@ -1,5 +1,6 @@
 .product-card {
-  width: 180px; /* Фиксированная ширина карточки */
+  width: 100%;
+  min-width: 0;
   background: #fff;
   border-radius: 24px;
   padding: 12px;
@@ -145,4 +146,43 @@ button:disabled {
   opacity: 0.3;
   cursor: not-allowed;
   background-color: #ccc !important; /* Серый цвет для заблокированной кнопки */
+}
+
+@media (max-width: 767px) {
+  .product-card {
+    border-radius: 18px;
+    padding: 10px;
+  }
+
+  .product-card:hover {
+    transform: none;
+  }
+
+  .product-image {
+    height: 112px;
+    margin-bottom: 6px;
+  }
+
+  .current-price {
+    font-size: 16px;
+  }
+
+  .old-price {
+    font-size: 12px;
+  }
+
+  .product-name {
+    font-size: 13px;
+  }
+
+  .add-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    font-size: 22px;
+  }
+
+  .stepper {
+    height: 42px;
+  }
 }

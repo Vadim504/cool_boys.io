@@ -5,6 +5,7 @@ import {
   removeItemFromCart,
 } from '../../store/cartSlice';
 import {
+  closeCart,
   openAddressModal,
   openCheckout,
   openSupport,
@@ -20,6 +21,7 @@ const CartSidebar = () => {
   // 1. Данные корзины и адреса
   const cartItems = useAppSelector(state => state.cart.items);
   const reduxSelectedAddress = useAppSelector(state => state.addresses.selectedAddress);
+  const isCartOpen = useAppSelector(state => state.ui.isCartOpen);
   const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   // 2. Данные авторизации
@@ -34,8 +36,20 @@ const CartSidebar = () => {
     }
   };
 
+  const handleCheckout = () => {
+    dispatch(openCheckout());
+    dispatch(closeCart());
+  };
+
   return (
-    <aside className="map-sidebar">
+    <>
+    <div
+      className={isCartOpen ? 'cart-drawer-backdrop is-open' : 'cart-drawer-backdrop'}
+      onClick={() => dispatch(closeCart())}
+      aria-hidden="true"
+    />
+
+    <aside className={isCartOpen ? 'map-sidebar is-open' : 'map-sidebar'}>
       <div className="top-actions">
         {/* Одна кнопка, которая меняет вид и действие в зависимости от isAuth */}
         <button 
@@ -70,6 +84,14 @@ const CartSidebar = () => {
       <div className="cart-card">
         <div className="cart-header">
           <div className="cart-title">Корзина</div>
+          <button
+            type="button"
+            className="cart-drawer-close"
+            aria-label="Закрыть корзину"
+            onClick={() => dispatch(closeCart())}
+          >
+            ×
+          </button>
           {cartItems.length > 0 && (
             <button
               type="button"
@@ -133,12 +155,13 @@ const CartSidebar = () => {
             <span>Итого:</span>
             <span className="total-sum">{totalSum} ₽</span>
           </div>
-          <button className="order-button" disabled={cartItems.length === 0} onClick={() => dispatch(openCheckout())}>
+          <button className="order-button" disabled={cartItems.length === 0} onClick={handleCheckout}>
             Оформить заказ
           </button>
         </div>
       </div>
     </aside>
+    </>
   );
 };
 

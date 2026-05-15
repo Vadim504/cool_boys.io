@@ -105,3 +105,30 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+@media (max-width: 767px) {
+    .auth-overlay {
+        align-items: flex-end;
+        padding: 8px;
+    }
+
+    .auth-content {
+        max-width: none;
+        padding: 34px 18px 22px;
+        border-radius: 20px;
+    }
+
+    .auth-step h2 {
+        font-size: 23px;
+    }
+
+    .phone-input-field,
+    .phone-input-field input {
+        font-size: 18px;
+    }
+
+    .code-input {
+        font-size: 26px;
+        letter-spacing: 8px;
+    }
+}

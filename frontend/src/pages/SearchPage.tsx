@@ -4,6 +4,7 @@ import ProductCard from '../components/ProductCard/ProductCard';
 import Sidebar from '../components/Sidebar/Sidebar';
 import Header from '../components/Header/Header';
 import CartSidebar from '../components/CartSidebar/CartSidebar';
+import ResponsiveActions from '../components/ResponsiveActions/ResponsiveActions';
 import './SearchPage.css';
 
 const SearchPage = () => {
@@ -28,6 +29,7 @@ const SearchPage = () => {
       <Sidebar />
 
       <main className="main-content search-page">
+        <ResponsiveActions />
         <Header value={query} onSearch={handleSearch} />
 
         <div className="search-page-header">

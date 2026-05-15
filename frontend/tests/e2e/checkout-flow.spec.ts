@@ -144,3 +144,83 @@ test('user completes mock order, sees it in profile and repeats it', async ({ pa
   await page.reload();
   await expect(page.locator('.cart-item')).toContainText('Молоко 3.2%');
 });
+
+test.describe('responsive tablet cart drawer', () => {
+  test.use({ viewport: { width: 768, height: 1024 } });
+
+  test('opens cart in a right drawer and exposes quick actions', async ({ page }) => {
+    await expect(page.locator('.responsive-actions')).toBeVisible();
+
+    await page.locator('.add-button').first().click();
+    await page.getByRole('button', { name: 'Открыть корзину' }).click();
+
+    const drawer = page.locator('.map-sidebar.is-open');
+    await expect(drawer).toBeVisible();
+    await expect(drawer.locator('.cart-item')).toContainText('Молоко 3.2%');
+
+    await expect.poll(async () =>
+      drawer.evaluate((el) => Math.round(el.getBoundingClientRect().right))
+    ).toBe(768);
+    const drawerBox = await drawer.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      return { x: rect.x, width: rect.width };
+    });
+    expect(drawerBox.x).toBeGreaterThan(300);
+    expect(drawerBox.width).toBeLessThanOrEqual(430);
+
+    await drawer.getByRole('button', { name: 'Закрыть корзину' }).click();
+    await expect(page.locator('.map-sidebar.is-open')).toHaveCount(0);
+
+    await page.locator('.responsive-address-action').click();
+    await expect(page.getByText('Выбрать адрес')).toBeVisible();
+    await page.locator('.modal-close-button').click();
+
+    await page.getByRole('button', { name: 'Поддержка' }).click();
+    await expect(page.locator('.chat-window')).toBeVisible();
+    await page.locator('.chat-close-button').click();
+
+    await page.getByRole('button', { name: 'Войти' }).click();
+    await expect(page.locator('.auth-content')).toBeVisible();
+  });
+});
+
+test.describe('responsive mobile cart sheet', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('opens cart in a bottom sheet and keeps checkout flow available', async ({ page }) => {
+    await expect(page.locator('.responsive-actions')).toBeVisible();
+
+    await page.locator('.add-button').first().click();
+    const cartButton = page.getByRole('button', { name: 'Открыть корзину' });
+    await expect(cartButton).toContainText('1');
+    await cartButton.click();
+
+    const sheet = page.locator('.map-sidebar.is-open');
+    await expect(sheet).toBeVisible();
+    await expect(sheet.locator('.cart-item')).toContainText('Молоко 3.2%');
+
+    await expect.poll(async () =>
+      sheet.evaluate((el) => Math.round(el.getBoundingClientRect().bottom))
+    ).toBe(844);
+    const sheetBox = await sheet.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      return { x: rect.x, y: rect.y, width: rect.width };
+    });
+    expect(sheetBox.x).toBe(0);
+    expect(sheetBox.width).toBe(390);
+    expect(sheetBox.y).toBeGreaterThan(100);
+    expect(sheetBox.y).toBeLessThan(844);
+
+    await sheet.getByRole('button', { name: 'Добавить Молоко 3.2%' }).click();
+    await expect(sheet.locator('.cart-item-stepper span')).toHaveText('2');
+
+    await sheet.getByRole('button', { name: 'Оформить заказ' }).click();
+    await expect(page.locator('.checkout-modal')).toBeVisible();
+    await expect(page.locator('.map-sidebar.is-open')).toHaveCount(0);
+    await page.locator('.checkout-close-btn').click();
+
+    await cartButton.click();
+    await page.getByRole('button', { name: 'Очистить' }).click();
+    await expect(page.locator('.map-sidebar.is-open .empty-cart-msg')).toHaveText('Корзина пока пуста');
+  });
+});
