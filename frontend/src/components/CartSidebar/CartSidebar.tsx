@@ -1,4 +1,10 @@
 import {
+  addToCart,
+  clearCart,
+  removeFromCart,
+  removeItemFromCart,
+} from '../../store/cartSlice';
+import {
   openAddressModal,
   openCheckout,
   openSupport,
@@ -62,20 +68,61 @@ const CartSidebar = () => {
       </div>
 
       <div className="cart-card">
-        <div className="cart-title">Корзина</div>
+        <div className="cart-header">
+          <div className="cart-title">Корзина</div>
+          {cartItems.length > 0 && (
+            <button
+              type="button"
+              className="cart-clear-btn"
+              onClick={() => dispatch(clearCart())}
+            >
+              Очистить
+            </button>
+          )}
+        </div>
         <div className="cart-items-list">
           {cartItems.length === 0 ? (
             <div className="empty-cart-msg">Корзина пока пуста</div>
           ) : (
             cartItems.map(item => (
               <div key={item.id} className="cart-item">
-                <div className="item-details">
-                  <div className="item-name">{item.name}</div>
-                  <div className="item-subinfo">
-                    {item.quantity} шт. × {item.price} ₽
+                <div className="cart-item-main">
+                  <div className="item-details">
+                    <div className="item-name">{item.name}</div>
+                    <div className="item-subinfo">
+                      {item.quantity} шт. × {item.price} ₽
+                    </div>
                   </div>
+                  <div className="item-total-price">{item.price * item.quantity} ₽</div>
                 </div>
-                <div className="item-total-price">{item.price * item.quantity} ₽</div>
+                <div className="cart-item-actions">
+                  <div className="cart-item-stepper">
+                    <button
+                      type="button"
+                      aria-label={`Уменьшить ${item.name}`}
+                      onClick={() => dispatch(removeFromCart(item.id))}
+                    >
+                      −
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button
+                      type="button"
+                      aria-label={`Добавить ${item.name}`}
+                      disabled={item.quantity >= item.stock}
+                      onClick={() => dispatch(addToCart(item))}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    className="cart-remove-item"
+                    aria-label={`Удалить ${item.name}`}
+                    onClick={() => dispatch(removeItemFromCart(item.id))}
+                  >
+                    Удалить
+                  </button>
+                </div>
               </div>
             ))
           )}

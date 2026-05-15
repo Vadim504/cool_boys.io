@@ -8,12 +8,13 @@ const CATEGORY_HINTS: Record<string, string> = {
   dairy: 'молочный продукт',
   beverages: 'напиток',
   'vegetables-fruits': 'свежий продукт',
-  fish: 'рыбный продукт',
-  meat: 'мясной продукт',
+  'fish-seafood': 'рыбный продукт',
+  'meat-poultry': 'мясной продукт',
   snacks: 'снек',
   sweets: 'десерт',
   frozen: 'замороженный продукт',
-  bread: 'хлебобулочный продукт',
+  'bread-bakery': 'хлебобулочный продукт',
+  'ready-meal': 'готовое блюдо',
 };
 
 const parseWeightNumber = (weight = '') => {

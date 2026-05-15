@@ -14,6 +14,7 @@ export type Product = {
   stock: number;
   oldPrice?: number;
   description?: string;
+  badge?: string;
 };
 
 export type CartItem = Product & {
@@ -21,3 +22,17 @@ export type CartItem = Product & {
 };
 
 export type Address = string;
+
+export type OrderStatus = 'created';
+
+export type OrderItem = CartItem;
+
+export type Order = {
+  id: string;
+  number: string;
+  createdAt: string;
+  address: Address;
+  items: OrderItem[];
+  total: number;
+  status: OrderStatus;
+};

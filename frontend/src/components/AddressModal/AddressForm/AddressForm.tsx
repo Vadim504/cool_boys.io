@@ -44,6 +44,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
   const [formValues, setFormValues] = useState<FormValues>({
     city: '', street: '', apt: '', floor: '', entrance: '', intercom: '', comment: ''
   });
+  const [formError, setFormError] = useState('');
 
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstance = useRef<L.Map | null>(null);
@@ -67,6 +68,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
             const street = data.address.road || data.address.pedestrian || '';
             const house = data.address.house_number || '';
             setFormValues(prev => ({ ...prev, street: `${street}${house ? ', ' + house : ''}` }));
+            setFormError('');
           }
         } catch (err) { console.error(err); }
       });
@@ -76,6 +78,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
 
   const handleCitySelect = (cityName: keyof typeof CITY_COORDS) => {
     setFormValues({ ...formValues, city: cityName });
+    setFormError('');
     setFormStep('street');
     if (mapInstance.current) {
       mapInstance.current.flyTo(CITY_COORDS[cityName], 15);
@@ -85,13 +88,13 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
 
   // ТА САМАЯ ФУНКЦИЯ, КОТОРОЙ НЕ ХВАТАЛО
   const handleFinalSave = () => {
-    if (!formValues.street) {
-      alert("Выберите адрес на карте");
+    if (!formValues.street.trim()) {
+      setFormError('Введите улицу и дом');
       return;
     }
 
     // 1. Собираем всё в одну строку
-    let finalAddr = `${formValues.city}, ${formValues.street}`;
+    let finalAddr = `${formValues.city}, ${formValues.street.trim()}`;
     if (formValues.apt) finalAddr += `, кв. ${formValues.apt}`;
     
     // 2. Передаем данные наверх (для сохранения в localStorage)
@@ -138,8 +141,12 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                 className="address-input" 
                 placeholder="Улица и дом" 
                 value={formValues.street} 
-                onChange={(e) => setFormValues({...formValues, street: e.target.value})}
+                onChange={(e) => {
+                  setFormValues({...formValues, street: e.target.value});
+                  if (formError) setFormError('');
+                }}
               />
+              {formError && <div className="address-form-error">{formError}</div>}
 
               <div className="input-grid">
                 <input type="text" className="address-input" placeholder="Квартира" onChange={(e) => setFormValues({...formValues, apt: e.target.value})} />

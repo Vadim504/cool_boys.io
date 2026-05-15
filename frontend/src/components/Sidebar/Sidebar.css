@@ -4,9 +4,13 @@
     padding: 16px;
 }
 
-.catalog-title {
+.catalog-title-link {
+    display: inline-block;
     font-size: 18px;
+    font-weight: 700;
     margin-bottom: 16px;
+    color: #000;
+    text-decoration: none;
 }
 
 .category-list {

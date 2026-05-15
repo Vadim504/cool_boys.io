@@ -11,6 +11,10 @@ const Home = () => {
   const { categoryId } = useParams(); 
   const [searchQuery, setSearchQuery] = useState("");
 
+  const resetFilters = () => {
+    setSearchQuery("");
+  };
+
   const filteredProducts = useMemo(() => {
     return productsData.filter(p => {
       const matchesCategory = !categoryId || p.category === categoryId;
@@ -21,10 +25,10 @@ const Home = () => {
 
   return (
     <div className="container">
-      <Sidebar />
+      <Sidebar onCatalogClick={resetFilters} />
 
       <main className="main-content">
-        <Header onSearch={setSearchQuery} />
+        <Header value={searchQuery} onSearch={setSearchQuery} />
         <div className="products-grid">
           {filteredProducts.map(item => (
             <ProductCard 

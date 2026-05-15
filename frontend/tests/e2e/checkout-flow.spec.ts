@@ -25,12 +25,55 @@ test('user opens product detail, adds product and opens checkout modal', async (
   await expect(page.getByRole('button', { name: 'Продолжить' })).toBeVisible();
 });
 
+test('user edits and clears cart from sidebar', async ({ page }) => {
+  await page.locator('.add-button').first().click();
+  await expect(page.locator('.cart-item')).toContainText('Молоко 3.2%');
+  await expect(page.locator('.cart-item-stepper span')).toHaveText('1');
+
+  await page.getByRole('button', { name: 'Добавить Молоко 3.2%' }).click();
+  await expect(page.locator('.cart-item-stepper span')).toHaveText('2');
+
+  await page.getByRole('button', { name: 'Уменьшить Молоко 3.2%' }).click();
+  await expect(page.locator('.cart-item-stepper span')).toHaveText('1');
+
+  await page.getByRole('button', { name: 'Удалить Молоко 3.2%' }).click();
+  await expect(page.locator('.empty-cart-msg')).toHaveText('Корзина пока пуста');
+
+  await page.locator('.add-button').first().click();
+  await page.getByRole('button', { name: 'Очистить' }).click();
+  await expect(page.locator('.empty-cart-msg')).toHaveText('Корзина пока пуста');
+});
+
+test('catalog click resets category and search filters', async ({ page }) => {
+  await page.goto('/category/dairy');
+  await page.getByPlaceholder('Поиск...').fill('молоко');
+  await expect(page.getByPlaceholder('Поиск...')).toHaveValue('молоко');
+
+  await page.getByRole('link', { name: 'Каталог' }).click();
+
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByPlaceholder('Поиск...')).toHaveValue('');
+  await expect(page.getByText('Пицца Маргарита')).toBeVisible();
+});
+
+test('search page shows results and empty state', async ({ page }) => {
+  await page.goto('/search?q=молоко');
+  await expect(page.getByText('Результаты по запросу: молоко')).toBeVisible();
+  await expect(page.getByText('Молоко 3.2%')).toBeVisible();
+
+  await page.goto('/search?q=несуществующийтовар');
+  await expect(page.getByText('Ничего не найдено')).toBeVisible();
+});
+
 test('user adds delivery address and sees it in sidebar', async ({ page }) => {
   await page.locator('.address-selector').click();
   await expect(page.getByText('Выбрать адрес')).toBeVisible();
 
   await page.getByRole('button', { name: 'Новый адрес' }).click();
   await page.getByText('Казань').click();
+  await page.getByRole('button', { name: 'Да, всё верно' }).click();
+  await expect(page.getByText('Введите улицу и дом')).toBeVisible();
+
   await page.getByPlaceholder('Улица и дом').fill('улица Кремлевская, 1');
   await page.getByRole('button', { name: 'Да, всё верно' }).click();
 
@@ -57,4 +100,29 @@ test('user signs in and opens profile', async ({ page }) => {
   await page.getByRole('button', { name: /9000000000/ }).click();
   await expect(page.locator('.profile-container')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Профиль' })).toBeVisible();
+});
+
+test('user completes mock order, sees it in profile and repeats it', async ({ page }) => {
+  await page.locator('.add-button').first().click();
+  await page.getByRole('button', { name: 'Оформить заказ' }).click();
+  await page.getByRole('button', { name: 'Продолжить' }).click();
+
+  await expect(page.locator('.checkout-modal')).toBeHidden();
+  await expect(page.locator('.empty-cart-msg')).toHaveText('Корзина пока пуста');
+
+  await page.getByRole('button', { name: 'Войти' }).click();
+  await page.getByPlaceholder('900 000 00 00').fill('9000000000');
+  await page.getByRole('button', { name: 'Получить код' }).click();
+  await page.getByPlaceholder('0 0 0 0').fill('1234');
+  await page.getByRole('button', { name: 'Подтвердить' }).click();
+
+  await page.getByRole('button', { name: /9000000000/ }).click();
+  await expect(page.locator('.order-card')).toBeVisible();
+  await expect(page.getByText(/Заказ MF-/)).toBeVisible();
+
+  await page.getByRole('button', { name: 'Повторить заказ' }).click();
+  await page.locator('.profile-close-btn').click();
+
+  await expect(page.locator('.cart-item')).toContainText('Молоко 3.2%');
+  await expect(page.getByRole('button', { name: 'Оформить заказ' })).toBeEnabled();
 });

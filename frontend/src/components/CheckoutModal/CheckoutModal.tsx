@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { addToCart, removeFromCart } from '../../store/cartSlice';
+import { addToCart, clearCart, removeFromCart } from '../../store/cartSlice';
+import { createOrder } from '../../store/ordersSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { productsData } from '../../data/product';
 import './CheckoutModal.css';
@@ -25,6 +26,17 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
   }, [cartItems]);
 
   if (!isOpen) return null;
+
+  const handleCreateOrder = () => {
+    if (cartItems.length === 0) return;
+
+    dispatch(createOrder({
+      items: cartItems,
+      address: selectedAddress || 'Адрес не выбран',
+    }));
+    dispatch(clearCart());
+    onClose();
+  };
 
   return (
     <div className="checkout-overlay" onClick={onClose}>
@@ -86,7 +98,11 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                 <span>Итого</span>
                 <strong>{total} ₽</strong>
               </div>
-              <button className="checkout-continue-btn" disabled={cartItems.length === 0}>
+              <button
+                className="checkout-continue-btn"
+                disabled={cartItems.length === 0}
+                onClick={handleCreateOrder}
+              >
                 Продолжить
               </button>
             </section>

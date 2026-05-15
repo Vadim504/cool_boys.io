@@ -3,11 +3,17 @@ import './Sidebar.css';
 import { NavLink } from 'react-router-dom';
 import { CATEGORIES } from '../../constants/categories';
 
-export default function Sidebar() {
+type SidebarProps = {
+  onCatalogClick?: () => void;
+};
+
+export default function Sidebar({ onCatalogClick }: SidebarProps) {
   return (
     <aside className="sidebar">
       <div className="catalog-header">
-        <h2 className="catalog-title">Каталог</h2>
+        <NavLink to="/" className="catalog-title-link" onClick={onCatalogClick}>
+          Каталог
+        </NavLink>
       </div>
       <ul className="category-list">
         {/* 1. Выводим категории */}

@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../store/authSlice'; // Экшен, который мы создали в прошлом шаге
+import { addManyToCart } from '../../store/cartSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { toggleAuth, toggleProfile } from '../../store/uiSlice';
+import type { Order } from '../../types';
 import './Profile.css';
 
 type ProfileProps = {
@@ -15,6 +18,7 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
   // Достаем данные из Redux
   const { isAuth, phoneNumber } = useAppSelector((state) => state.auth);
   const addresses = useAppSelector((state) => state.addresses.items);
+  const orders = useAppSelector((state) => state.orders.items);
 
   if (!isOpen) return null;
 
@@ -22,6 +26,24 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
     dispatch(logout());
     navigate('/'); // Возвращаемся на главную после выхода
     onClose();
+  };
+
+  const handleOpenAuth = () => {
+    dispatch(toggleProfile(false));
+    dispatch(toggleAuth(true));
+  };
+
+  const handleRepeatOrder = (order: Order) => {
+    dispatch(addManyToCart(order.items));
+  };
+
+  const formatDate = (value: string) => {
+    return new Intl.DateTimeFormat('ru-RU', {
+      day: '2-digit',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date(value));
   };
 
   if (!isAuth) {
@@ -32,7 +54,7 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
           <div className="empty-profile">
             <h2>Войдите в профиль</h2>
             <p>Чтобы видеть историю заказов и сохраненные адреса</p>
-            <button className="auth-btn" onClick={() => {/* Открыть модалку регистрации */}}>
+            <button className="auth-btn" onClick={handleOpenAuth}>
               Войти
             </button>
           </div>
@@ -72,7 +94,34 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
         <section className="profile-section">
           <h3>Заказы</h3>
           <div className="orders-placeholder">
-            <p className="no-data">У вас пока нет заказов</p>
+            {orders.length > 0 ? (
+              <div className="orders-list">
+                {orders.map((order) => {
+                  const itemsCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+                  return (
+                    <div key={order.id} className="order-card">
+                      <div className="order-card-main">
+                        <div>
+                          <div className="order-number">Заказ {order.number}</div>
+                          <div className="order-meta">{formatDate(order.createdAt)}</div>
+                          <div className="order-address">{order.address}</div>
+                        </div>
+                        <div className="order-total">{order.total} ₽</div>
+                      </div>
+                      <div className="order-card-footer">
+                        <span>{itemsCount} товар(ов)</span>
+                        <button type="button" onClick={() => handleRepeatOrder(order)}>
+                          Повторить заказ
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="no-data">У вас пока нет заказов</p>
+            )}
           </div>
         </section>
 

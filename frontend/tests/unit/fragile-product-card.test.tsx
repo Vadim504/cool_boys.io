@@ -20,7 +20,7 @@ describe('fragile ProductCard markup test', () => {
       price: 100,
       weight: '500 г',
       category: 'snacks',
-      image: 'https://via.placeholder.com/150',
+      image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
       stock: 3,
     };
 

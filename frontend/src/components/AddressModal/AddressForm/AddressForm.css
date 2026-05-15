@@ -190,6 +190,13 @@
   gap: 12px;
 }
 
+.address-form-error {
+  color: #ff2d55;
+  font-size: 13px;
+  font-weight: 600;
+  margin: -4px 0 10px;
+}
+
 .submit-address-btn {
   width: 100%;
   background: #ff3366; /* Розовый цвет */
