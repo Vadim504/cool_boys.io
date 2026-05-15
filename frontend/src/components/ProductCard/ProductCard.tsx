@@ -1,14 +1,14 @@
 import { addToCart, removeFromCart } from '../../store/cartSlice'; // Путь к вашему слайсу
+import { openProductDetail } from '../../store/uiSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import type { Product } from '../../types';
 import './ProductCard.css';
 
 type ProductCardProps = {
   product: Product;
-  onOpenDetail: () => void;
 };
 
-const ProductCard = ({ product, onOpenDetail }: ProductCardProps) => {
+const ProductCard = ({ product }: ProductCardProps) => {
   const dispatch = useAppDispatch();
 
   // Получаем текущее количество товара в корзине из Redux
@@ -30,7 +30,7 @@ const ProductCard = ({ product, onOpenDetail }: ProductCardProps) => {
 
   return (
     // 1. Вешаем клик для открытия деталей на всю карточку
-    <div className="product-card" onClick={onOpenDetail}>
+    <div className="product-card" onClick={() => dispatch(openProductDetail(product.id))}>
       <div className="product-image">
         <img src={product.image} alt={product.name} />
       </div>

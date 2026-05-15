@@ -4,10 +4,19 @@ import type { Address } from '../types';
 // Вспомогательная функция для безопасной работы с localStorage
 const getJSON = (key: string): Address[] | null => {
   try {
-    return JSON.parse(localStorage.getItem(key));
+    const parsed = JSON.parse(localStorage.getItem(key) || 'null');
+    return Array.isArray(parsed) ? parsed : null;
   } catch {
     return null;
   }
+};
+
+const saveAddresses = (items: Address[]) => {
+  localStorage.setItem('deliveryAddresses', JSON.stringify(items));
+};
+
+const saveSelectedAddress = (address: Address) => {
+  localStorage.setItem('lastSelectedAddress', address);
 };
 
 type AddressState = {
@@ -31,17 +40,24 @@ const addressSlice = createSlice({
       // Проверяем на дубликаты
       if (!state.items.includes(action.payload)) {
         state.items.push(action.payload);
-        // Сохраняем в localStorage для надежности
-        localStorage.setItem('deliveryAddresses', JSON.stringify(state.items));
+        saveAddresses(state.items);
       }
+      state.selectedAddress = action.payload;
+      saveSelectedAddress(action.payload);
     },
     setSelectedAddress: (state, action: PayloadAction<Address>) => {
       state.selectedAddress = action.payload;
-      localStorage.setItem('lastSelectedAddress', action.payload);
+      saveSelectedAddress(action.payload);
     },
     removeAddress: (state, action: PayloadAction<Address>) => {
+      const wasSelected = state.selectedAddress === action.payload;
       state.items = state.items.filter(addr => addr !== action.payload);
-      localStorage.setItem('deliveryAddresses', JSON.stringify(state.items));
+      saveAddresses(state.items);
+
+      if (wasSelected) {
+        state.selectedAddress = state.items[0] || '';
+        saveSelectedAddress(state.selectedAddress);
+      }
     }
   }
 });

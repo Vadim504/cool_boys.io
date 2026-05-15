@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { render } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import ProductCard from '../../src/components/ProductCard/ProductCard';
 import cartReducer from '../../src/store/cartSlice';
 
@@ -26,7 +26,7 @@ describe('fragile ProductCard markup test', () => {
 
     const { container } = render(
       <Provider store={store}>
-        <ProductCard product={product} onOpenDetail={vi.fn()} />
+        <ProductCard product={product} />
       </Provider>
     );
 

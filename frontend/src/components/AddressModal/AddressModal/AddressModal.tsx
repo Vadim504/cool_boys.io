@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import AddressList from '../AddressList/AddressList';
 import AddressForm from '../AddressForm/AddressForm';
-import { addAddress, setSelectedAddress } from '../../../store/addressSlice';
+import { addAddress } from '../../../store/addressSlice';
 import { useAppDispatch } from '../../../store/hooks';
 import './AddressModal.css';
 
 type AddressModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSelectFinalAddress?: (address: string) => void;
 };
 
-const AddressModal = ({ isOpen, onClose, onSelectFinalAddress }: AddressModalProps) => {
+const AddressModal = ({ isOpen, onClose }: AddressModalProps) => {
   const dispatch = useAppDispatch();
   const [modalView, setModalView] = useState('list'); 
 
@@ -26,12 +25,6 @@ const AddressModal = ({ isOpen, onClose, onSelectFinalAddress }: AddressModalPro
 
     // Сохраняем адрес в Redux + localStorage (через редьюсер)
     dispatch(addAddress(trimmedAddress));
-    dispatch(setSelectedAddress(trimmedAddress));
-
-    // Обновляем адрес в родителе (для отображения в корзине)
-    if (typeof onSelectFinalAddress === 'function') {
-      onSelectFinalAddress(trimmedAddress);
-    }
 
     setModalView('list');
   };

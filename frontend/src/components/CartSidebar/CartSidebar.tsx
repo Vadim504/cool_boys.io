@@ -1,14 +1,14 @@
-import { toggleProfile, toggleAuth } from '../../store/uiSlice'; // Импортируем экшены
+import {
+  openAddressModal,
+  openCheckout,
+  openSupport,
+  toggleAuth,
+  toggleProfile,
+} from '../../store/uiSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './CartSidebar.css';
 
-type CartSidebarProps = {
-  onAddressClick: () => void;
-  onSupportClick: () => void;
-  onCheckoutClick: () => void;
-};
-
-const CartSidebar = ({ onAddressClick, onSupportClick, onCheckoutClick }: CartSidebarProps) => {
+const CartSidebar = () => {
   const dispatch = useAppDispatch();
 
   // 1. Данные корзины и адреса
@@ -46,12 +46,12 @@ const CartSidebar = ({ onAddressClick, onSupportClick, onCheckoutClick }: CartSi
           )}
         </button>
         
-        <button className="support-btn" onClick={onSupportClick} title="Поддержка">
+        <button className="support-btn" onClick={() => dispatch(openSupport())} title="Поддержка">
           💬
         </button>
       </div>
 
-      <div className="address-selector" onClick={onAddressClick}>
+      <div className="address-selector" onClick={() => dispatch(openAddressModal())}>
         <div className="address-info-block">
           <div className="address-current">
             {reduxSelectedAddress || "Укажите адрес доставки"}
@@ -86,7 +86,7 @@ const CartSidebar = ({ onAddressClick, onSupportClick, onCheckoutClick }: CartSi
             <span>Итого:</span>
             <span className="total-sum">{totalSum} ₽</span>
           </div>
-          <button className="order-button" disabled={cartItems.length === 0} onClick={onCheckoutClick}>
+          <button className="order-button" disabled={cartItems.length === 0} onClick={() => dispatch(openCheckout())}>
             Оформить заказ
           </button>
         </div>
