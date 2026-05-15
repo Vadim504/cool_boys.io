@@ -1,7 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => localStorage.clear());
+  await page.addInitScript(() => {
+    if (!sessionStorage.getItem('e2eStorageCleared')) {
+      localStorage.clear();
+      sessionStorage.setItem('e2eStorageCleared', 'true');
+    }
+  });
   await page.goto('/');
 });
 
@@ -30,6 +35,10 @@ test('user edits and clears cart from sidebar', async ({ page }) => {
   await expect(page.locator('.cart-item')).toContainText('Молоко 3.2%');
   await expect(page.locator('.cart-item-stepper span')).toHaveText('1');
 
+  await page.reload();
+  await expect(page.locator('.cart-item')).toContainText('Молоко 3.2%');
+  await expect(page.locator('.cart-item-stepper span')).toHaveText('1');
+
   await page.getByRole('button', { name: 'Добавить Молоко 3.2%' }).click();
   await expect(page.locator('.cart-item-stepper span')).toHaveText('2');
 
@@ -41,6 +50,9 @@ test('user edits and clears cart from sidebar', async ({ page }) => {
 
   await page.locator('.add-button').first().click();
   await page.getByRole('button', { name: 'Очистить' }).click();
+  await expect(page.locator('.empty-cart-msg')).toHaveText('Корзина пока пуста');
+
+  await page.reload();
   await expect(page.locator('.empty-cart-msg')).toHaveText('Корзина пока пуста');
 });
 
@@ -110,6 +122,9 @@ test('user completes mock order, sees it in profile and repeats it', async ({ pa
   await expect(page.locator('.checkout-modal')).toBeHidden();
   await expect(page.locator('.empty-cart-msg')).toHaveText('Корзина пока пуста');
 
+  await page.reload();
+  await expect(page.locator('.empty-cart-msg')).toHaveText('Корзина пока пуста');
+
   await page.getByRole('button', { name: 'Войти' }).click();
   await page.getByPlaceholder('900 000 00 00').fill('9000000000');
   await page.getByRole('button', { name: 'Получить код' }).click();
@@ -125,4 +140,7 @@ test('user completes mock order, sees it in profile and repeats it', async ({ pa
 
   await expect(page.locator('.cart-item')).toContainText('Молоко 3.2%');
   await expect(page.getByRole('button', { name: 'Оформить заказ' })).toBeEnabled();
+
+  await page.reload();
+  await expect(page.locator('.cart-item')).toContainText('Молоко 3.2%');
 });

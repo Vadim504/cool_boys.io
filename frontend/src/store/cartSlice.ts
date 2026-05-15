@@ -1,12 +1,76 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { CartItem, Product } from '../types';
 
+const CART_STORAGE_KEY = 'cartItems';
+
 type CartState = {
   items: CartItem[];
 };
 
+const isCartItem = (item: unknown): item is CartItem => {
+  if (!item || typeof item !== 'object') {
+    return false;
+  }
+
+  const cartItem = item as Partial<CartItem>;
+  return (
+    typeof cartItem.id === 'number' &&
+    typeof cartItem.name === 'string' &&
+    typeof cartItem.price === 'number' &&
+    typeof cartItem.weight === 'string' &&
+    typeof cartItem.category === 'string' &&
+    typeof cartItem.image === 'string' &&
+    typeof cartItem.stock === 'number' &&
+    typeof cartItem.quantity === 'number'
+  );
+};
+
+const normalizeCartItem = (item: CartItem): CartItem | null => {
+  const quantity = Math.min(Math.floor(item.quantity), item.stock);
+
+  if (item.stock <= 0 || quantity <= 0) {
+    return null;
+  }
+
+  return { ...item, quantity };
+};
+
+const getCartItems = (): CartItem[] => {
+  try {
+    if (typeof localStorage === 'undefined') {
+      return [];
+    }
+
+    const parsed = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed
+      .filter(isCartItem)
+      .map(normalizeCartItem)
+      .filter((item): item is CartItem => item !== null);
+  } catch {
+    return [];
+  }
+};
+
+const saveCartItems = (items: CartItem[]) => {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    }
+  } catch {
+    // localStorage can be unavailable in restricted browser modes.
+  }
+};
+
+const persistCartItems = (items: CartItem[]) => {
+  saveCartItems(items.map(item => ({ ...item })));
+};
+
 const initialState: CartState = {
-  items: [],
+  items: getCartItems(),
 };
 
 const cartSlice = createSlice({
@@ -28,6 +92,7 @@ const cartSlice = createSlice({
           state.items.push({ ...action.payload, quantity: 1 });
         }
       }
+      persistCartItems(state.items);
     },
     removeFromCart: (state, action: PayloadAction<number>) => {
       const item = state.items.find(i => i.id === action.payload);
@@ -38,12 +103,15 @@ const cartSlice = createSlice({
           state.items = state.items.filter(i => i.id !== action.payload);
         }
       }
+      persistCartItems(state.items);
     },
     removeItemFromCart: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(i => i.id !== action.payload);
+      persistCartItems(state.items);
     },
     clearCart: (state) => {
       state.items = [];
+      saveCartItems([]);
     },
     addManyToCart: (state, action: PayloadAction<CartItem[]>) => {
       action.payload.forEach((product) => {
@@ -60,6 +128,7 @@ const cartSlice = createSlice({
           state.items.push({ ...product, quantity });
         }
       });
+      persistCartItems(state.items);
     }
   }
 });
