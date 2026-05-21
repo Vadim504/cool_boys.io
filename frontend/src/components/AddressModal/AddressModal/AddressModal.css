@@ -12,7 +12,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-surface);
   width: 440px;
   min-height: 400px; /* Чтобы окно не было слишком "сплюснутым" когда пусто */
   border-radius: 32px;
@@ -34,7 +34,7 @@
   right: 20px;
   width: 36px;
   height: 36px;
-  background: #F2F3F5;
+  background: var(--color-surface-input);
   border-radius: 50%;
   border: none;
   font-size: 20px;
@@ -93,26 +93,16 @@
   padding: 20px 24px 24px 24px;
   display: flex;
   flex-direction: column;
-  background: white;
-  border-left: 1px solid #f2f3f5;
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-surface-input);
 }
 
 /* --- КНОПКИ --- */
-.save-btn, .add-address-btn {
-  background: #FF3366; /* Фирменный розовый */
-  color: white;
-  border: none;
+.save-btn,
+.add-address-btn {
+  margin-top: auto;
   padding: 18px;
-  border-radius: 20px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: auto; /* Прижимает кнопку в ui-section к низу */
-  transition: transform 0.1s ease;
-}
-
-.save-btn:active, .add-address-btn:active {
-  transform: scale(0.97);
+  border-radius: var(--radius-2xl);
 }
 
 /* Кнопка закрытия (крестик) */
@@ -122,7 +112,7 @@
   right: 20px;
   width: 36px;
   height: 36px;
-  background: #F2F3F5;
+  background: var(--color-surface-input);
   border-radius: 50%;
   border: none;
   font-size: 22px;
@@ -143,7 +133,7 @@
 /* Позиционирование контента с учетом крестика */
 .modal-content {
   position: relative;
-  background: white;
+  background: var(--color-surface);
   border-radius: 20px;
   padding: 32px 24px 24px;
   max-width: 420px;

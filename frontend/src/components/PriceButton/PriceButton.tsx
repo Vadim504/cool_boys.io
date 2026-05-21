@@ -1,8 +1,6 @@
-// src/components/PriceButton/PriceButton.jsx
 import { addToCart, removeFromCart } from '../../store/cartSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import type { Product } from '../../types';
-import './PriceButton.css';
 
 type PriceButtonProps = {
   product: Product;
@@ -16,17 +14,24 @@ const PriceButton = ({ product, isCompact = false }: PriceButtonProps) => {
 
   if (quantity === 0) {
     return (
-      <button className="price-btn-initial" onClick={() => dispatch(addToCart(product))}>
+      <button
+        className="price-btn price-btn--initial"
+        onClick={() => dispatch(addToCart(product))}
+      >
         {product.price} ₽ <span className="plus-sign">+</span>
       </button>
     );
   }
 
   return (
-    <div className={`price-btn-counter ${isCompact ? 'compact' : ''}`}>
-      <button onClick={() => dispatch(removeFromCart(product.id))}>−</button>
-      <span>{quantity}</span>
-      <button onClick={() => dispatch(addToCart(product))}>+</button>
+    <div className={`stepper stepper--block price-btn--counter ${isCompact ? 'stepper--compact' : ''}`}>
+      <button type="button" className="stepper__btn" onClick={() => dispatch(removeFromCart(product.id))}>
+        −
+      </button>
+      <span className="stepper__count">{quantity}</span>
+      <button type="button" className="stepper__btn" onClick={() => dispatch(addToCart(product))}>
+        +
+      </button>
     </div>
   );
 };

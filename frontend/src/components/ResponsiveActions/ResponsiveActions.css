@@ -13,9 +13,9 @@
   .responsive-action {
     min-width: 0;
     min-height: 44px;
-    border: 1px solid #ececf0;
+    border: 1px solid var(--color-border-light);
     border-radius: 14px;
-    background: #fff;
+    background: var(--color-surface);
     color: #111;
     padding: 8px 12px;
     font-size: 13px;
@@ -36,7 +36,7 @@
   }
 
   .responsive-action-label {
-    color: #8e8e93;
+    color: var(--color-text-muted);
     font-size: 11px;
     font-weight: 700;
   }
@@ -55,9 +55,9 @@
   }
 
   .responsive-cart-action {
-    background: #ff2d55;
-    border-color: #ff2d55;
-    color: #fff;
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-surface);
   }
 
   .responsive-cart-count {

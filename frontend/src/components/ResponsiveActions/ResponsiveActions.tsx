@@ -1,15 +1,9 @@
-import {
-  openAddressModal,
-  openCart,
-  openSupport,
-  toggleAuth,
-  toggleProfile,
-} from '../../store/uiSlice';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppSelector } from '../../store/hooks';
+import { useUiNavigation } from '../../hooks/useUiNavigation';
 import './ResponsiveActions.css';
 
 const ResponsiveActions = () => {
-  const dispatch = useAppDispatch();
+  const ui = useUiNavigation();
   const cartItems = useAppSelector((state) => state.cart.items);
   const selectedAddress = useAppSelector((state) => state.addresses.selectedAddress);
   const { isAuth, phoneNumber } = useAppSelector((state) => state.auth);
@@ -19,11 +13,11 @@ const ResponsiveActions = () => {
 
   const handleUserAction = () => {
     if (isAuth) {
-      dispatch(toggleProfile(true));
+      ui.openProfile();
       return;
     }
 
-    dispatch(toggleAuth(true));
+    ui.openAuth();
   };
 
   return (
@@ -31,7 +25,7 @@ const ResponsiveActions = () => {
       <button
         type="button"
         className="responsive-action responsive-address-action"
-        onClick={() => dispatch(openAddressModal())}
+        onClick={ui.openAddressModal}
       >
         <span className="responsive-action-label">Адрес</span>
         <span className="responsive-action-value">
@@ -53,7 +47,7 @@ const ResponsiveActions = () => {
         type="button"
         className="responsive-action"
         aria-label="Поддержка"
-        onClick={() => dispatch(openSupport())}
+        onClick={ui.openSupport}
       >
         <span className="responsive-action-icon">💬</span>
         <span>Помощь</span>
@@ -61,9 +55,9 @@ const ResponsiveActions = () => {
 
       <button
         type="button"
-        className="responsive-action responsive-cart-action"
+        className="responsive-action responsive-cart-action btn btn--primary"
         aria-label="Открыть корзину"
-        onClick={() => dispatch(openCart())}
+        onClick={ui.openCart}
       >
         <span className="responsive-cart-count">{itemsCount}</span>
         <span>{totalSum > 0 ? `${totalSum} ₽` : 'Корзина'}</span>

@@ -41,7 +41,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
   return (
     <div className="checkout-overlay" onClick={onClose}>
       <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="checkout-close-btn" onClick={onClose}>×</button>
+        <button type="button" className="close-btn-round close-btn-round--sm checkout-close-btn" onClick={onClose}>×</button>
         <h2 className="checkout-title">{selectedAddress || 'Адрес не выбран'}</h2>
 
         <div className="checkout-columns">
@@ -58,10 +58,10 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                       <div className="checkout-item-name">{item.name}</div>
                       <div className="checkout-item-weight">{item.weight}</div>
                     </div>
-                    <div className="checkout-stepper">
-                      <button onClick={() => dispatch(removeFromCart(item.id))}>−</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => dispatch(addToCart(item))}>+</button>
+                    <div className="stepper stepper--neutral checkout-stepper">
+                      <button type="button" className="stepper__btn" onClick={() => dispatch(removeFromCart(item.id))}>−</button>
+                      <span className="stepper__count">{item.quantity}</span>
+                      <button type="button" className="stepper__btn" onClick={() => dispatch(addToCart(item))}>+</button>
                     </div>
                     <div className="checkout-item-price">{item.price * item.quantity} ₽</div>
                   </div>
@@ -78,7 +78,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                     <div className="name">{item.name}</div>
                     <div className="bottom">
                       <span>{item.price} ₽</span>
-                      <button onClick={() => dispatch(addToCart(item))}>+</button>
+                      <button type="button" className="icon-btn icon-btn--tiny" onClick={() => dispatch(addToCart(item))}>+</button>
                     </div>
                   </div>
                 ))}
@@ -99,7 +99,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                 <strong>{total} ₽</strong>
               </div>
               <button
-                className="checkout-continue-btn"
+                className="btn btn--primary btn--lg btn--block checkout-continue-btn"
                 disabled={cartItems.length === 0}
                 onClick={handleCreateOrder}
               >

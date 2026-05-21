@@ -1,134 +1,82 @@
 .auth-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
+  z-index: var(--z-auth);
 }
 
 .auth-content {
-    background: white;
-    width: 100%;
-    max-width: 400px;
-    padding: 40px;
-    border-radius: 28px;
-    position: relative;
-    text-align: center;
+  max-width: 400px;
 }
 
 .auth-close {
-    position: absolute;
-    top: 20px; right: 20px;
-    background: none; border: none;
-    font-size: 30px; color: #ccc;
-    cursor: pointer;
+  top: var(--space-xl);
+  right: var(--space-xl);
+  background: none;
+  color: var(--color-text-close);
+  font-size: 30px;
 }
 
 .auth-step h2 {
-    font-size: 26px;
-    font-weight: 800;
-    margin-bottom: 12px;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-extrabold);
+  margin-bottom: var(--space-md);
 }
 
 .auth-step p {
-    color: #8e8e93;
-    font-size: 15px;
-    margin-bottom: 30px;
-    line-height: 1.4;
+  margin-bottom: 30px;
 }
 
 .phone-input-field {
-    background: #f2f2f7;
-    border-radius: 16px;
-    padding: 18px;
-    display: flex;
-    font-size: 20px;
-    margin-bottom: 20px;
+  padding: 18px;
+  display: flex;
+  font-size: 20px;
+  margin-bottom: var(--space-xl);
 }
-
-.prefix { font-weight: 600; margin-right: 10px; }
 
 .phone-input-field input {
-    background: none; border: none; outline: none;
-    font-size: 20px; font-weight: 600; width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  width: 100%;
 }
 
-.auth-btn {
-    width: 100%;
-    padding: 18px;
-    background: #FF2D55; /* Розовый Самоката */
-    color: white;
-    border: none;
-    border-radius: 16px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.auth-btn:disabled {
-    background: #f2f2f7;
-    color: #aeaeb2;
-}
-
-.code-input {
-    width: 100%;
-    background: #f2f2f7;
-    border: none;
-    padding: 20px;
-    border-radius: 16px;
-    font-size: 32px;
-    text-align: center;
-    letter-spacing: 12px;
-    font-weight: 800;
-    margin-bottom: 20px;
-}
-
-.resend-info {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #8e8e93;
-}
-
-.resend-link {
-    color: #FF2D55;
-    font-weight: 600;
-    cursor: pointer;
+.prefix {
+  font-weight: var(--font-weight-semibold);
+  margin-right: 10px;
 }
 
 .change-phone-btn {
-    background: none; border: none;
-    margin-top: 20px;
-    color: #8e8e93;
-    text-decoration: underline;
-    cursor: pointer;
+  margin-top: var(--space-xl);
+}
+
+.resend-info {
+  margin-top: var(--space-xl);
+  font-size: var(--font-size-md);
 }
 
 @media (max-width: 767px) {
-    .auth-overlay {
-        align-items: flex-end;
-        padding: 8px;
-    }
+  .auth-overlay {
+    align-items: flex-end;
+    padding: var(--space-sm);
+  }
 
-    .auth-content {
-        max-width: none;
-        padding: 34px 18px 22px;
-        border-radius: 20px;
-    }
+  .auth-content {
+    max-width: none;
+    padding: 34px 18px 22px;
+    border-radius: var(--radius-2xl);
+  }
 
-    .auth-step h2 {
-        font-size: 23px;
-    }
+  .auth-step h2 {
+    font-size: 23px;
+  }
 
-    .phone-input-field,
-    .phone-input-field input {
-        font-size: 18px;
-    }
+  .phone-input-field,
+  .phone-input-field input {
+    font-size: 18px;
+  }
 
-    .code-input {
-        font-size: 26px;
-        letter-spacing: 8px;
-    }
+  .code-input {
+    font-size: 26px;
+    letter-spacing: 8px;
+  }
 }

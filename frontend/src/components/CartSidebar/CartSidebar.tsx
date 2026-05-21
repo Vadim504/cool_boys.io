@@ -4,19 +4,13 @@ import {
   removeFromCart,
   removeItemFromCart,
 } from '../../store/cartSlice';
-import {
-  closeCart,
-  openAddressModal,
-  openCheckout,
-  openSupport,
-  toggleAuth,
-  toggleProfile,
-} from '../../store/uiSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useUiNavigation } from '../../hooks/useUiNavigation';
 import './CartSidebar.css';
 
 const CartSidebar = () => {
   const dispatch = useAppDispatch();
+  const ui = useUiNavigation();
 
   // 1. Данные корзины и адреса
   const cartItems = useAppSelector(state => state.cart.items);
@@ -30,22 +24,21 @@ const CartSidebar = () => {
   // 3. Единая функция для клика по кнопке (Вход или Профиль)
   const handleUserAction = () => {
     if (isAuth) {
-      dispatch(toggleProfile(true)); // Если вошел — открываем профиль
+      ui.openProfile();
     } else {
-      dispatch(toggleAuth(true));    // Если нет — открываем вход
+      ui.openAuth();
     }
   };
 
   const handleCheckout = () => {
-    dispatch(openCheckout());
-    dispatch(closeCart());
+    ui.openCheckout();
   };
 
   return (
     <>
     <div
       className={isCartOpen ? 'cart-drawer-backdrop is-open' : 'cart-drawer-backdrop'}
-      onClick={() => dispatch(closeCart())}
+      onClick={ui.closeCart}
       aria-hidden="true"
     />
 
@@ -53,7 +46,7 @@ const CartSidebar = () => {
       <div className="top-actions">
         {/* Одна кнопка, которая меняет вид и действие в зависимости от isAuth */}
         <button 
-          className={isAuth ? "profile-btn-top" : "login-btn-top"} 
+          className={isAuth ? "btn btn--secondary btn--md btn--block" : "btn btn--primary btn--md btn--block"} 
           onClick={handleUserAction}
         >
           {isAuth ? (
@@ -66,12 +59,12 @@ const CartSidebar = () => {
           )}
         </button>
         
-        <button className="support-btn" onClick={() => dispatch(openSupport())} title="Поддержка">
+        <button className="btn btn--secondary btn--square" onClick={ui.openSupport} title="Поддержка">
           💬
         </button>
       </div>
 
-      <div className="address-selector" onClick={() => dispatch(openAddressModal())}>
+      <div className="address-selector" onClick={ui.openAddressModal}>
         <div className="address-info-block">
           <div className="address-current">
             {reduxSelectedAddress || "Укажите адрес доставки"}
@@ -86,16 +79,16 @@ const CartSidebar = () => {
           <div className="cart-title">Корзина</div>
           <button
             type="button"
-            className="cart-drawer-close"
+            className="close-btn-round close-btn-round--sm cart-drawer-close"
             aria-label="Закрыть корзину"
-            onClick={() => dispatch(closeCart())}
+            onClick={ui.closeCart}
           >
             ×
           </button>
           {cartItems.length > 0 && (
             <button
               type="button"
-              className="cart-clear-btn"
+              className="btn btn--danger btn--sm"
               onClick={() => dispatch(clearCart())}
             >
               Очистить
@@ -118,17 +111,19 @@ const CartSidebar = () => {
                   <div className="item-total-price">{item.price * item.quantity} ₽</div>
                 </div>
                 <div className="cart-item-actions">
-                  <div className="cart-item-stepper">
+                  <div className="stepper stepper--sm">
                     <button
                       type="button"
+                      className="stepper__btn"
                       aria-label={`Уменьшить ${item.name}`}
                       onClick={() => dispatch(removeFromCart(item.id))}
                     >
                       −
                     </button>
-                    <span>{item.quantity}</span>
+                    <span className="stepper__count">{item.quantity}</span>
                     <button
                       type="button"
+                      className="stepper__btn"
                       aria-label={`Добавить ${item.name}`}
                       disabled={item.quantity >= item.stock}
                       onClick={() => dispatch(addToCart(item))}
@@ -138,7 +133,7 @@ const CartSidebar = () => {
                   </div>
                   <button
                     type="button"
-                    className="cart-remove-item"
+                    className="btn btn--muted-danger btn--sm"
                     aria-label={`Удалить ${item.name}`}
                     onClick={() => dispatch(removeItemFromCart(item.id))}
                   >
@@ -155,7 +150,7 @@ const CartSidebar = () => {
             <span>Итого:</span>
             <span className="total-sum">{totalSum} ₽</span>
           </div>
-          <button className="order-button" disabled={cartItems.length === 0} onClick={handleCheckout}>
+          <button className="btn btn--primary btn--xl btn--block" disabled={cartItems.length === 0} onClick={handleCheckout}>
             Оформить заказ
           </button>
         </div>

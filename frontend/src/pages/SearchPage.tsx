@@ -37,7 +37,7 @@ const SearchPage = () => {
             <h1>Поиск</h1>
             <p>{query ? `Результаты по запросу: ${query}` : 'Введите запрос в строке поиска'}</p>
           </div>
-          <Link to="/" className="back-to-catalog-link">
+          <Link to="/" className="btn btn--pill-outline back-to-catalog-link">
             В каталог
           </Link>
         </div>

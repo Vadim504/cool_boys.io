@@ -110,7 +110,7 @@ const SupportChat = ({ onClose }) => {
   return (
     <div className="chat-overlay" onClick={onClose}>
       <div className="chat-window" onClick={(e) => e.stopPropagation()}>
-        <button className="chat-close-button" onClick={onClose}>×</button>
+        <button type="button" className="close-btn-round close-btn-round--sm chat-close-button" onClick={onClose}>×</button>
         <div className="chat-header">
           <span>Поддержка</span>
         </div>
@@ -121,12 +121,12 @@ const SupportChat = ({ onClose }) => {
               className={`msg-row ${msg.role === 'user' ? 'msg-row-user' : ''}`}
             >
               <div
-                className={`msg-bubble ${
+                className={`chat-bubble ${
                   msg.role === 'user'
-                    ? 'msg-user'
+                    ? 'chat-bubble--user'
                     : msg.role === 'operator'
-                    ? 'msg-operator'
-                    : 'msg-bot'
+                    ? 'chat-bubble--operator'
+                    : 'chat-bubble--bot'
                 }`}
               >
                 {msg.text}
@@ -138,7 +138,7 @@ const SupportChat = ({ onClose }) => {
         {!isOperatorConnected && (
           <div className="chat-suggestions">
             {suggestions.map((item) => (
-              <button key={item} type="button" onClick={() => handleSend(item)}>
+              <button key={item} type="button" className="chip-btn" onClick={() => handleSend(item)}>
                 {item}
               </button>
             ))}
@@ -154,7 +154,7 @@ const SupportChat = ({ onClose }) => {
               if (e.key === 'Enter') handleSend(input);
             }}
           />
-          <button type="button" onClick={() => handleSend(input)}>Отправить</button>
+          <button type="button" className="btn btn--primary" onClick={() => handleSend(input)}>Отправить</button>
         </div>
       </div>
     </div>

@@ -61,6 +61,25 @@ const uiSlice = createSlice({
     closeProductDetail: (state) => {
       state.selectedProductId = null;
     },
+    /** Восстановление UI из URL (обновление страницы, назад/вперёд в браузере) */
+    hydrateUiFromSearchParams: (state, action: PayloadAction<URLSearchParams>) => {
+      const modal = action.payload.get('modal');
+      const productRaw = action.payload.get('product');
+
+      state.isAuthOpen = modal === 'auth';
+      state.isProfileOpen = modal === 'profile';
+      state.isAddressOpen = modal === 'address';
+      state.isCheckoutOpen = modal === 'checkout';
+      state.isSupportOpen = modal === 'support';
+      state.isCartOpen = modal === 'cart';
+
+      if (productRaw) {
+        const id = Number(productRaw);
+        state.selectedProductId = Number.isFinite(id) ? id : null;
+      } else {
+        state.selectedProductId = null;
+      }
+    },
   },
 });
 
@@ -77,5 +96,6 @@ export const {
   closeCart,
   openProductDetail,
   closeProductDetail,
+  hydrateUiFromSearchParams,
 } = uiSlice.actions;
 export default uiSlice.reducer;

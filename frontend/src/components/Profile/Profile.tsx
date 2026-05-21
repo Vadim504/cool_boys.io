@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../../store/authSlice'; // Экшен, который мы создали в прошлом шаге
 import { addManyToCart } from '../../store/cartSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { toggleAuth, toggleProfile } from '../../store/uiSlice';
+import { useUiNavigation } from '../../hooks/useUiNavigation';
 import type { Order } from '../../types';
 import './Profile.css';
 
@@ -13,6 +13,7 @@ type ProfileProps = {
 
 const Profile = ({ isOpen, onClose }: ProfileProps) => {
   const dispatch = useAppDispatch();
+  const ui = useUiNavigation();
   const navigate = useNavigate();
   
   // Достаем данные из Redux
@@ -29,8 +30,8 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
   };
 
   const handleOpenAuth = () => {
-    dispatch(toggleProfile(false));
-    dispatch(toggleAuth(true));
+    ui.closeProfile();
+    ui.openAuth();
   };
 
   const handleRepeatOrder = (order: Order) => {
@@ -50,11 +51,11 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
     return (
       <div className="profile-overlay" onClick={onClose}>
         <div className="profile-container" onClick={(e) => e.stopPropagation()}>
-          <button className="profile-close-btn" onClick={onClose}>×</button>
+          <button type="button" className="close-btn-round close-btn-round--sm profile-close-btn" onClick={onClose}>×</button>
           <div className="empty-profile">
             <h2>Войдите в профиль</h2>
             <p>Чтобы видеть историю заказов и сохраненные адреса</p>
-            <button className="auth-btn" onClick={handleOpenAuth}>
+            <button type="button" className="btn btn--primary btn--lg btn--block" onClick={handleOpenAuth}>
               Войти
             </button>
           </div>
@@ -66,7 +67,7 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
   return (
     <div className="profile-overlay" onClick={onClose}>
       <div className="profile-container" onClick={(e) => e.stopPropagation()}>
-        <button className="profile-close-btn" onClick={onClose}>×</button>
+        <button type="button" className="close-btn-round close-btn-round--sm profile-close-btn" onClick={onClose}>×</button>
         <header className="profile-header">
           <h1>Профиль</h1>
           <div className="user-card">
@@ -111,7 +112,7 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
                       </div>
                       <div className="order-card-footer">
                         <span>{itemsCount} товар(ов)</span>
-                        <button type="button" onClick={() => handleRepeatOrder(order)}>
+                        <button type="button" className="btn btn--primary btn--sm" onClick={() => handleRepeatOrder(order)}>
                           Повторить заказ
                         </button>
                       </div>
@@ -125,7 +126,7 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
           </div>
         </section>
 
-        <button className="logout-btn" onClick={handleLogout}>
+        <button type="button" className="btn btn--outline btn--lg btn--block logout-btn" onClick={handleLogout}>
           Выйти из аккаунта
         </button>
       </div>

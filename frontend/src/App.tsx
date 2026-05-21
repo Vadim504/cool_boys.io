@@ -1,13 +1,4 @@
-// src/App.jsx
-import {
-  closeAddressModal,
-  closeCheckout,
-  closeProductDetail,
-  closeSupport,
-  toggleAuth,
-  toggleProfile,
-} from './store/uiSlice';
-import { useAppDispatch, useAppSelector } from './store/hooks';
+import { useAppSelector } from './store/hooks';
 import { productsData } from './data/product';
 import AppRouter from './routes/Router';
 import Profile from './components/Profile/Profile';
@@ -16,12 +7,13 @@ import AddressModal from './components/AddressModal/AddressModal/AddressModal';
 import ProductDetailModal from './components/ProductDetailModal/ProductDetailModal';
 import CheckoutModal from './components/CheckoutModal/CheckoutModal';
 import SupportChat from './components/SupportChat/SupportChat';
+import ModalUrlSync from './components/ModalUrlSync';
+import { useUiNavigation } from './hooks/useUiNavigation';
 import './App.css';
 
 const App = () => {
-  const dispatch = useAppDispatch();
-  
-  // Слушаем Redux: нужно ли показывать окна?
+  const ui = useUiNavigation();
+
   const isProfileOpen = useAppSelector((state) => state.ui.isProfileOpen);
   const isAuthOpen = useAppSelector((state) => state.ui.isAuthOpen);
   const isAddressOpen = useAppSelector((state) => state.ui.isAddressOpen);
@@ -32,33 +24,17 @@ const App = () => {
 
   return (
     <div className="app">
+      <ModalUrlSync />
       <AppRouter />
 
-      <Profile 
-        isOpen={isProfileOpen} 
-        onClose={() => dispatch(toggleProfile(false))} 
-      />
-      <AuthModal 
-        isOpen={isAuthOpen} 
-        onClose={() => dispatch(toggleAuth(false))} 
-      />
-      <AddressModal
-        isOpen={isAddressOpen}
-        onClose={() => dispatch(closeAddressModal())}
-      />
+      <Profile isOpen={isProfileOpen} onClose={ui.closeProfile} />
+      <AuthModal isOpen={isAuthOpen} onClose={ui.closeAuth} />
+      <AddressModal isOpen={isAddressOpen} onClose={ui.closeAddressModal} />
       {selectedProduct && (
-        <ProductDetailModal
-          product={selectedProduct}
-          onClose={() => dispatch(closeProductDetail())}
-        />
+        <ProductDetailModal product={selectedProduct} onClose={ui.closeProductDetail} />
       )}
-      <CheckoutModal
-        isOpen={isCheckoutOpen}
-        onClose={() => dispatch(closeCheckout())}
-      />
-      {isSupportOpen && (
-        <SupportChat onClose={() => dispatch(closeSupport())} />
-      )}
+      <CheckoutModal isOpen={isCheckoutOpen} onClose={ui.closeCheckout} />
+      {isSupportOpen && <SupportChat onClose={ui.closeSupport} />}
     </div>
   );
 };

@@ -2,43 +2,43 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding-top: 20px; /* Отступ сверху для крестика */
+  padding-top: var(--space-xl);
 }
 
 .selection-header h2 {
-  margin: 0 0 24px 0;
-  font-size: 22px;
-  font-weight: 700;
-  color: #000;
+  margin: 0 0 var(--space-2xl) 0;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
 }
 
 .address-items-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
 }
 
 .address-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  border-radius: 12px;
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
   border: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.2s;
-  background: #F8F9FA;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  background: var(--color-surface-elevated);
   position: relative;
 }
 
 .address-card:hover {
-  background: #F2F3F5;
+  background: var(--color-surface-input);
 }
 
 .address-card.active {
-  border-color: #FF3366;
-  background: #FFF0F3;
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
 }
 
 .address-texts {
@@ -46,77 +46,48 @@
 }
 
 .street-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 4px;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
 }
 
 .city-name {
-  font-size: 14px;
-  color: #888;
-}
-
-.radio-circle {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 2px solid #ccc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-left: 12px;
-}
-
-.address-card.active .radio-circle {
-  background: #FF3366;
-  border-color: #FF3366;
+  font-size: var(--font-size-md);
+  color: var(--color-text-subtle);
 }
 
 .selection-footer {
   margin-top: auto;
-  padding-top: 16px;
+  padding-top: var(--space-lg);
 }
 
 .add-btn-main {
-  width: 100%;
   padding: 18px 0;
-  background-color: #FF3366;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
-}
-
-.add-btn-main:active {
-  transform: scale(0.98);
+  border-radius: var(--radius-2xl);
 }
 
 .empty-message {
   text-align: center;
-  color: #888;
-  padding: 40px 20px;
-  font-size: 16px;
+  color: var(--color-text-subtle);
+  padding: 40px var(--space-xl);
+  font-size: var(--font-size-lg);
 }
 
 .delete-address-btn {
   position: absolute;
   top: 10px;
-  right: 40px; /* Чтобы не перекрывать radio-circle */
+  right: 40px;
   background: none;
   border: none;
   font-size: 20px;
-  color: #ccc;
+  color: var(--color-border-radio);
   cursor: pointer;
   padding: 5px;
   line-height: 1;
-  transition: color 0.2s;
+  transition: color var(--transition-fast);
 }
 
 .delete-address-btn:hover {
-  color: #ff4d4f; /* Красный цвет при наведении */
+  color: var(--color-danger-hover);
 }

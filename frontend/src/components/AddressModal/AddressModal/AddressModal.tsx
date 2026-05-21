@@ -37,7 +37,7 @@ const AddressModal = ({ isOpen, onClose }: AddressModalProps) => {
         className={`modal-content ${modalView === 'form' ? 'wide' : ''}`} 
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="modal-close-button" onClick={handleClose}>
+        <button type="button" className="close-btn-round close-btn-round--md modal-close-button" onClick={handleClose}>
           ×
         </button>
 

@@ -1,6 +1,6 @@
 import { addToCart, removeFromCart } from '../../store/cartSlice'; // Путь к вашему слайсу
-import { openProductDetail } from '../../store/uiSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useUiNavigation } from '../../hooks/useUiNavigation';
 import type { Product } from '../../types';
 import './ProductCard.css';
 
@@ -10,6 +10,7 @@ type ProductCardProps = {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const dispatch = useAppDispatch();
+  const ui = useUiNavigation();
 
   // Получаем текущее количество товара в корзине из Redux
   const cartItem = useAppSelector(state => 
@@ -30,7 +31,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     // 1. Вешаем клик для открытия деталей на всю карточку
-    <div className="product-card" onClick={() => dispatch(openProductDetail(product.id))}>
+    <div className="product-card" onClick={() => ui.openProductDetail(product.id)}>
       <div className="product-image">
         <img src={product.image} alt={product.name} />
       </div>
@@ -47,21 +48,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
       {/* 2. ВАЖНО: stopPropagation предотвращает открытие модалки при клике на кнопки */}
       <div className="product-controls" onClick={(e) => e.stopPropagation()}>
         {count === 0 ? (
-          <button 
-            className="add-button" 
+          <button
+            type="button"
+            className="icon-btn icon-btn--md add-button"
             onClick={increment}
             disabled={product.stock === 0}
           >
             {product.stock === 0 ? 'Нет' : <span className="plus-icon">+</span>}
           </button>
         ) : (
-          <div className="stepper">
-            <button onClick={decrement}>−</button>
-            <span className="count">{count}</span>
-            <button 
-              onClick={increment} 
+          <div className="stepper stepper--block product-card-stepper">
+            <button type="button" className="stepper__btn" onClick={decrement}>−</button>
+            <span className="stepper__count">{count}</span>
+            <button
+              type="button"
+              className="stepper__btn"
+              onClick={increment}
               disabled={!canIncrement}
-              className={!canIncrement ? "disabled-btn" : ""}
             >
               +
             </button>

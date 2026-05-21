@@ -1,0 +1,130 @@
+/**
+ * Дизайн-токены. Меняйте здесь — обновится весь интерфейс.
+ */
+:root {
+  /* Бренд */
+  /* --color-primary: #ff2d55;
+  --color-primary-hover: #e0284b;
+  --color-primary-active: #c92442;
+  --color-primary-muted: #fff0f3;
+  --color-primary-soft: #ffe8ee; */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-active: #1e40af;
+  --color-primary-muted: #eff6ff;
+  --color-primary-soft: #dbeafe;
+
+  /* Фоны */
+  --color-bg: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f5f5f7;
+  --color-surface-secondary: #f2f2f7;
+  --color-surface-input: #f2f3f5;
+  --color-surface-elevated: #f8f9fa;
+  --color-surface-hover: #e8e8ed;
+  --color-surface-image: #f8f8fa;
+  --color-surface-category: #f6f6f8;
+  --color-surface-map: #f0f0f0;
+
+  /* Текст */
+  --color-text: #000000;
+  --color-text-strong: #111111;
+  --color-text-secondary: #333333;
+  --color-text-body: #444444;
+  --color-text-muted: #8e8e93;
+  --color-text-subtle: #888888;
+  --color-text-hint: #7a7a80;
+  --color-text-placeholder: #9b9ba1;
+  --color-text-disabled: #c7c7cc;
+  --color-text-faint: #aeaeb2;
+  --color-text-category: #5f6368;
+  --color-text-close: #cccccc;
+
+  /* Границы */
+  --color-border: #e5e5e5;
+  --color-border-light: #ececf0;
+  --color-border-subtle: #f0f0f3;
+  --color-border-divider: #f2f2f7;
+  --color-border-input: #dddddd;
+  --color-border-focus: #d9d9df;
+  --color-border-ui: #e5e5ea;
+  --color-border-sidebar: #eeeeee;
+  --color-border-hover: #dedee4;
+  --color-border-radio: #cccccc;
+
+  /* Семантика */
+  --color-success: #34c759;
+  --color-danger: #ff3b30;
+  --color-danger-hover: #ff4d4f;
+  --color-danger-bg: #fff1f1;
+  --color-danger-soft: #fff5f5;
+  --color-operator-bg: #eaf7ee;
+  --color-operator-text: #1d6b35;
+
+  /* Оверлеи */
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-overlay-medium: rgba(0, 0, 0, 0.45);
+  --color-overlay-light: rgba(0, 0, 0, 0.4);
+  --color-overlay-drawer: rgba(0, 0, 0, 0.35);
+  --color-overlay-mobile: rgba(0, 0, 0, 0.42);
+
+  /* Типографика */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-alt: 'Poppins', var(--font-family);
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-md: 14px;
+  --font-size-base: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 22px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 26px;
+
+  /* Скругления */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 28px;
+  --radius-pill: 999px;
+
+  /* Тени */
+  --shadow-modal: 0 10px 40px rgba(0, 0, 0, 0.1);
+  --shadow-panel: 0 10px 40px rgba(0, 0, 0, 0.12);
+  --shadow-drawer: -16px 0 40px rgba(0, 0, 0, 0.14);
+  --shadow-sheet: 0 -16px 40px rgba(0, 0, 0, 0.16);
+  --shadow-modal-footer: 0 -5px 15px rgba(0, 0, 0, 0.05);
+  --shadow-focus-primary: 0 0 0 4px rgba(255, 45, 85, 0.08);
+  --shadow-card-hover: 0 1px 0 rgba(17, 17, 17, 0.03);
+  --shadow-control: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  /* Отступы */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+
+  /* Переходы */
+  --transition-fast: 0.2s ease;
+
+  /* Слои */
+  --z-modal: 1000;
+  --z-overlay: 1800;
+  --z-drawer: 1900;
+  --z-auth: 2000;
+  --z-profile: 2500;
+  --z-product-detail: 3000;
+  --z-checkout: 3200;
+}

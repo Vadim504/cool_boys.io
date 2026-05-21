@@ -1,0 +1,843 @@
+/**
+ * Общие переиспользуемые стили UI.
+ * Подключается глобально через index.css.
+ *
+ * Использование в JSX:
+ *   <button className="btn btn--primary btn--block">Оформить</button>
+ *   <div className="overlay overlay--center">...</div>
+ */
+
+/* ========== Оверлеи и панели ========== */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay-light);
+  display: flex;
+  z-index: var(--z-auth);
+}
+
+.overlay--center {
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-lg);
+}
+
+.overlay--end {
+  justify-content: flex-end;
+  align-items: center;
+  padding: var(--space-lg);
+}
+
+.overlay--drawer-end {
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+.panel {
+  position: relative;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-family);
+}
+
+.panel--modal {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  border-radius: var(--radius-4xl);
+  text-align: center;
+  box-shadow: var(--shadow-modal);
+}
+
+.panel--sheet {
+  width: 100%;
+  max-height: calc(100dvh - var(--space-lg));
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+
+.panel--rounded-lg {
+  border-radius: var(--radius-3xl);
+}
+
+.panel--rounded-xl {
+  border-radius: var(--radius-4xl);
+}
+
+/* ========== Кнопки ========== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform 0.1s ease,
+    opacity var(--transition-fast);
+}
+
+.btn:disabled {
+  background: var(--color-surface-secondary);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+  opacity: 1;
+  transform: none;
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.btn--primary:active:not(:disabled) {
+  background: var(--color-primary-active);
+  transform: scale(0.98);
+}
+
+.btn--secondary {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--color-bg);
+}
+
+.btn--outline {
+  background: transparent;
+  border: 2px solid var(--color-border-divider);
+  color: var(--color-danger);
+}
+
+.btn--outline:hover:not(:disabled) {
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+}
+
+.btn--danger {
+  background: var(--color-surface-secondary);
+  color: var(--color-primary);
+}
+
+.btn--danger:hover:not(:disabled) {
+  background: var(--color-primary-soft);
+}
+
+.btn--muted-danger {
+  background: var(--color-surface-secondary);
+  color: var(--color-text-muted);
+}
+
+.btn--muted-danger:hover:not(:disabled) {
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.btn--link {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  padding: 0;
+  font-weight: var(--font-weight-normal);
+}
+
+.btn--accent-link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  display: inline;
+  padding: 0;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--sm {
+  padding: var(--space-sm) 10px;
+  font-size: var(--font-size-sm);
+  border-radius: 10px;
+}
+
+.btn--md {
+  height: 42px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+}
+
+.btn--lg {
+  padding: 14px var(--space-xl);
+  font-size: var(--font-size-lg);
+  border-radius: var(--radius-xl);
+}
+
+.btn--xl {
+  height: 56px;
+  padding: 0 var(--space-lg);
+  font-size: var(--font-size-lg);
+  border-radius: var(--radius-xl);
+}
+
+.btn--square {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.btn--pill-outline {
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text-strong);
+  font-weight: var(--font-weight-extrabold);
+}
+
+.btn--pill-outline:hover:not(:disabled) {
+  background: var(--color-surface-category);
+  border-color: var(--color-border-hover);
+}
+
+/* Круглая кнопка (+, ×, −, иконки) */
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-xl);
+  background: var(--color-primary);
+  color: var(--color-surface);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.icon-btn:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.icon-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: var(--color-text-disabled);
+}
+
+.icon-btn--sm {
+  width: 42px;
+  height: 42px;
+  font-size: 22px;
+  border-radius: var(--radius-lg);
+}
+
+.icon-btn--md {
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+}
+
+.icon-btn--round {
+  border-radius: var(--radius-pill);
+}
+
+.icon-btn--tiny {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+}
+
+/* Кнопка закрытия (×) */
+
+.close-btn-round {
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-input);
+  color: var(--color-text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+}
+
+.close-btn-round--sm {
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.close-btn-round--md {
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
+}
+
+.close-btn-round:hover {
+  background: #e2e4e6;
+}
+
+.close-btn-round--absolute {
+  position: absolute;
+  top: var(--space-xl);
+  right: var(--space-xl);
+  z-index: 10;
+}
+
+/* Назад */
+
+.back-btn-ui {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.back-btn-ui:hover {
+  background: var(--color-bg);
+}
+
+.back-btn-ui:active {
+  background: #e5e5e5;
+}
+
+/* Кнопка на карте (геолокация, зум) */
+
+.control-btn-round {
+  width: 40px;
+  height: 40px;
+  background: var(--color-surface);
+  border-radius: var(--radius-pill);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-control);
+  font-size: 18px;
+}
+
+/* ========== Степпер ========== */
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-primary);
+  border-radius: var(--radius-md);
+  color: var(--color-surface);
+  overflow: hidden;
+}
+
+.stepper__btn {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 10px;
+  transition: background var(--transition-fast);
+}
+
+.stepper__btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.stepper__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.stepper__count {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+}
+
+.stepper--block {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.stepper--compact {
+  width: 80px;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.stepper--sm {
+  width: 104px;
+  height: 34px;
+  border-radius: var(--radius-md);
+}
+
+.stepper--sm .stepper__btn {
+  width: 34px;
+  height: 100%;
+  padding: 0;
+  font-size: 18px;
+}
+
+.stepper--sm .stepper__count {
+  min-width: 28px;
+  text-align: center;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-extrabold);
+}
+
+.stepper--neutral {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  border-radius: var(--radius-pill);
+  padding: 2px var(--space-sm);
+  gap: var(--space-sm);
+}
+
+/* Кнопка «цена +» на карточке */
+
+.price-btn {
+  background: var(--color-primary);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  transition: background-color var(--transition-fast);
+}
+
+.price-btn:hover {
+  background: var(--color-primary-hover);
+}
+
+.price-btn--initial {
+  padding: var(--space-sm) var(--space-lg);
+}
+
+.price-btn--counter {
+  padding: var(--space-sm) var(--space-md);
+}
+
+.price-btn--counter.compact {
+  width: 80px;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+/* ========== Поля ввода ========== */
+
+.input {
+  width: 100%;
+  font-family: var(--font-family);
+  color: var(--color-text-strong);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-focus-primary);
+}
+
+.input--md {
+  padding: var(--space-md);
+  font-size: var(--font-size-base);
+}
+
+.input--filled {
+  background: var(--color-surface-input);
+  border: none;
+  border-radius: var(--radius-xl);
+}
+
+.input--filled-lg {
+  height: 52px;
+  padding: 0 var(--space-xl);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-xl);
+}
+
+.input--code {
+  border: none;
+  padding: var(--space-xl);
+  border-radius: var(--radius-xl);
+  font-size: 32px;
+  text-align: center;
+  letter-spacing: 12px;
+  font-weight: var(--font-weight-extrabold);
+  background: var(--color-surface-input);
+}
+
+.input--search-inline {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  border: none;
+  outline: none;
+  font-size: var(--font-size-base);
+  color: var(--color-text-strong);
+  background: transparent;
+  padding: 0 var(--space-xs);
+}
+
+.input--search-inline::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+/* ========== Поиск ========== */
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  width: 100%;
+  min-height: 46px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: 0 10px 0 var(--space-lg);
+  box-shadow: var(--shadow-card-hover);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-box:focus-within {
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-focus-primary);
+}
+
+.search-icon-ui {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  border: 2px solid var(--color-text-muted);
+  border-radius: var(--radius-pill);
+}
+
+.search-icon-ui::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 2px;
+  right: -5px;
+  bottom: -3px;
+  border-radius: var(--radius-pill);
+  background: var(--color-text-muted);
+  transform: rotate(45deg);
+}
+
+/* ========== Карточки и поверхности ========== */
+
+.surface-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-2xl);
+  padding: 14px;
+}
+
+.surface-card--muted {
+  background: var(--color-surface-muted);
+  border: none;
+  border-radius: var(--radius-xl);
+}
+
+.surface-card--selectable {
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  background: var(--color-surface-elevated);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.surface-card--selectable:hover {
+  background: var(--color-surface-input);
+}
+
+.surface-card--selectable.is-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
+}
+
+.address-chip {
+  padding: var(--space-lg);
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.address-chip:hover {
+  background: var(--color-surface-hover);
+}
+
+/* ========== Товар ========== */
+
+.product-card-base {
+  background: var(--color-surface);
+  border-radius: var(--radius-3xl);
+  font-family: var(--font-family);
+}
+
+.product-price {
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  color: var(--color-text);
+}
+
+.product-price--old {
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.product-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.2;
+  color: var(--color-text-secondary);
+}
+
+.product-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* ========== Типографика ========== */
+
+.text-title {
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text);
+}
+
+.text-title--lg {
+  font-size: var(--font-size-3xl);
+}
+
+.text-title--xl {
+  font-size: 28px;
+}
+
+.text-subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-base);
+  line-height: 1.4;
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-accent {
+  color: var(--color-primary);
+}
+
+.text-success {
+  color: var(--color-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+.text-hint {
+  color: var(--color-text-hint);
+}
+
+.text-faint {
+  color: var(--color-text-faint);
+}
+
+/* ========== Модалки (общая разметка) ========== */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-overlay);
+  z-index: var(--z-modal);
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-footer {
+  padding-top: var(--space-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal-footer);
+}
+
+.close-btn {
+  cursor: pointer;
+  padding: 10px;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+  z-index: 10;
+}
+
+.address-input {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text-strong);
+  background: var(--color-surface);
+}
+
+.address-input:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-focus-primary);
+}
+
+/* ========== Чат ========== */
+
+.chat-bubble {
+  max-width: 88%;
+  padding: var(--space-md) 14px;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-md);
+  line-height: 1.4;
+}
+
+.chat-bubble--bot {
+  background: var(--color-surface-muted);
+  color: var(--color-text-strong);
+}
+
+.chat-bubble--user {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.chat-bubble--operator {
+  background: var(--color-operator-bg);
+  color: var(--color-operator-text);
+}
+
+.chip-btn {
+  border: 1px solid var(--color-border-ui);
+  background: var(--color-surface);
+  border-radius: var(--radius-pill);
+  padding: 6px 10px;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+/* ========== Пустые состояния ========== */
+
+.empty-state {
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.empty-state--boxed {
+  min-height: 220px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 18px;
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 28px;
+}
+
+/* ========== Разделители ========== */
+
+.divider-line {
+  border-bottom: 1px solid var(--color-border-divider);
+}
+
+.divider-line--subtle {
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+/* ========== Радио (выбор адреса) ========== */
+
+.radio-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-border-radio);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.surface-card--selectable.is-active .radio-circle {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ========== Анимации ========== */
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

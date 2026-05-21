@@ -78,7 +78,7 @@ const AddressList = ({ onGoToMap, onClose }: AddressListProps) => {
       </div>
 
       <div className="selection-footer">
-        <button className="add-btn-main" onClick={onGoToMap}>
+        <button type="button" className="btn btn--primary btn--lg btn--block add-btn-main" onClick={onGoToMap}>
           Новый адрес
         </button>
       </div>

@@ -43,15 +43,15 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="auth-overlay" onClick={onClose}>
-      <div className="auth-content" onClick={e => e.stopPropagation()}>
-        <button className="auth-close" onClick={onClose}>×</button>
+    <div className="overlay overlay--center auth-overlay" onClick={onClose}>
+      <div className="panel panel--modal auth-content" onClick={e => e.stopPropagation()}>
+        <button type="button" className="close-btn-round close-btn-round--sm close-btn-round--absolute auth-close" onClick={onClose}>×</button>
 
         {step === 'phone' ? (
           <div className="auth-step">
             <h2>Вход в сервис</h2>
             <p>Введите номер телефона, чтобы войти или зарегистрироваться</p>
-            <div className="phone-input-field">
+            <div className="phone-input-field input input--filled">
               <span className="prefix">+7</span>
               <input 
                 type="tel" 
@@ -63,7 +63,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
               />
             </div>
             <button 
-              className="auth-btn" 
+              className="btn btn--primary btn--lg btn--block"
               disabled={phone.length < 10}
               onClick={handleSendCode}
             >
@@ -76,7 +76,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
             <p>Мы отправили SMS с кодом на номер <br/><b>+7 {phone}</b></p>
             <input 
               type="text" 
-              className="code-input"
+              className="input input--code code-input"
               placeholder="0 0 0 0"
               autoFocus
               value={code}
@@ -84,7 +84,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
               maxLength={4}
             />
             <button 
-              className="auth-btn" 
+              className="btn btn--primary btn--lg btn--block"
               disabled={code.length < 4}
               onClick={handleVerifyCode}
             >
@@ -94,10 +94,10 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
               {timer > 0 ? (
                 `Отправить повторно через ${timer} сек`
               ) : (
-                <span className="resend-link" onClick={handleSendCode}>Отправить код еще раз</span>
+                <span className="btn--accent-link resend-link" onClick={handleSendCode}>Отправить код еще раз</span>
               )}
             </div>
-            <button className="change-phone-btn" onClick={() => setStep('phone')}>
+            <button type="button" className="btn btn--link change-phone-btn" onClick={() => setStep('phone')}>
               Изменить номер
             </button>
           </div>

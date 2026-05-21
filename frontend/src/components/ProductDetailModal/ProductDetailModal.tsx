@@ -1,6 +1,6 @@
-// src/components/ProductDetailModal/ProductDetailModal.jsx
 import './ProductDetailModal.css';
 import PriceButton from '../PriceButton/PriceButton';
+import { useUiNavigation } from '../../hooks/useUiNavigation';
 import { productsData } from '../../data/product';
 import type { Product } from '../../types';
 
@@ -60,6 +60,7 @@ type ProductDetailModalProps = {
 };
 
 const ProductDetailModal = ({ product, onClose }: ProductDetailModalProps) => {
+  const ui = useUiNavigation();
   const nutrition = buildNutrition(product);
   const description = buildAutoDescription(product);
   const composition = buildAutoComposition(product);
@@ -70,7 +71,7 @@ const ProductDetailModal = ({ product, onClose }: ProductDetailModalProps) => {
   return (
     <div className="product-detail-overlay" onClick={onClose}>
       <div className="product-detail-content" onClick={(e) => e.stopPropagation()}>
-        <button className="close-detail-btn" onClick={onClose}>×</button>
+        <button type="button" className="close-btn-round close-btn-round--sm close-detail-btn" onClick={onClose}>×</button>
 
         <div className="detail-left">
           <div className="detail-image">
@@ -82,11 +83,17 @@ const ProductDetailModal = ({ product, onClose }: ProductDetailModalProps) => {
               <h3>Что еще пригодится</h3>
               <div className="similar-list">
                 {similarProducts.map((item) => (
-                  <div key={item.id} className="similar-item">
-                    <img src={item.image} alt={item.name} />
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="similar-item"
+                    onClick={() => ui.openProductDetail(item.id)}
+                    aria-label={`Открыть ${item.name}`}
+                  >
+                    <img src={item.image} alt="" />
                     <div className="similar-name">{item.name}</div>
                     <div className="similar-price">{item.price} ₽</div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
