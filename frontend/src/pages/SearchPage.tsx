@@ -5,23 +5,20 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import Header from '../components/Header/Header';
 import CartSidebar from '../components/CartSidebar/CartSidebar';
 import ResponsiveActions from '../components/ResponsiveActions/ResponsiveActions';
+import { normalizeSearchText, searchProducts } from '../utils/productSearch';
 import './SearchPage.css';
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get('q')?.trim() || '';
-  const normalizedQuery = query.toLowerCase();
+  const query = searchParams.get('q') || '';
+  const normalizedQuery = normalizeSearchText(query);
 
   const results = normalizedQuery
-    ? productsData.filter((product) =>
-        product.name.toLowerCase().includes(normalizedQuery) ||
-        product.description?.toLowerCase().includes(normalizedQuery)
-      )
+    ? searchProducts(productsData, normalizedQuery)
     : [];
 
   const handleSearch = (value: string) => {
-    const nextQuery = value.trim();
-    setSearchParams(nextQuery ? { q: nextQuery } : {});
+    setSearchParams(value ? { q: value } : {}, { replace: true });
   };
 
   return (

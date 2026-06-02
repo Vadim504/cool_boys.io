@@ -11,6 +11,11 @@ type UiState = {
   selectedProductId: number | null;
 };
 
+type UiSearchParams = {
+  modal: string | null;
+  product: string | null;
+};
+
 const initialState: UiState = {
   isProfileOpen: false,
   isAuthOpen: false,
@@ -62,9 +67,8 @@ const uiSlice = createSlice({
       state.selectedProductId = null;
     },
     /** Восстановление UI из URL (обновление страницы, назад/вперёд в браузере) */
-    hydrateUiFromSearchParams: (state, action: PayloadAction<URLSearchParams>) => {
-      const modal = action.payload.get('modal');
-      const productRaw = action.payload.get('product');
+    hydrateUiFromSearchParams: (state, action: PayloadAction<UiSearchParams>) => {
+      const { modal, product: productRaw } = action.payload;
 
       state.isAuthOpen = modal === 'auth';
       state.isProfileOpen = modal === 'profile';

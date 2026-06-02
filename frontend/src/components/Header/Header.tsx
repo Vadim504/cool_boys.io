@@ -12,6 +12,9 @@ const Header = ({ value = '', onSearch }: HeaderProps) => {
         <span className="search-icon-ui search-icon" aria-hidden="true" />
         <input
           type="text"
+          inputMode="search"
+          enterKeyHint="search"
+          autoComplete="off"
           className="input--search-inline catalog-search-input" 
           aria-label="Поиск товаров"
           placeholder="Поиск..." 
