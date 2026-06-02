@@ -21,6 +21,7 @@ export function matchesProductSearch(product: Product, query: string): boolean {
     [
       product.name,
       product.description,
+      product.composition,
       product.badge,
       categoryNames.get(product.category),
     ]

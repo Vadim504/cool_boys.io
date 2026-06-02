@@ -78,11 +78,31 @@
   font-size: 16px;
 }
 
+.nutrition-section {
+  margin-top: 16px;
+}
+
+.nutrition-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nutrition-header h3 {
+  font-size: 18px;
+}
+
+.nutrition-header span {
+  color: #8f8f95;
+  font-size: 13px;
+}
+
 .nutrition-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 8px;
   padding: 12px 0;
   border-top: 1px solid var(--color-border-subtle);
   border-bottom: 1px solid var(--color-border-subtle);
