@@ -82,13 +82,13 @@
   width: 100%;
 }
 
-.map-section {
+.address-layout .map-section {
   flex: 1.5;
   background: #f0f0f0;
   position: relative;
 }
 
-.ui-section {
+.address-layout .ui-section {
   flex: 1;
   padding: 20px 24px 24px 24px;
   display: flex;
@@ -151,11 +151,11 @@
   overflow: hidden;
 }
 
-.map-section {
+.address-layout .map-section {
   min-width: 0;
 }
 
-.ui-section {
+.address-layout .ui-section {
   width: min(360px, 40%);
   min-width: 300px;
   overflow-y: auto;
@@ -170,10 +170,10 @@
     .address-layout {
         flex-direction: column; /* На маленьких экранах карта сверху, форма снизу */
     }
-    .map-section {
+    .address-layout .map-section {
         height: 250px;
     }
-    .ui-section {
+    .address-layout .ui-section {
       width: 100%;
       min-width: 0;
     }
@@ -183,6 +183,11 @@
   .modal-overlay {
     align-items: flex-end;
     padding: 8px;
+  }
+
+  .address-modal-overlay {
+    align-items: flex-start;
+    overflow-y: auto;
   }
 
   .modal-content,
@@ -200,6 +205,15 @@
 
   .modal-content.wide {
     padding: 0;
+  }
+
+  .address-modal-overlay .modal-content.wide {
+    flex: none;
+    align-self: flex-start;
+    height: fit-content;
+    min-height: 0;
+    max-height: none;
+    overflow: hidden;
   }
 
   .modal-close-button {

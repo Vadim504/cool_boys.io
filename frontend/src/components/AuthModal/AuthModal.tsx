@@ -55,6 +55,8 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
               <span className="prefix">+7</span>
               <input 
                 type="tel" 
+                name="phone"
+                autoComplete="tel-national"
                 autoFocus
                 placeholder="900 000 00 00" 
                 value={phone}
@@ -76,6 +78,9 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
             <p>Мы отправили SMS с кодом на номер <br/><b>+7 {phone}</b></p>
             <input 
               type="text" 
+              name="one-time-code"
+              inputMode="numeric"
+              autoComplete="one-time-code"
               className="input input--code code-input"
               placeholder="0 0 0 0"
               autoFocus

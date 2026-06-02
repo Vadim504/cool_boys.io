@@ -32,7 +32,7 @@ const AddressModal = ({ isOpen, onClose }: AddressModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay active" onClick={handleClose}>
+    <div className="modal-overlay active address-modal-overlay" onClick={handleClose}>
       <div 
         className={`modal-content ${modalView === 'form' ? 'wide' : ''}`} 
         onClick={(e) => e.stopPropagation()}

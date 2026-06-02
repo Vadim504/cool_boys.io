@@ -161,9 +161,12 @@
   align-items: flex-start;
   gap: 8px;
   margin-bottom: 10px;
+  min-width: 0;
 }
 
 .address-search-row .address-input {
+  flex: 1 1 0;
+  width: auto;
   min-width: 0;
   margin-bottom: 0;
 }
@@ -316,8 +319,9 @@
 
 @media (max-width: 767px) {
   .address-modal-container {
-    height: 100%;
+    height: auto;
     padding: 10px;
+    overflow: visible;
   }
 
   .map-section {
@@ -336,6 +340,19 @@
 
   .form-header h2 {
     font-size: 20px;
+  }
+
+  .form-section {
+    flex: none;
+    height: auto;
+    overflow: visible;
+  }
+
+  .city-selection-list,
+  .address-results {
+    flex: none;
+    max-height: none;
+    overflow: visible;
   }
 
   .input-grid {

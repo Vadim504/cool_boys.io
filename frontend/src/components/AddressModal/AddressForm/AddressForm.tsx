@@ -309,6 +309,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
             <div className="address-search-row">
               <input
                 type="search"
+                name="delivery-city-search"
                 className="address-input city-search-input"
                 placeholder="Поиск города..."
                 value={cityQuery}
@@ -388,10 +389,18 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
         ) : (
           <>
             <div className="inputs-scroll-area">
-              <input type="text" className="address-input" value={formValues.city} readOnly />
+              <input
+                type="text"
+                name="delivery-city"
+                autoComplete="address-level2"
+                className="address-input"
+                value={formValues.city}
+                readOnly
+              />
               <div className="address-search-row">
                 <input
                   type="search"
+                  name="delivery-street"
                   className="address-input"
                   placeholder="Улица и дом"
                   value={formValues.street}
@@ -455,18 +464,24 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
               <div className="input-grid">
                 <input
                   type="text"
+                  name="delivery-apartment"
+                  autoComplete="address-line2"
                   className="address-input"
                   placeholder="Квартира"
                   onChange={(event) => setFormValues({ ...formValues, apt: event.target.value })}
                 />
                 <input
                   type="text"
+                  name="delivery-floor"
+                  autoComplete="off"
                   className="address-input"
                   placeholder="Этаж"
                   onChange={(event) => setFormValues({ ...formValues, floor: event.target.value })}
                 />
                 <input
                   type="text"
+                  name="delivery-entrance"
+                  autoComplete="off"
                   className="address-input"
                   placeholder="Подъезд"
                   onChange={(event) =>
@@ -475,6 +490,8 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                 />
                 <input
                   type="text"
+                  name="delivery-intercom"
+                  autoComplete="off"
                   className="address-input"
                   placeholder="Домофон"
                   onChange={(event) =>
@@ -485,6 +502,8 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
 
               <input
                 type="text"
+                name="delivery-comment"
+                autoComplete="off"
                 className="address-input"
                 placeholder="Комментарий"
                 onChange={(event) =>

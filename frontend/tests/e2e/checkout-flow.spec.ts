@@ -271,3 +271,31 @@ test.describe('responsive mobile cart sheet', () => {
     await expect(page.locator('.map-sidebar.is-open .empty-cart-msg')).toHaveText('Корзина пока пуста');
   });
 });
+
+test.describe('responsive mobile address modal', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('stretches the address form below the map without nested scrollbars', async ({ page }) => {
+    await page.locator('.responsive-address-action').click();
+    await page.getByRole('button', { name: 'Новый адрес' }).click();
+
+    const citySearchRow = page.locator('.address-search-row');
+    const cityList = page.locator('.city-selection-list');
+    await expect(citySearchRow).toBeVisible();
+    expect(await citySearchRow.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+    expect(await cityList.evaluate((element) => element.scrollHeight <= element.clientHeight)).toBe(true);
+
+    await page.getByText('Казань', { exact: true }).click();
+
+    const map = page.locator('.map-section');
+    const form = page.locator('.form-section');
+    const mapBox = await map.boundingBox();
+    const formBox = await form.boundingBox();
+
+    expect(mapBox).not.toBeNull();
+    expect(formBox).not.toBeNull();
+    expect(formBox!.y).toBeGreaterThanOrEqual(mapBox!.y + mapBox!.height);
+    expect(await form.evaluate((element) => element.scrollHeight <= element.clientHeight)).toBe(true);
+    expect(await form.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+  });
+});
