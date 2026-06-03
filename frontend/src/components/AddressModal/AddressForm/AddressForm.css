@@ -6,15 +6,15 @@
   color: #333;
   cursor: pointer;
   padding: 4px 8px;
-  margin-right: auto; /* Толкает всё остальное вправо/центр */
+  margin-right: auto; 
   line-height: 1;
-  z-index: 2; /* Чтобы была кликабельной поверх заголовка */
+  z-index: 2; 
   border-radius: 8px;
   transition: background 0.2s;
 }
 
 .back-btn:hover {
-  background-color: var(--color-bg); /* Серый фон при наведении */
+  background-color: var(--color-bg); 
 }
 
 .back-btn:active {
@@ -24,7 +24,7 @@
 .address-modal-container {
   display: flex;
   width: 100%;
-  height: 100%; /* Занимает всё пространство внутри .modal-content */
+  height: 100%; 
   background: var(--color-surface);
   gap: 16px;
   box-sizing: border-box;
@@ -44,7 +44,7 @@
 
 #leaflet-map {
   width: 100%;
-  height: 100%; /* Карта должна быть на всю высоту левой части */
+  height: 100%; 
   border-radius: 24px;
 }
 
@@ -79,7 +79,7 @@
   position: absolute;
   top: 20px;
   left: 20px;
-  z-index: 1000; /* Поверх карты */
+  z-index: 1000; 
   display: flex;
   gap: 10px;
 }
@@ -92,14 +92,14 @@
 .form-section {
   flex: 1;
   display: flex;
-  flex-direction: column; /* Вертикальный стек элементов */
+  flex-direction: column; 
   height: 100%;
   min-width: 300px;
   max-width: 360px;
-  padding: 0 16px 16px 16px; /* Убираем padding сверху (0), оставляем по бокам и снизу */
+  padding: 0 16px 16px 16px; 
   box-sizing: border-box;
   background: var(--color-surface);
-  border-left: none; /* Убеждаемся, что линии нет */
+  border-left: none; 
   overflow-y: auto;
 }
 
@@ -115,33 +115,25 @@
   font-size: 22px;
   font-weight: 700;
   text-align: left;
-  margin: 0; /* Убираем отступы, чтобы заголовок был на одной линии с крестиком */
+  margin: 0; 
 }
+
 .form-section .close-btn {
   /* используйте .close-btn-round в разметке */
 }
 
 
 .search-input {
-  /* Сбрасываем все растягивания */
   flex: none !important; 
-  
-  /* Устанавливаем фиксированную высоту */
   height: 52px !important; 
   width: 100%;
-  
-  /* Внутренние отступы: 0 сверху/снизу, 20px по бокам */
   padding: 0 20px !important; 
-  
   background-color: var(--color-surface-input);
   border: none;
   border-radius: 16px;
   font-size: 16px;
   font-weight: 500;
-  
-  /* Чтобы padding не увеличивал высоту */
   box-sizing: border-box; 
-  
   margin-bottom: 20px;
   display: block;
 }
