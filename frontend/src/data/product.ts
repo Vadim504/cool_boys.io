@@ -46,7 +46,7 @@ const productImages = [
   'berry-marmalade',
 ] as const;
 
-const productImage = (id: number) => `/products/${productImages[id - 1]}.webp`;
+const productImage = (id: number) => `${import.meta.env.BASE_URL}products/${productImages[id - 1]}.webp`;
 
 const product = (
   id: number,
