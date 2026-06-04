@@ -98,14 +98,6 @@ const CartSidebar = () => {
       <div className="cart-card">
         <div className="cart-header">
           <div className="cart-title">Корзина</div>
-          <button
-            type="button"
-            className="close-btn-round close-btn-round--sm cart-drawer-close"
-            aria-label="Закрыть корзину"
-            onClick={ui.closeCart}
-          >
-            ×
-          </button>
           {cartItems.length > 0 && (
             <button
               type="button"
