@@ -1,11 +1,15 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
   filterBaseCities,
-  reverseGeocode,
-  searchCities,
+  formatStreetAddress,
+  OSM_TILE_URL,
   pickCityNameFromAddress,
+  reverseGeocode,
+  searchAddresses,
+  searchCities,
+  type AddressPick,
   type CityPick,
 } from '../../../utils/geocoding';
 import './AddressForm.css';
@@ -27,8 +31,8 @@ type AddressFormProps = {
   onSaveNewAddress: (newAddressString: string) => void;
 };
 
-const SEARCH_DEBOUNCE_MS = 450;
-const MIN_SEARCH_LENGTH = 2;
+const MIN_CITY_SEARCH_LENGTH = 2;
+const MIN_ADDRESS_SEARCH_LENGTH = 3;
 
 const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
   const [formStep, setFormStep] = useState<FormStep>('city');
@@ -43,75 +47,129 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
   });
   const [formError, setFormError] = useState('');
   const [cityQuery, setCityQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<CityPick[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchError, setSearchError] = useState('');
+  const [citySearchResults, setCitySearchResults] = useState<CityPick[]>([]);
+  const [hasCitySearch, setHasCitySearch] = useState(false);
+  const [isCitySearching, setIsCitySearching] = useState(false);
+  const [citySearchError, setCitySearchError] = useState('');
+  const [addressSearchResults, setAddressSearchResults] = useState<AddressPick[]>([]);
+  const [hasAddressSearch, setHasAddressSearch] = useState(false);
+  const [isAddressSearching, setIsAddressSearching] = useState(false);
+  const [addressSearchError, setAddressSearchError] = useState('');
+  const [mapStatus, setMapStatus] = useState('');
 
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstance = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.Marker | null>(null);
+  const markerRef = useRef<L.CircleMarker | null>(null);
   const formStepRef = useRef<FormStep>(formStep);
-  formStepRef.current = formStep;
+  const citySearchControllerRef = useRef<AbortController | null>(null);
+  const addressSearchControllerRef = useRef<AbortController | null>(null);
+  const reverseControllerRef = useRef<AbortController | null>(null);
 
-  const flyToCity = useCallback((coords: [number, number], zoom = 13) => {
+  useEffect(() => {
+    formStepRef.current = formStep;
+  }, [formStep]);
+
+  const focusLocation = useCallback((coords: [number, number], zoom = 13) => {
     if (!mapInstance.current) return;
-    mapInstance.current.flyTo(coords, zoom);
-    setTimeout(() => mapInstance.current?.invalidateSize(), 300);
+    mapInstance.current.setView(coords, zoom);
+    window.setTimeout(() => mapInstance.current?.invalidateSize(), 0);
   }, []);
 
   const placeMarker = useCallback((lat: number, lng: number) => {
     if (!mapInstance.current) return;
     const latLng = L.latLng(lat, lng);
+
     if (markerRef.current) {
       markerRef.current.setLatLng(latLng);
-    } else {
-      markerRef.current = L.marker(latLng).addTo(mapInstance.current);
+      return;
     }
+
+    markerRef.current = L.circleMarker(latLng, {
+      radius: 8,
+      color: '#ffffff',
+      fillColor: '#2563eb',
+      fillOpacity: 1,
+      weight: 3,
+    }).addTo(mapInstance.current);
   }, []);
 
   const applyCitySelection = useCallback(
     (city: CityPick) => {
-      setFormValues((prev) => ({ ...prev, city: city.label }));
+      setFormValues((prev) => ({ ...prev, city: city.label, street: '' }));
       setCityQuery('');
-      setSearchResults([]);
-      setSearchError('');
+      setCitySearchResults([]);
+      setHasCitySearch(false);
+      setCitySearchError('');
+      setAddressSearchResults([]);
+      setHasAddressSearch(false);
       setFormError('');
+      setMapStatus('');
       setFormStep('street');
-      flyToCity(city.coords, 13);
+      focusLocation(city.coords, 13);
       placeMarker(city.coords[0], city.coords[1]);
     },
-    [flyToCity, placeMarker]
+    [focusLocation, placeMarker]
+  );
+
+  const applyAddressSelection = useCallback(
+    (address: AddressPick) => {
+      setFormValues((prev) => ({ ...prev, street: address.label }));
+      setAddressSearchResults([]);
+      setHasAddressSearch(false);
+      setAddressSearchError('');
+      setFormError('');
+      setMapStatus(address.subtitle || address.label);
+      focusLocation(address.coords, 17);
+      placeMarker(address.coords[0], address.coords[1]);
+    },
+    [focusLocation, placeMarker]
   );
 
   const handleMapClick = useCallback(
-    async (e: L.LeafletMouseEvent) => {
-      const { lat, lng } = e.latlng;
+    async (event: L.LeafletMouseEvent) => {
+      const { lat, lng } = event.latlng;
+      reverseControllerRef.current?.abort();
+      const controller = new AbortController();
+      reverseControllerRef.current = controller;
       placeMarker(lat, lng);
+      setMapStatus('Определяем адрес...');
 
       try {
-        const data = await reverseGeocode(lat, lng);
-        if (!data?.address) return;
-
-        if (formStepRef.current === 'city') {
-          const cityName = pickCityNameFromAddress(data.address);
-          if (cityName) {
-            setFormValues((prev) => ({ ...prev, city: cityName }));
-            setCityQuery(cityName);
-            setFormStep('street');
-            setFormError('');
-          }
+        const data = await reverseGeocode(lat, lng, controller.signal);
+        if (!data?.address) {
+          setMapStatus('Не удалось определить адрес. Укажите его вручную.');
           return;
         }
 
-        const street = data.address.road || data.address.pedestrian || '';
-        const house = data.address.house_number || '';
-        setFormValues((prev) => ({
-          ...prev,
-          street: `${street}${house ? `, ${house}` : ''}`,
-        }));
-        setFormError('');
-      } catch (err) {
-        console.error(err);
+        setMapStatus(data.display_name);
+
+        if (formStepRef.current === 'city') {
+          const cityName = pickCityNameFromAddress(data.address);
+          if (!cityName) {
+            setMapStatus('Не удалось определить город. Выберите его из списка.');
+            return;
+          }
+
+          setFormValues((prev) => ({ ...prev, city: cityName, street: '' }));
+          setCityQuery('');
+          setCitySearchResults([]);
+          setHasCitySearch(false);
+          setFormStep('street');
+          setFormError('');
+          return;
+        }
+
+        const street = formatStreetAddress(data.address, data.display_name);
+        if (street) {
+          setFormValues((prev) => ({ ...prev, street }));
+          setAddressSearchResults([]);
+          setHasAddressSearch(false);
+          setFormError('');
+        }
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setMapStatus('Не удалось определить адрес. Укажите его вручную.');
+        console.error(error);
       }
     },
     [placeMarker]
@@ -119,14 +177,24 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
 
   useEffect(() => {
     if (mapRef.current && !mapInstance.current) {
-      mapInstance.current = L.map(mapRef.current, { zoomControl: false }).setView([55.75, 37.61], 11);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(
-        mapInstance.current
+      mapInstance.current = L.map(mapRef.current, { zoomControl: false }).setView(
+        [55.75, 37.61],
+        11
       );
+      L.tileLayer(OSM_TILE_URL, {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      }).addTo(mapInstance.current);
+      L.control.zoom({ position: 'bottomright' }).addTo(mapInstance.current);
       mapInstance.current.on('click', handleMapClick);
     }
 
     return () => {
+      citySearchControllerRef.current?.abort();
+      addressSearchControllerRef.current?.abort();
+      reverseControllerRef.current?.abort();
+
       if (mapInstance.current) {
         mapInstance.current.off('click', handleMapClick);
         mapInstance.current.remove();
@@ -136,45 +204,65 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
     };
   }, [handleMapClick]);
 
-  useEffect(() => {
+  const handleCitySearch = async () => {
     const query = cityQuery.trim();
-
-    if (query.length < MIN_SEARCH_LENGTH) {
-      setSearchResults([]);
-      setSearchError('');
-      setIsSearching(false);
+    if (query.length < MIN_CITY_SEARCH_LENGTH) {
+      setCitySearchResults([]);
+      setHasCitySearch(false);
+      setCitySearchError('Введите минимум 2 символа');
       return;
     }
 
+    citySearchControllerRef.current?.abort();
     const controller = new AbortController();
-    const timer = window.setTimeout(async () => {
-      setIsSearching(true);
-      setSearchError('');
+    citySearchControllerRef.current = controller;
+    setIsCitySearching(true);
+    setCitySearchError('');
+    setHasCitySearch(true);
 
-      try {
-        const results = await searchCities(query, controller.signal);
-        setSearchResults(results);
-      } catch (err) {
-        if (controller.signal.aborted) return;
-        setSearchResults([]);
-        setSearchError('Не удалось загрузить города. Попробуйте ещё раз.');
-        console.error(err);
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsSearching(false);
-        }
-      }
-    }, SEARCH_DEBOUNCE_MS);
+    try {
+      setCitySearchResults(await searchCities(query, controller.signal));
+    } catch (error) {
+      if (controller.signal.aborted) return;
+      setCitySearchResults([]);
+      setCitySearchError('Не удалось загрузить города. Попробуйте еще раз.');
+      console.error(error);
+    } finally {
+      if (!controller.signal.aborted) setIsCitySearching(false);
+    }
+  };
 
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
-    };
-  }, [cityQuery]);
+  const handleAddressSearch = async () => {
+    const street = formValues.street.trim();
+    if (street.length < MIN_ADDRESS_SEARCH_LENGTH) {
+      setAddressSearchResults([]);
+      setHasAddressSearch(false);
+      setAddressSearchError('Введите улицу или адрес дома');
+      return;
+    }
+
+    addressSearchControllerRef.current?.abort();
+    const controller = new AbortController();
+    addressSearchControllerRef.current = controller;
+    setIsAddressSearching(true);
+    setAddressSearchError('');
+    setHasAddressSearch(true);
+
+    try {
+      setAddressSearchResults(
+        await searchAddresses(formValues.city, street, controller.signal)
+      );
+    } catch (error) {
+      if (controller.signal.aborted) return;
+      setAddressSearchResults([]);
+      setAddressSearchError('Не удалось найти адрес. Попробуйте еще раз.');
+      console.error(error);
+    } finally {
+      if (!controller.signal.aborted) setIsAddressSearching(false);
+    }
+  };
 
   const filteredBaseCities = filterBaseCities(cityQuery);
-  const showBaseCities = filteredBaseCities.length > 0;
-  const showSearchResults = cityQuery.trim().length >= MIN_SEARCH_LENGTH;
 
   const handleFinalSave = () => {
     if (!formValues.street.trim()) {
@@ -182,10 +270,10 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
       return;
     }
 
-    let finalAddr = `${formValues.city}, ${formValues.street.trim()}`;
-    if (formValues.apt) finalAddr += `, кв. ${formValues.apt}`;
+    let finalAddress = `${formValues.city}, ${formValues.street.trim()}`;
+    if (formValues.apt) finalAddress += `, кв. ${formValues.apt}`;
 
-    onSaveNewAddress(finalAddr);
+    onSaveNewAddress(finalAddress);
     onBackToList();
   };
 
@@ -196,15 +284,19 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
           <button
             type="button"
             className="control-btn-round control-btn"
+            aria-label="Назад"
             onClick={formStep === 'city' ? onBackToList : () => setFormStep('city')}
           >
             ←
           </button>
         </div>
         <div ref={mapRef} id="leaflet-map" />
-        {formStep === 'city' && (
-          <p className="map-hint">Можно выбрать город из списка или ткнуть по карте</p>
-        )}
+        <p className="map-hint">
+          {mapStatus ||
+            (formStep === 'city'
+              ? 'Выберите город из списка или нажмите на карту'
+              : 'Нажмите на карту, чтобы уточнить адрес')}
+        </p>
       </div>
 
       <div className="form-section">
@@ -214,20 +306,44 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
 
         {formStep === 'city' ? (
           <div className="inputs-scroll-area city-step">
-            <input
-              type="text"
-              className="address-input city-search-input"
-              placeholder="Поиск города..."
-              value={cityQuery}
-              onChange={(e) => setCityQuery(e.target.value)}
-              autoComplete="off"
-            />
+            <div className="address-search-row">
+              <input
+                type="search"
+                name="delivery-city-search"
+                className="address-input city-search-input"
+                placeholder="Поиск города..."
+                value={cityQuery}
+                onChange={(event) => {
+                  setCityQuery(event.target.value);
+                  setCitySearchError('');
+                  setHasCitySearch(false);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter') return;
+                  event.preventDefault();
+                  void handleCitySearch();
+                }}
+                autoComplete="off"
+              />
+              <button
+                type="button"
+                className="btn btn--primary btn--md address-search-button"
+                onClick={() => void handleCitySearch()}
+                disabled={isCitySearching}
+              >
+                Найти
+              </button>
+            </div>
 
-            {isSearching && <p className="city-search-status">Ищем города…</p>}
-            {searchError && <p className="city-search-status city-search-status--error">{searchError}</p>}
+            {isCitySearching && <p className="city-search-status">Ищем город...</p>}
+            {citySearchError && (
+              <p className="city-search-status city-search-status--error">
+                {citySearchError}
+              </p>
+            )}
 
             <div className="city-selection-list">
-              {showBaseCities && (
+              {filteredBaseCities.length > 0 && (
                 <div className="city-list-group">
                   <p className="city-list-label">Популярные</p>
                   {filteredBaseCities.map((city) => (
@@ -243,13 +359,17 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                 </div>
               )}
 
-              {showSearchResults && (
+              {hasCitySearch && (
                 <div className="city-list-group">
                   <p className="city-list-label">Результаты поиска</p>
-                  {!isSearching && searchResults.length === 0 && !searchError && (
-                    <p className="city-search-empty">Ничего не найдено. Попробуйте другое название.</p>
-                  )}
-                  {searchResults.map((city) => (
+                  {!isCitySearching &&
+                    citySearchResults.length === 0 &&
+                    !citySearchError && (
+                      <p className="city-search-empty">
+                        Ничего не найдено. Попробуйте другое название.
+                      </p>
+                    )}
+                  {citySearchResults.map((city) => (
                     <button
                       key={city.placeId ?? `${city.label}-${city.coords.join()}`}
                       type="button"
@@ -269,52 +389,126 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
         ) : (
           <>
             <div className="inputs-scroll-area">
-              <input type="text" className="address-input" value={formValues.city} readOnly />
               <input
                 type="text"
+                name="delivery-city"
+                autoComplete="address-level2"
                 className="address-input"
-                placeholder="Улица и дом"
-                value={formValues.street}
-                onChange={(e) => {
-                  setFormValues({ ...formValues, street: e.target.value });
-                  if (formError) setFormError('');
-                }}
+                value={formValues.city}
+                readOnly
               />
+              <div className="address-search-row">
+                <input
+                  type="search"
+                  name="delivery-street"
+                  className="address-input"
+                  placeholder="Улица и дом"
+                  value={formValues.street}
+                  onChange={(event) => {
+                    setFormValues({ ...formValues, street: event.target.value });
+                    setAddressSearchError('');
+                    setHasAddressSearch(false);
+                    if (formError) setFormError('');
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key !== 'Enter') return;
+                    event.preventDefault();
+                    void handleAddressSearch();
+                  }}
+                  autoComplete="off"
+                />
+                <button
+                  type="button"
+                  className="btn btn--primary btn--md address-search-button"
+                  onClick={() => void handleAddressSearch()}
+                  disabled={isAddressSearching}
+                >
+                  Найти
+                </button>
+              </div>
+
+              {isAddressSearching && <p className="city-search-status">Ищем адрес...</p>}
+              {addressSearchError && (
+                <p className="city-search-status city-search-status--error">
+                  {addressSearchError}
+                </p>
+              )}
+              {hasAddressSearch && addressSearchResults.length === 0 && !isAddressSearching && (
+                <p className="city-search-empty">
+                  Ничего не найдено. Проверьте город, улицу и номер дома.
+                </p>
+              )}
+              {addressSearchResults.length > 0 && (
+                <div className="address-results">
+                  {addressSearchResults.map((address) => (
+                    <button
+                      key={address.placeId ?? `${address.label}-${address.coords.join()}`}
+                      type="button"
+                      className="city-item city-item--search"
+                      onClick={() => applyAddressSelection(address)}
+                    >
+                      <span className="city-item-name">{address.label}</span>
+                      {address.subtitle && (
+                        <span className="city-item-subtitle">{address.subtitle}</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {formError && <div className="address-form-error">{formError}</div>}
-              <p className="street-map-hint">Укажите адрес вручную или нажмите на карту слева</p>
+              <p className="street-map-hint">
+                Введите улицу и дом, затем нажмите «Найти», или укажите точку на карте
+              </p>
 
               <div className="input-grid">
                 <input
                   type="text"
+                  name="delivery-apartment"
+                  autoComplete="address-line2"
                   className="address-input"
                   placeholder="Квартира"
-                  onChange={(e) => setFormValues({ ...formValues, apt: e.target.value })}
+                  onChange={(event) => setFormValues({ ...formValues, apt: event.target.value })}
                 />
                 <input
                   type="text"
+                  name="delivery-floor"
+                  autoComplete="off"
                   className="address-input"
                   placeholder="Этаж"
-                  onChange={(e) => setFormValues({ ...formValues, floor: e.target.value })}
+                  onChange={(event) => setFormValues({ ...formValues, floor: event.target.value })}
                 />
                 <input
                   type="text"
+                  name="delivery-entrance"
+                  autoComplete="off"
                   className="address-input"
                   placeholder="Подъезд"
-                  onChange={(e) => setFormValues({ ...formValues, entrance: e.target.value })}
+                  onChange={(event) =>
+                    setFormValues({ ...formValues, entrance: event.target.value })
+                  }
                 />
                 <input
                   type="text"
+                  name="delivery-intercom"
+                  autoComplete="off"
                   className="address-input"
                   placeholder="Домофон"
-                  onChange={(e) => setFormValues({ ...formValues, intercom: e.target.value })}
+                  onChange={(event) =>
+                    setFormValues({ ...formValues, intercom: event.target.value })
+                  }
                 />
               </div>
 
               <input
                 type="text"
+                name="delivery-comment"
+                autoComplete="off"
                 className="address-input"
                 placeholder="Комментарий"
-                onChange={(e) => setFormValues({ ...formValues, comment: e.target.value })}
+                onChange={(event) =>
+                  setFormValues({ ...formValues, comment: event.target.value })
+                }
               />
             </div>
 

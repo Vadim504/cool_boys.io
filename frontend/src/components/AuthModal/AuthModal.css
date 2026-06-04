@@ -40,6 +40,11 @@
   width: 100%;
 }
 
+.code-input {
+  display: block;
+  margin-bottom: var(--space-xl);
+}
+
 .prefix {
   font-weight: var(--font-weight-semibold);
   margin-right: 10px;

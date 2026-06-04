@@ -147,6 +147,8 @@ const SupportChat = ({ onClose }) => {
         <div className="chat-input">
           <input
             type="text"
+            name="support-message"
+            autoComplete="off"
             placeholder="Напишите сообщение..."
             value={input}
             onChange={(e) => setInput(e.target.value)}

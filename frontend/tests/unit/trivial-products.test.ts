@@ -10,4 +10,23 @@ describe('trivial products checks', () => {
     expect(productsData.length).toBeGreaterThanOrEqual(30);
     expect(productsData.every((product) => !product.image.includes('via.placeholder.com'))).toBe(true);
   });
+
+  it('provides descriptions, ingredients and nutrition facts for every product', () => {
+    expect(
+      productsData.every((product) => {
+        const nutrition = product.nutrition;
+
+        return Boolean(
+          product.description &&
+          product.composition &&
+          nutrition &&
+          nutrition.calories >= 0 &&
+          nutrition.proteins >= 0 &&
+          nutrition.fats >= 0 &&
+          nutrition.carbohydrates >= 0 &&
+          ['100 г', '100 мл'].includes(nutrition.per)
+        );
+      })
+    ).toBe(true);
+  });
 });

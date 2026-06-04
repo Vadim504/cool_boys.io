@@ -4,6 +4,14 @@ export type Category = {
   icon: string;
 };
 
+export type NutritionFacts = {
+  calories: number;
+  proteins: number;
+  fats: number;
+  carbohydrates: number;
+  per: '100 г' | '100 мл';
+};
+
 export type Product = {
   id: number;
   name: string;
@@ -14,6 +22,8 @@ export type Product = {
   stock: number;
   oldPrice?: number;
   description?: string;
+  composition?: string;
+  nutrition?: NutritionFacts;
   badge?: string;
 };
 

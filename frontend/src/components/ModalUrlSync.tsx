@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { hydrateUiFromSearchParams } from '../store/uiSlice';
 import { useAppDispatch } from '../store/hooks';
+import { MODAL_PARAM, PRODUCT_PARAM } from '../routes/modalSearchParams';
 
 /**
  * Синхронизирует Redux с query-параметрами URL.
@@ -12,7 +13,12 @@ const ModalUrlSync = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    dispatch(hydrateUiFromSearchParams(searchParams));
+    dispatch(
+      hydrateUiFromSearchParams({
+        modal: searchParams.get(MODAL_PARAM),
+        product: searchParams.get(PRODUCT_PARAM),
+      })
+    );
   }, [dispatch, searchParams]);
 
   return null;

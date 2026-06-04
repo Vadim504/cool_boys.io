@@ -4,56 +4,6 @@ import { useUiNavigation } from '../../hooks/useUiNavigation';
 import { productsData } from '../../data/product';
 import type { Product } from '../../types';
 
-const CATEGORY_HINTS: Record<string, string> = {
-  dairy: 'молочный продукт',
-  beverages: 'напиток',
-  'vegetables-fruits': 'свежий продукт',
-  'fish-seafood': 'рыбный продукт',
-  'meat-poultry': 'мясной продукт',
-  snacks: 'снек',
-  sweets: 'десерт',
-  frozen: 'замороженный продукт',
-  'bread-bakery': 'хлебобулочный продукт',
-  'ready-meal': 'готовое блюдо',
-};
-
-const parseWeightNumber = (weight = '') => {
-  const match = weight.match(/\d+/);
-  return match ? Number(match[0]) : 100;
-};
-
-const parseUnit = (weight = '') => {
-  const w = weight.toLowerCase();
-  if (w.includes('мл')) return 'мл';
-  if (w.includes('кг')) return 'кг';
-  return 'г';
-};
-
-const buildAutoDescription = (product: Product) => {
-  if (product.description) return product.description;
-  const type = CATEGORY_HINTS[product.category] || 'продукт';
-  return `${product.name} — ${type} на каждый день. Подходит для быстрого перекуса, завтрака или дополнения к основному блюду. Удобный формат ${product.weight} и стабильное качество.`;
-};
-
-const buildAutoComposition = (product: Product) => {
-  const type = CATEGORY_HINTS[product.category] || 'продукт';
-  return `Состав: сырье категории "${type}", питьевая вода, натуральные вкусо-ароматические компоненты. Без резких искусственных добавок, подходит для регулярного употребления.`;
-};
-
-const buildNutrition = (product: Product) => {
-  const weightNum = parseWeightNumber(product.weight);
-  const unit = parseUnit(product.weight);
-  const base = Math.max(1, Math.round(product.price / 8));
-
-  return {
-    kcal: unit === 'мл' ? Math.round(base * 1.2) : Math.round(base * 1.5),
-    proteins: (base * 0.25).toFixed(1),
-    fats: (base * 0.18).toFixed(1),
-    carbs: (base * 0.32).toFixed(1),
-    portion: `${weightNum} ${unit}`,
-  };
-};
-
 type ProductDetailModalProps = {
   product: Product;
   onClose: () => void;
@@ -61,9 +11,7 @@ type ProductDetailModalProps = {
 
 const ProductDetailModal = ({ product, onClose }: ProductDetailModalProps) => {
   const ui = useUiNavigation();
-  const nutrition = buildNutrition(product);
-  const description = buildAutoDescription(product);
-  const composition = buildAutoComposition(product);
+  const nutrition = product.nutrition;
   const similarProducts = productsData
     .filter((item) => item.category === product.category && item.id !== product.id)
     .slice(0, 4);
@@ -102,35 +50,43 @@ const ProductDetailModal = ({ product, onClose }: ProductDetailModalProps) => {
 
         <div className="detail-info">
           <h2>{product.name}</h2>
-          <span className="detail-weight">{nutrition.portion}</span>
+          <span className="detail-weight">{product.weight}</span>
 
           <div className="detail-description">
             <h3>Описание</h3>
-            <p>{description}</p>
+            <p>{product.description || 'Описание товара уточняется.'}</p>
           </div>
 
-          <div className="nutrition-grid">
-            <div>
-              <span className="nutrition-value">{nutrition.kcal}</span>
-              <span className="nutrition-label">Ккал</span>
+          {nutrition && (
+            <div className="nutrition-section">
+              <div className="nutrition-header">
+                <h3>Пищевая ценность</h3>
+                <span>на {nutrition.per}</span>
+              </div>
+              <div className="nutrition-grid">
+                <div>
+                  <span className="nutrition-value">{nutrition.calories}</span>
+                  <span className="nutrition-label">Ккал</span>
+                </div>
+                <div>
+                  <span className="nutrition-value">{nutrition.proteins} г</span>
+                  <span className="nutrition-label">Белки</span>
+                </div>
+                <div>
+                  <span className="nutrition-value">{nutrition.fats} г</span>
+                  <span className="nutrition-label">Жиры</span>
+                </div>
+                <div>
+                  <span className="nutrition-value">{nutrition.carbohydrates} г</span>
+                  <span className="nutrition-label">Углеводы</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <span className="nutrition-value">{nutrition.proteins} г</span>
-              <span className="nutrition-label">Белки</span>
-            </div>
-            <div>
-              <span className="nutrition-value">{nutrition.fats} г</span>
-              <span className="nutrition-label">Жиры</span>
-            </div>
-            <div>
-              <span className="nutrition-value">{nutrition.carbs} г</span>
-              <span className="nutrition-label">Углеводы</span>
-            </div>
-          </div>
+          )}
 
           <div className="detail-description">
             <h3>Состав</h3>
-            <p>{composition}</p>
+            <p>{product.composition || 'Состав товара уточняется.'}</p>
           </div>
 
           <div className="detail-footer">

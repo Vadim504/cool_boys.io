@@ -33,17 +33,17 @@ test('user opens product detail, adds product and opens checkout modal', async (
 test('user edits and clears cart from sidebar', async ({ page }) => {
   await page.locator('.add-button').first().click();
   await expect(page.locator('.cart-item')).toContainText('Молоко 3.2%');
-  await expect(page.locator('.cart-item-stepper span')).toHaveText('1');
+  await expect(page.locator('.cart-item .stepper__count')).toHaveText('1');
 
   await page.reload();
   await expect(page.locator('.cart-item')).toContainText('Молоко 3.2%');
-  await expect(page.locator('.cart-item-stepper span')).toHaveText('1');
+  await expect(page.locator('.cart-item .stepper__count')).toHaveText('1');
 
   await page.getByRole('button', { name: 'Добавить Молоко 3.2%' }).click();
-  await expect(page.locator('.cart-item-stepper span')).toHaveText('2');
+  await expect(page.locator('.cart-item .stepper__count')).toHaveText('2');
 
   await page.getByRole('button', { name: 'Уменьшить Молоко 3.2%' }).click();
-  await expect(page.locator('.cart-item-stepper span')).toHaveText('1');
+  await expect(page.locator('.cart-item .stepper__count')).toHaveText('1');
 
   await page.getByRole('button', { name: 'Удалить Молоко 3.2%' }).click();
   await expect(page.locator('.empty-cart-msg')).toHaveText('Корзина пока пуста');
@@ -84,7 +84,7 @@ test('user adds delivery address and sees it in sidebar', async ({ page }) => {
   await page.getByRole('button', { name: 'Новый адрес' }).click();
   await page.getByText('Казань').click();
   await page.getByRole('button', { name: 'Да, всё верно' }).click();
-  await expect(page.getByText('Введите улицу и дом')).toBeVisible();
+  await expect(page.getByText('Введите улицу и дом', { exact: true })).toBeVisible();
 
   await page.getByPlaceholder('Улица и дом').fill('улица Кремлевская, 1');
   await page.getByRole('button', { name: 'Да, всё верно' }).click();
@@ -94,6 +94,44 @@ test('user adds delivery address and sees it in sidebar', async ({ page }) => {
   await expect(activeAddress).toContainText('улица Кремлевская');
   await page.locator('.modal-close-button').click();
   await expect(page.locator('.map-sidebar .address-current')).toContainText('Казань, улица Кремлевская, 1');
+});
+
+test('user finds a delivery house on the map by address', async ({ page }) => {
+  await page.route('https://nominatim.openstreetmap.org/search?*', async (route) => {
+    const url = new URL(route.request().url());
+    if (!url.searchParams.has('street')) {
+      await route.continue();
+      return;
+    }
+
+    await route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          place_id: 1001,
+          lat: '55.796127',
+          lon: '49.108795',
+          display_name: 'Кремлевская улица, 1, Казань, Татарстан, Россия',
+          address: {
+            road: 'Кремлевская улица',
+            house_number: '1',
+            city: 'Казань',
+          },
+        },
+      ]),
+    });
+  });
+
+  await page.locator('.address-selector').click();
+  await page.getByRole('button', { name: 'Новый адрес' }).click();
+  await page.getByText('Казань').click();
+  await page.getByPlaceholder('Улица и дом').fill('Кремлевская улица, 1');
+  await page.getByRole('button', { name: 'Найти' }).click();
+  await page.getByRole('button', { name: /Кремлевская улица, 1/ }).click();
+
+  await expect(page.getByPlaceholder('Улица и дом')).toHaveValue('Кремлевская улица, 1');
+  await expect(page.locator('.leaflet-interactive')).toHaveCount(1);
+  await expect(page.locator('.leaflet-interactive')).not.toHaveAttribute('d', 'M0 0');
 });
 
 test('user opens support chat', async ({ page }) => {
@@ -106,8 +144,17 @@ test('user signs in and opens profile', async ({ page }) => {
   await page.getByRole('button', { name: 'Войти' }).click();
   await page.getByPlaceholder('900 000 00 00').fill('9000000000');
   await page.getByRole('button', { name: 'Получить код' }).click();
-  await page.getByPlaceholder('0 0 0 0').fill('1234');
-  await page.getByRole('button', { name: 'Подтвердить' }).click();
+  const codeInput = page.getByPlaceholder('0 0 0 0');
+  const verifyButton = page.getByRole('button', { name: 'Подтвердить' });
+  const codeInputBox = await codeInput.boundingBox();
+  const verifyButtonBox = await verifyButton.boundingBox();
+
+  expect(codeInputBox).not.toBeNull();
+  expect(verifyButtonBox).not.toBeNull();
+  expect(verifyButtonBox!.y - (codeInputBox!.y + codeInputBox!.height)).toBeGreaterThanOrEqual(16);
+
+  await codeInput.fill('1234');
+  await verifyButton.click();
 
   await page.getByRole('button', { name: /9000000000/ }).click();
   await expect(page.locator('.profile-container')).toBeVisible();
@@ -212,7 +259,7 @@ test.describe('responsive mobile cart sheet', () => {
     expect(sheetBox.y).toBeLessThan(844);
 
     await sheet.getByRole('button', { name: 'Добавить Молоко 3.2%' }).click();
-    await expect(sheet.locator('.cart-item-stepper span')).toHaveText('2');
+    await expect(sheet.locator('.cart-item .stepper__count')).toHaveText('2');
 
     await sheet.getByRole('button', { name: 'Оформить заказ' }).click();
     await expect(page.locator('.checkout-modal')).toBeVisible();
@@ -222,5 +269,33 @@ test.describe('responsive mobile cart sheet', () => {
     await cartButton.click();
     await page.getByRole('button', { name: 'Очистить' }).click();
     await expect(page.locator('.map-sidebar.is-open .empty-cart-msg')).toHaveText('Корзина пока пуста');
+  });
+});
+
+test.describe('responsive mobile address modal', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('stretches the address form below the map without nested scrollbars', async ({ page }) => {
+    await page.locator('.responsive-address-action').click();
+    await page.getByRole('button', { name: 'Новый адрес' }).click();
+
+    const citySearchRow = page.locator('.address-search-row');
+    const cityList = page.locator('.city-selection-list');
+    await expect(citySearchRow).toBeVisible();
+    expect(await citySearchRow.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+    expect(await cityList.evaluate((element) => element.scrollHeight <= element.clientHeight)).toBe(true);
+
+    await page.getByText('Казань', { exact: true }).click();
+
+    const map = page.locator('.map-section');
+    const form = page.locator('.form-section');
+    const mapBox = await map.boundingBox();
+    const formBox = await form.boundingBox();
+
+    expect(mapBox).not.toBeNull();
+    expect(formBox).not.toBeNull();
+    expect(formBox!.y).toBeGreaterThanOrEqual(mapBox!.y + mapBox!.height);
+    expect(await form.evaluate((element) => element.scrollHeight <= element.clientHeight)).toBe(true);
+    expect(await form.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
   });
 });
