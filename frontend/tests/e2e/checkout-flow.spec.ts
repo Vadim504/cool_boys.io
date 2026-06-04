@@ -42,12 +42,54 @@ async function openAddressPicker(page: Page) {
   await page.locator('.address-selector').click();
 }
 
+async function mockAddressSearch(page: Page, validStreet = 'улица Кремлевская, 1') {
+  await page.route('https://nominatim.openstreetmap.org/search?*', async (route) => {
+    const url = new URL(route.request().url());
+    if (!url.searchParams.has('street')) {
+      await route.continue();
+      return;
+    }
+
+    const streetQuery = url.searchParams.get('street') || validStreet;
+    if (streetQuery.includes('10000000000000')) {
+      await route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
+      return;
+    }
+
+    const [roadRaw, houseRaw] = streetQuery.split(',').map((part) => part.trim());
+    const house = houseRaw || streetQuery.match(/\d+[a-zа-яё/-]*$/i)?.[0] || '1';
+
+    await route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          place_id: 1001,
+          lat: '55.796127',
+          lon: '49.108795',
+          display_name: `${roadRaw}, ${house}, Казань, Татарстан, Россия`,
+          address: {
+            road: roadRaw,
+            house_number: house,
+            city: 'Казань',
+          },
+        },
+      ]),
+    });
+  });
+}
+
 async function addDeliveryAddress(page: Page, street = 'улица Кремлевская, 1') {
+  await mockAddressSearch(page, street);
   await openAddressPicker(page);
   await expect(page.getByText('Выбрать адрес')).toBeVisible();
   await page.getByRole('button', { name: 'Новый адрес' }).click();
   await page.getByText('Казань', { exact: true }).click();
   await page.getByPlaceholder('Улица и дом').fill(street);
+  await page.getByRole('button', { name: 'Найти' }).click();
+  await page.getByRole('button', { name: new RegExp(street) }).click();
   await page.getByPlaceholder('Квартира').fill('12');
   await page.getByPlaceholder('Этаж').fill('3');
   await page.getByPlaceholder('Подъезд').fill('2');
@@ -169,6 +211,7 @@ test('search page shows results and empty state', async ({ page }) => {
 });
 
 test('user adds delivery address and sees it in sidebar', async ({ page }) => {
+  await mockAddressSearch(page);
   await signIn(page);
   await page.locator('.address-selector').click();
   await expect(page.getByText('Выбрать адрес')).toBeVisible();
@@ -182,7 +225,15 @@ test('user adds delivery address and sees it in sidebar', async ({ page }) => {
   await page.getByRole('button', { name: 'Да, всё верно' }).click();
   await expect(page.getByText('Укажите номер дома', { exact: true })).toBeVisible();
 
+  await page.getByPlaceholder('Улица и дом').fill('Пушкина 10000000000000');
+  await page.getByRole('button', { name: 'Найти' }).click();
+  await expect(page.getByText('Ничего не найдено. Проверьте город, улицу и номер дома.')).toBeVisible();
+  await page.getByRole('button', { name: 'Да, всё верно' }).click();
+  await expect(page.getByText('Нажмите «Найти» и выберите адрес из списка')).toBeVisible();
+
   await page.getByPlaceholder('Улица и дом').fill('улица Кремлевская, 1');
+  await page.getByRole('button', { name: 'Найти' }).click();
+  await page.getByRole('button', { name: /улица Кремлевская, 1/ }).click();
   await page.getByPlaceholder('Квартира').fill('12');
   await page.getByPlaceholder('Этаж').fill('3');
   await page.getByPlaceholder('Подъезд').fill('2');

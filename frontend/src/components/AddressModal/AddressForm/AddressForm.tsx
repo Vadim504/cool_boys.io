@@ -28,6 +28,11 @@ type FormValues = {
   comment: string;
 };
 
+type ConfirmedAddress = {
+  street: string;
+  placeId?: string;
+} | null;
+
 type AddressFormProps = {
   onBackToList: () => void;
   onSaveNewAddress: (newAddress: Address) => void;
@@ -35,6 +40,13 @@ type AddressFormProps = {
 
 const MIN_CITY_SEARCH_LENGTH = 2;
 const MIN_ADDRESS_SEARCH_LENGTH = 3;
+
+const normalizeAddressText = (value: string) =>
+  value
+    .toLocaleLowerCase('ru-RU')
+    .replace(/\s*,\s*/g, ', ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
   const [formStep, setFormStep] = useState<FormStep>('city');
@@ -58,6 +70,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
   const [isAddressSearching, setIsAddressSearching] = useState(false);
   const [addressSearchError, setAddressSearchError] = useState('');
   const [mapStatus, setMapStatus] = useState('');
+  const [confirmedAddress, setConfirmedAddress] = useState<ConfirmedAddress>(null);
 
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstance = useRef<L.Map | null>(null);
@@ -104,6 +117,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
       setCitySearchError('');
       setAddressSearchResults([]);
       setHasAddressSearch(false);
+      setConfirmedAddress(null);
       setFormError('');
       setMapStatus('');
       setFormStep('street');
@@ -121,6 +135,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
       setAddressSearchError('');
       setFormError('');
       setMapStatus(address.subtitle || address.label);
+      setConfirmedAddress({ street: address.label, placeId: address.placeId });
       focusLocation(address.coords, 17);
       placeMarker(address.coords[0], address.coords[1]);
     },
@@ -156,17 +171,22 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
           setCityQuery('');
           setCitySearchResults([]);
           setHasCitySearch(false);
+          setConfirmedAddress(null);
           setFormStep('street');
           setFormError('');
           return;
         }
 
         const street = formatStreetAddress(data.address, data.display_name);
-        if (street) {
+        if (street && hasHouseNumber(street)) {
           setFormValues((prev) => ({ ...prev, street }));
           setAddressSearchResults([]);
           setHasAddressSearch(false);
+          setConfirmedAddress({ street, placeId: String(data.place_id) });
           setFormError('');
+        } else {
+          setConfirmedAddress(null);
+          setFormError('Укажите точный адрес с номером дома');
         }
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -248,6 +268,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
     addressSearchControllerRef.current = controller;
     setIsAddressSearching(true);
     setAddressSearchError('');
+    setFormError('');
     setHasAddressSearch(true);
 
     try {
@@ -280,6 +301,14 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
 
     if (!hasHouseNumber(street)) {
       setFormError('Укажите номер дома');
+      return;
+    }
+
+    if (
+      !confirmedAddress ||
+      normalizeAddressText(confirmedAddress.street) !== normalizeAddressText(street)
+    ) {
+      setFormError('Нажмите «Найти» и выберите адрес из списка');
       return;
     }
 
@@ -424,6 +453,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   value={formValues.street}
                   onChange={(event) => {
                     setFormValues({ ...formValues, street: event.target.value });
+                    setConfirmedAddress(null);
                     setAddressSearchError('');
                     setHasAddressSearch(false);
                     if (formError) setFormError('');

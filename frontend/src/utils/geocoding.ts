@@ -279,12 +279,26 @@ export async function searchAddresses(
     signal
   );
 
-  return data.map((place) => ({
-    label: formatStreetAddress(place.address, place.display_name),
-    coords: [Number(place.lat), Number(place.lon)],
-    placeId: String(place.place_id),
-    subtitle: place.display_name,
-  }));
+  return data
+    .filter((place) => {
+      const address = place.address;
+      return Boolean(
+        address?.house_number &&
+        (
+          address.road ||
+          address.pedestrian ||
+          address.residential ||
+          address.footway ||
+          address.path
+        )
+      );
+    })
+    .map((place) => ({
+      label: formatStreetAddress(place.address, place.display_name),
+      coords: [Number(place.lat), Number(place.lon)],
+      placeId: String(place.place_id),
+      subtitle: place.display_name,
+    }));
 }
 
 export async function reverseGeocode(
