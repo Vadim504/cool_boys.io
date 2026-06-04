@@ -1,7 +1,6 @@
 @import './styles/tokens.css';
 @import './styles/ui.css';
 
-/* === Сброс === */
 * {
   margin: 0;
   padding: 0;

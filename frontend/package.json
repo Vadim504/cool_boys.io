@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "private": true,
+  "homepage": "https://vadim504.github.io/cool_boys.io",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

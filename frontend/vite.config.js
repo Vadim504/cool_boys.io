@@ -11,4 +11,5 @@ const githubPagesBase = process.env.GITHUB_ACTIONS === 'true' && repositoryName
 export default defineConfig({
   base: process.env.VITE_BASE_PATH || githubPagesBase,
   plugins: [react()],
+  base: '/cool_boys.io/',
 })
