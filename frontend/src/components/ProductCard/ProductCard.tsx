@@ -14,7 +14,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   // Получаем текущее количество товара в корзине из Redux
   const cartItem = useAppSelector(state => 
-    state.cart.items.find(item => item.id === product.id)
+    state.cart.items.find(item => item.productId === product.id)
   );
   const count = cartItem ? cartItem.quantity : 0;
 

@@ -12,6 +12,8 @@ import {
   type AddressPick,
   type CityPick,
 } from '../../../utils/geocoding';
+import { createAddress, hasHouseNumber } from '../../../utils/address';
+import type { Address } from '../../../types';
 import './AddressForm.css';
 
 type FormStep = 'city' | 'street';
@@ -26,13 +28,25 @@ type FormValues = {
   comment: string;
 };
 
+type ConfirmedAddress = {
+  street: string;
+  placeId?: string;
+} | null;
+
 type AddressFormProps = {
   onBackToList: () => void;
-  onSaveNewAddress: (newAddressString: string) => void;
+  onSaveNewAddress: (newAddress: Address) => void;
 };
 
 const MIN_CITY_SEARCH_LENGTH = 2;
 const MIN_ADDRESS_SEARCH_LENGTH = 3;
+
+const normalizeAddressText = (value: string) =>
+  value
+    .toLocaleLowerCase('ru-RU')
+    .replace(/\s*,\s*/g, ', ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
   const [formStep, setFormStep] = useState<FormStep>('city');
@@ -56,6 +70,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
   const [isAddressSearching, setIsAddressSearching] = useState(false);
   const [addressSearchError, setAddressSearchError] = useState('');
   const [mapStatus, setMapStatus] = useState('');
+  const [confirmedAddress, setConfirmedAddress] = useState<ConfirmedAddress>(null);
 
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstance = useRef<L.Map | null>(null);
@@ -102,6 +117,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
       setCitySearchError('');
       setAddressSearchResults([]);
       setHasAddressSearch(false);
+      setConfirmedAddress(null);
       setFormError('');
       setMapStatus('');
       setFormStep('street');
@@ -119,6 +135,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
       setAddressSearchError('');
       setFormError('');
       setMapStatus(address.subtitle || address.label);
+      setConfirmedAddress({ street: address.label, placeId: address.placeId });
       focusLocation(address.coords, 17);
       placeMarker(address.coords[0], address.coords[1]);
     },
@@ -154,17 +171,22 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
           setCityQuery('');
           setCitySearchResults([]);
           setHasCitySearch(false);
+          setConfirmedAddress(null);
           setFormStep('street');
           setFormError('');
           return;
         }
 
         const street = formatStreetAddress(data.address, data.display_name);
-        if (street) {
+        if (street && hasHouseNumber(street)) {
           setFormValues((prev) => ({ ...prev, street }));
           setAddressSearchResults([]);
           setHasAddressSearch(false);
+          setConfirmedAddress({ street, placeId: String(data.place_id) });
           setFormError('');
+        } else {
+          setConfirmedAddress(null);
+          setFormError('Укажите точный адрес с номером дома');
         }
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -246,6 +268,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
     addressSearchControllerRef.current = controller;
     setIsAddressSearching(true);
     setAddressSearchError('');
+    setFormError('');
     setHasAddressSearch(true);
 
     try {
@@ -265,15 +288,39 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
   const filteredBaseCities = filterBaseCities(cityQuery);
 
   const handleFinalSave = () => {
-    if (!formValues.street.trim()) {
+    if (!formValues.city.trim()) {
+      setFormError('Выберите город');
+      return;
+    }
+
+    const street = formValues.street.trim();
+    if (!street) {
       setFormError('Введите улицу и дом');
       return;
     }
 
-    let finalAddress = `${formValues.city}, ${formValues.street.trim()}`;
-    if (formValues.apt) finalAddress += `, кв. ${formValues.apt}`;
+    if (!hasHouseNumber(street)) {
+      setFormError('Укажите номер дома');
+      return;
+    }
 
-    onSaveNewAddress(finalAddress);
+    if (
+      !confirmedAddress ||
+      normalizeAddressText(confirmedAddress.street) !== normalizeAddressText(street)
+    ) {
+      setFormError('Нажмите «Найти» и выберите адрес из списка');
+      return;
+    }
+
+    onSaveNewAddress(createAddress({
+      city: formValues.city,
+      street,
+      apartment: formValues.apt,
+      floor: formValues.floor,
+      entrance: formValues.entrance,
+      intercom: formValues.intercom,
+      comment: formValues.comment,
+    }));
     onBackToList();
   };
 
@@ -406,6 +453,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   value={formValues.street}
                   onChange={(event) => {
                     setFormValues({ ...formValues, street: event.target.value });
+                    setConfirmedAddress(null);
                     setAddressSearchError('');
                     setHasAddressSearch(false);
                     if (formError) setFormError('');
@@ -468,6 +516,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   autoComplete="address-line2"
                   className="address-input"
                   placeholder="Квартира"
+                  value={formValues.apt}
                   onChange={(event) => setFormValues({ ...formValues, apt: event.target.value })}
                 />
                 <input
@@ -476,6 +525,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   autoComplete="off"
                   className="address-input"
                   placeholder="Этаж"
+                  value={formValues.floor}
                   onChange={(event) => setFormValues({ ...formValues, floor: event.target.value })}
                 />
                 <input
@@ -484,6 +534,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   autoComplete="off"
                   className="address-input"
                   placeholder="Подъезд"
+                  value={formValues.entrance}
                   onChange={(event) =>
                     setFormValues({ ...formValues, entrance: event.target.value })
                   }
@@ -494,6 +545,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   autoComplete="off"
                   className="address-input"
                   placeholder="Домофон"
+                  value={formValues.intercom}
                   onChange={(event) =>
                     setFormValues({ ...formValues, intercom: event.target.value })
                   }
@@ -506,6 +558,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                 autoComplete="off"
                 className="address-input"
                 placeholder="Комментарий"
+                value={formValues.comment}
                 onChange={(event) =>
                   setFormValues({ ...formValues, comment: event.target.value })
                 }

@@ -1,15 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CartItem, Product } from '../../src/types';
+import { productsData } from '../../src/data/product';
+import type { CartItem, CartLine, Product } from '../../src/types';
 
-const product: Product = {
-  id: 501,
-  name: 'Test product',
-  price: 120,
-  weight: '1 pc',
-  category: 'test',
-  image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-  stock: 5,
-};
+const product: Product = productsData[0];
 
 const loadCartSlice = async () => {
   vi.resetModules();
@@ -22,13 +15,24 @@ describe('cartSlice persistence', () => {
     vi.resetModules();
   });
 
-  it('hydrates cart items from localStorage', async () => {
-    const item: CartItem = { ...product, quantity: 2 };
+  it('hydrates compact cart lines from localStorage', async () => {
+    const item: CartLine = { productId: product.id, quantity: 2 };
     localStorage.setItem('cartItems', JSON.stringify([item]));
 
     const { default: cartReducer } = await loadCartSlice();
 
     expect(cartReducer(undefined, { type: 'unknown' }).items).toEqual([item]);
+  });
+
+  it('migrates legacy full product cart items from localStorage', async () => {
+    const legacyItem: CartItem = { ...product, quantity: 2 };
+    localStorage.setItem('cartItems', JSON.stringify([legacyItem]));
+
+    const { default: cartReducer } = await loadCartSlice();
+
+    expect(cartReducer(undefined, { type: 'unknown' }).items).toEqual([
+      { productId: product.id, quantity: 2 },
+    ]);
   });
 
   it('falls back to an empty cart when stored data is invalid', async () => {
@@ -44,7 +48,7 @@ describe('cartSlice persistence', () => {
 
     const filledState = cartReducer(undefined, addToCart(product));
     expect(JSON.parse(localStorage.getItem('cartItems') || '[]')).toEqual([
-      { ...product, quantity: 1 },
+      { productId: product.id, quantity: 1 },
     ]);
 
     cartReducer(filledState, clearCart());

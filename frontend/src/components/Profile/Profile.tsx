@@ -1,8 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../store/authSlice'; // Экшен, который мы создали в прошлом шаге
 import { addManyToCart } from '../../store/cartSlice';
+import { hydrateAddressesForUser } from '../../store/addressSlice';
+import { hydrateOrdersForUser } from '../../store/ordersSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useUiNavigation } from '../../hooks/useUiNavigation';
+import { formatAddressDetails, formatAddressLine } from '../../utils/address';
 import type { Order } from '../../types';
 import './Profile.css';
 
@@ -25,6 +28,8 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(hydrateAddressesForUser(null));
+    dispatch(hydrateOrdersForUser(null));
     navigate('/'); // Возвращаемся на главную после выхода
     onClose();
   };
@@ -35,7 +40,10 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
   };
 
   const handleRepeatOrder = (order: Order) => {
-    dispatch(addManyToCart(order.items));
+    dispatch(addManyToCart(order.items.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+    }))));
   };
 
   const formatDate = (value: string) => {
@@ -83,8 +91,11 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
           <h3>Мои адреса</h3>
           <div className="address-list-profile">
             {addresses.length > 0 ? (
-              addresses.map((addr, i) => (
-                <div key={i} className="address-row">📍 {addr}</div>
+              addresses.map((addr) => (
+                <div key={addr.id} className="address-row">
+                  📍 {formatAddressLine(addr)}
+                  {formatAddressDetails(addr) && `, ${formatAddressDetails(addr)}`}
+                </div>
               ))
             ) : (
               <p className="no-data">Адреса не добавлены</p>
@@ -106,7 +117,7 @@ const Profile = ({ isOpen, onClose }: ProfileProps) => {
                         <div>
                           <div className="order-number">Заказ {order.number}</div>
                           <div className="order-meta">{formatDate(order.createdAt)}</div>
-                          <div className="order-address">{order.address}</div>
+                          <div className="order-address">{formatAddressLine(order.address)}</div>
                         </div>
                         <div className="order-total">{order.total} ₽</div>
                       </div>

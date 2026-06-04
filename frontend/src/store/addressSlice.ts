@@ -1,66 +1,85 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Address } from '../types';
+import { isSameAddress } from '../utils/address';
+import { getProfile, saveProfileAddresses } from '../utils/mockProfiles';
 
-// Вспомогательная функция для безопасной работы с localStorage
-const getJSON = (key: string): Address[] | null => {
+type AddressState = {
+  ownerPhone: string | null;
+  items: Address[];
+  selectedAddress: Address | null;
+};
+
+const getCurrentPhone = () => {
   try {
-    const parsed = JSON.parse(localStorage.getItem(key) || 'null');
-    return Array.isArray(parsed) ? parsed : null;
+    return localStorage.getItem('userPhone') || null;
   } catch {
     return null;
   }
 };
 
-const saveAddresses = (items: Address[]) => {
-  localStorage.setItem('deliveryAddresses', JSON.stringify(items));
+const getAddressStateForPhone = (phoneNumber: string | null): AddressState => {
+  const profile = getProfile(phoneNumber);
+  const selectedAddress =
+    profile?.addresses.find((address) => address.id === profile.selectedAddressId) ||
+    profile?.addresses[0] ||
+    null;
+
+  return {
+    ownerPhone: profile?.phoneNumber || null,
+    items: profile?.addresses || [],
+    selectedAddress,
+  };
 };
 
-const saveSelectedAddress = (address: Address) => {
-  localStorage.setItem('lastSelectedAddress', address);
+const persistAddressState = (state: AddressState) => {
+  saveProfileAddresses(
+    state.ownerPhone,
+    state.items,
+    state.selectedAddress?.id || null
+  );
 };
 
-type AddressState = {
-  items: Address[];
-  selectedAddress: Address;
-};
+const initialState: AddressState = getAddressStateForPhone(getCurrentPhone());
 
-const initialState: AddressState = {
-  // Список всех адресов
-  items: getJSON('deliveryAddresses') || [], 
-  // Текущий выбранный адрес
-  selectedAddress: localStorage.getItem('lastSelectedAddress') || 'улица Баумана, 1 к1',
-};
-
-// store/addressSlice.js
 const addressSlice = createSlice({
   name: 'addresses',
   initialState,
   reducers: {
+    hydrateAddressesForUser: (_state, action: PayloadAction<string | null>) => {
+      return getAddressStateForPhone(action.payload);
+    },
     addAddress: (state, action: PayloadAction<Address>) => {
-      // Проверяем на дубликаты
-      if (!state.items.includes(action.payload)) {
+      if (!state.ownerPhone) return;
+
+      const existingAddress = state.items.find((address) => isSameAddress(address, action.payload));
+      if (existingAddress) {
+        state.selectedAddress = existingAddress;
+      } else {
         state.items.push(action.payload);
-        saveAddresses(state.items);
+        state.selectedAddress = action.payload;
       }
-      state.selectedAddress = action.payload;
-      saveSelectedAddress(action.payload);
+      persistAddressState(state);
     },
     setSelectedAddress: (state, action: PayloadAction<Address>) => {
       state.selectedAddress = action.payload;
-      saveSelectedAddress(action.payload);
+      persistAddressState(state);
     },
-    removeAddress: (state, action: PayloadAction<Address>) => {
-      const wasSelected = state.selectedAddress === action.payload;
-      state.items = state.items.filter(addr => addr !== action.payload);
-      saveAddresses(state.items);
+    removeAddress: (state, action: PayloadAction<string>) => {
+      const wasSelected = state.selectedAddress?.id === action.payload;
+      state.items = state.items.filter(address => address.id !== action.payload);
 
       if (wasSelected) {
-        state.selectedAddress = state.items[0] || '';
-        saveSelectedAddress(state.selectedAddress);
+        state.selectedAddress = state.items[0] || null;
       }
+      persistAddressState(state);
     }
   }
 });
 
-export const { addAddress, setSelectedAddress, removeAddress } = addressSlice.actions;
+export const {
+  hydrateAddressesForUser,
+  addAddress,
+  setSelectedAddress,
+  removeAddress,
+} = addressSlice.actions;
 export default addressSlice.reducer;

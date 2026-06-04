@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { productsData } from '../../src/data/product';
 import { formatStreetAddress } from '../../src/utils/geocoding';
+import { hasHouseNumber } from '../../src/utils/address';
 import {
   matchesProductSearch,
   normalizeSearchText,
@@ -35,5 +36,12 @@ describe('address formatting', () => {
     expect(formatStreetAddress({ pedestrian: 'Баумана', house_number: '7' })).toBe(
       'Баумана, 7'
     );
+  });
+
+  it('detects whether a street value includes a house number', () => {
+    expect(hasHouseNumber('улица Баумана')).toBe(false);
+    expect(hasHouseNumber('улица Баумана, 1')).toBe(true);
+    expect(hasHouseNumber('Ленина 10 к2')).toBe(true);
+    expect(hasHouseNumber('улица 1905 года')).toBe(false);
   });
 });

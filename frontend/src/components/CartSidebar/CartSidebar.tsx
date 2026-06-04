@@ -4,8 +4,10 @@ import {
   removeFromCart,
   removeItemFromCart,
 } from '../../store/cartSlice';
+import { selectCartItems, selectCartTotal } from '../../store/cartSelectors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useUiNavigation } from '../../hooks/useUiNavigation';
+import { formatAddressLine } from '../../utils/address';
 import './CartSidebar.css';
 
 const CartSidebar = () => {
@@ -13,10 +15,10 @@ const CartSidebar = () => {
   const ui = useUiNavigation();
 
   // 1. Данные корзины и адреса
-  const cartItems = useAppSelector(state => state.cart.items);
+  const cartItems = useAppSelector(selectCartItems);
   const reduxSelectedAddress = useAppSelector(state => state.addresses.selectedAddress);
   const isCartOpen = useAppSelector(state => state.ui.isCartOpen);
-  const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalSum = useAppSelector(selectCartTotal);
 
   // 2. Данные авторизации
   const { isAuth, phoneNumber } = useAppSelector((state) => state.auth);
@@ -31,7 +33,26 @@ const CartSidebar = () => {
   };
 
   const handleCheckout = () => {
+    if (!isAuth) {
+      ui.openAuth();
+      return;
+    }
+
+    if (!reduxSelectedAddress) {
+      ui.openAddressModal();
+      return;
+    }
+
     ui.openCheckout();
+  };
+
+  const handleAddressClick = () => {
+    if (!isAuth) {
+      ui.openAuth();
+      return;
+    }
+
+    ui.openAddressModal();
   };
 
   return (
@@ -64,10 +85,10 @@ const CartSidebar = () => {
         </button>
       </div>
 
-      <div className="address-selector" onClick={ui.openAddressModal}>
+      <div className="address-selector" onClick={handleAddressClick}>
         <div className="address-info-block">
           <div className="address-current">
-            {reduxSelectedAddress || "Укажите адрес доставки"}
+            {formatAddressLine(reduxSelectedAddress) || "Укажите адрес доставки"}
           </div>
           <div className="delivery-time">Доставка 15 минут</div>
         </div>

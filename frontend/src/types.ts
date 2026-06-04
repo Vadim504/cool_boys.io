@@ -27,15 +27,36 @@ export type Product = {
   badge?: string;
 };
 
+export type CartLine = {
+  productId: number;
+  quantity: number;
+};
+
 export type CartItem = Product & {
   quantity: number;
 };
 
-export type Address = string;
+export type Address = {
+  id: string;
+  city: string;
+  street: string;
+  apartment?: string;
+  floor?: string;
+  entrance?: string;
+  intercom?: string;
+  comment?: string;
+};
 
 export type OrderStatus = 'created';
 
-export type OrderItem = CartItem;
+export type OrderItem = {
+  productId: number;
+  name: string;
+  price: number;
+  weight: string;
+  image: string;
+  quantity: number;
+};
 
 export type Order = {
   id: string;
@@ -45,4 +66,5 @@ export type Order = {
   items: OrderItem[];
   total: number;
   status: OrderStatus;
+  userPhone: string;
 };

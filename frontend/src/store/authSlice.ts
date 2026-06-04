@@ -1,5 +1,6 @@
 // store/authSlice.js
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { ensureProfile } from '../utils/mockProfiles';
 
 type AuthState = {
   isAuth: boolean;
@@ -21,6 +22,13 @@ const authSlice = createSlice({
       localStorage.setItem('isAuth', 'true');
       localStorage.setItem('userPhone', action.payload);
     },
+    registerSuccess: (state, action: PayloadAction<string>) => {
+      state.isAuth = true;
+      state.phoneNumber = action.payload;
+      ensureProfile(action.payload);
+      localStorage.setItem('isAuth', 'true');
+      localStorage.setItem('userPhone', action.payload);
+    },
     logout: (state) => {
       state.isAuth = false;
       state.phoneNumber = null;
@@ -30,5 +38,5 @@ const authSlice = createSlice({
   }
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, registerSuccess, logout } = authSlice.actions;
 export default authSlice.reducer;
