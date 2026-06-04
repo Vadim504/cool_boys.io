@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MyFood">
+  <rect width="64" height="64" rx="16" fill="#006c4a"/>
+  <circle cx="32" cy="32" r="22" fill="#f7faf8"/>
+  <path
+    d="M20 35h24a11 11 0 0 1-22 0Z"
+    fill="#006c4a"
+  />
+  <path
+    d="M17 35h30"
+    stroke="#006c4a"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <path
+    d="M24 31c0-7 5-12 12-12s12 5 12 12"
+    fill="none"
+    stroke="#006c4a"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <path
+    d="M32 15v4"
+    stroke="#006c4a"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <circle cx="22" cy="45" r="3" fill="#006c4a"/>
+  <circle cx="44" cy="45" r="3" fill="#006c4a"/>
+</svg>
