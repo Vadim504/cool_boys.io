@@ -114,7 +114,6 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
             <section className="checkout-card">
               <h3>Скидки и выгода</h3>
               <div className="checkout-line">Скидка или промокод <span>›</span></div>
-              <div className="checkout-line">СберПрайм <span>×</span></div>
             </section>
 
             <section className="checkout-summary">
