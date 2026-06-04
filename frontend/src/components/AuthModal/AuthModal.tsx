@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { loginSuccess } from '../../store/authSlice';
+import { loginSuccess, registerSuccess } from '../../store/authSlice';
+import { hydrateAddressesForUser } from '../../store/addressSlice';
+import { hydrateOrdersForUser } from '../../store/ordersSlice';
 import { useAppDispatch } from '../../store/hooks';
+import { profileExists } from '../../utils/mockProfiles';
 import './AuthModal.css';
 
 type AuthModalProps = {
@@ -11,9 +14,11 @@ type AuthModalProps = {
 const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
   const dispatch = useAppDispatch();
   const [step, setStep] = useState('phone'); // 'phone' или 'code'
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [timer, setTimer] = useState(0);
+  const [authError, setAuthError] = useState('');
 
   // Таймер обратного отсчета
   useEffect(() => {
@@ -26,6 +31,20 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
   const handleSendCode = () => {
     if (phone.length < 10) return; // Простая валидация
+    const phoneNumber = `+7 ${phone}`;
+    const exists = profileExists(phoneNumber);
+
+    if (mode === 'login' && !exists) {
+      setAuthError('Пользователь с таким номером не найден');
+      return;
+    }
+
+    if (mode === 'register' && exists) {
+      setAuthError('Пользователь с таким номером уже зарегистрирован');
+      return;
+    }
+
+    setAuthError('');
     setStep('code');
     setTimer(59);
     // Здесь обычно идет вызов API (например, axios.post('/api/send-otp'))
@@ -34,10 +53,22 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
   const handleVerifyCode = () => {
     if (code.length === 4) {
       // Имитируем успешный вход
-      dispatch(loginSuccess(`+7 ${phone}`));
+      const phoneNumber = `+7 ${phone}`;
+      dispatch(mode === 'register' ? registerSuccess(phoneNumber) : loginSuccess(phoneNumber));
+      dispatch(hydrateAddressesForUser(phoneNumber));
+      dispatch(hydrateOrdersForUser(phoneNumber));
       onClose();
       setStep('phone'); // Сбрасываем для следующего раза
+      setCode('');
+      setAuthError('');
     }
+  };
+
+  const handleModeChange = (nextMode: 'login' | 'register') => {
+    setMode(nextMode);
+    setStep('phone');
+    setCode('');
+    setAuthError('');
   };
 
   if (!isOpen) return null;
@@ -49,8 +80,28 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
         {step === 'phone' ? (
           <div className="auth-step">
-            <h2>Вход в сервис</h2>
-            <p>Введите номер телефона, чтобы войти или зарегистрироваться</p>
+            <div className="auth-mode-switch" role="tablist" aria-label="Режим авторизации">
+              <button
+                type="button"
+                className={mode === 'login' ? 'auth-mode active' : 'auth-mode'}
+                onClick={() => handleModeChange('login')}
+              >
+                Вход
+              </button>
+              <button
+                type="button"
+                className={mode === 'register' ? 'auth-mode active' : 'auth-mode'}
+                onClick={() => handleModeChange('register')}
+              >
+                Регистрация
+              </button>
+            </div>
+            <h2>{mode === 'login' ? 'Вход в сервис' : 'Регистрация'}</h2>
+            <p>
+              {mode === 'login'
+                ? 'Введите номер телефона, который уже зарегистрирован'
+                : 'Введите номер телефона, чтобы создать профиль'}
+            </p>
             <div className="phone-input-field input input--filled">
               <span className="prefix">+7</span>
               <input 
@@ -60,10 +111,14 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                 autoFocus
                 placeholder="900 000 00 00" 
                 value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                onChange={(e) => {
+                  setPhone(e.target.value.replace(/\D/g, ''));
+                  if (authError) setAuthError('');
+                }}
                 maxLength={10}
               />
             </div>
+            {authError && <div className="auth-error">{authError}</div>}
             <button 
               className="btn btn--primary btn--lg btn--block"
               disabled={phone.length < 10}

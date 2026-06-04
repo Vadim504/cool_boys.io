@@ -1,8 +1,11 @@
 import { useMemo } from 'react';
 import { addToCart, clearCart, removeFromCart } from '../../store/cartSlice';
+import { selectCartItems } from '../../store/cartSelectors';
 import { createOrder } from '../../store/ordersSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useUiNavigation } from '../../hooks/useUiNavigation';
 import { productsData } from '../../data/product';
+import { formatAddressLine } from '../../utils/address';
 import './CheckoutModal.css';
 
 type CheckoutModalProps = {
@@ -12,10 +15,18 @@ type CheckoutModalProps = {
 
 const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
   const dispatch = useAppDispatch();
-  const cartItems = useAppSelector((state) => state.cart.items);
+  const ui = useUiNavigation();
+  const cartItems = useAppSelector(selectCartItems);
   const selectedAddress = useAppSelector((state) => state.addresses.selectedAddress);
+  const { isAuth, phoneNumber } = useAppSelector((state) => state.auth);
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const canCreateOrder = cartItems.length > 0 && isAuth && Boolean(phoneNumber) && Boolean(selectedAddress);
+  const checkoutBlockReason = !isAuth
+    ? 'Войдите, чтобы оформить заказ'
+    : !selectedAddress
+    ? 'Укажите адрес доставки'
+    : '';
 
   const suggestions = useMemo(() => {
     const categoriesInCart = new Set(cartItems.map((item) => item.category));
@@ -28,11 +39,24 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
   if (!isOpen) return null;
 
   const handleCreateOrder = () => {
+    if (!isAuth || !phoneNumber) {
+      onClose();
+      ui.openAuth();
+      return;
+    }
+
+    if (!selectedAddress) {
+      onClose();
+      ui.openAddressModal();
+      return;
+    }
+
     if (cartItems.length === 0) return;
 
     dispatch(createOrder({
       items: cartItems,
-      address: selectedAddress || 'Адрес не выбран',
+      address: selectedAddress,
+      userPhone: phoneNumber,
     }));
     dispatch(clearCart());
     onClose();
@@ -42,7 +66,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
     <div className="checkout-overlay" onClick={onClose}>
       <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
         <button type="button" className="close-btn-round close-btn-round--sm checkout-close-btn" onClick={onClose}>×</button>
-        <h2 className="checkout-title">{selectedAddress || 'Адрес не выбран'}</h2>
+        <h2 className="checkout-title">{formatAddressLine(selectedAddress) || 'Укажите адрес доставки'}</h2>
 
         <div className="checkout-columns">
           <div className="checkout-left">
@@ -100,11 +124,14 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
               </div>
               <button
                 className="btn btn--primary btn--lg btn--block checkout-continue-btn"
-                disabled={cartItems.length === 0}
+                disabled={!canCreateOrder}
                 onClick={handleCreateOrder}
               >
                 Продолжить
               </button>
+              {checkoutBlockReason && (
+                <p className="checkout-warning">{checkoutBlockReason}</p>
+              )}
             </section>
           </div>
         </div>

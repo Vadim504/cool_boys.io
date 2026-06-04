@@ -2,7 +2,9 @@ import { useState } from 'react';
 import AddressList from '../AddressList/AddressList';
 import AddressForm from '../AddressForm/AddressForm';
 import { addAddress } from '../../../store/addressSlice';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useUiNavigation } from '../../../hooks/useUiNavigation';
+import type { Address } from '../../../types';
 import './AddressModal.css';
 
 type AddressModalProps = {
@@ -12,6 +14,8 @@ type AddressModalProps = {
 
 const AddressModal = ({ isOpen, onClose }: AddressModalProps) => {
   const dispatch = useAppDispatch();
+  const ui = useUiNavigation();
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
   const [modalView, setModalView] = useState('list'); 
 
   const handleClose = () => {
@@ -19,17 +23,17 @@ const AddressModal = ({ isOpen, onClose }: AddressModalProps) => {
     onClose();
   };
 
- const addNewAddress = (newAddressString: string) => {
-    const trimmedAddress = newAddressString.trim();
-    if (!trimmedAddress) return;
-
-    // Сохраняем адрес в Redux + localStorage (через редьюсер)
-    dispatch(addAddress(trimmedAddress));
-
+ const addNewAddress = (newAddress: Address) => {
+    dispatch(addAddress(newAddress));
     setModalView('list');
   };
 
   if (!isOpen) return null;
+
+  const handleOpenAuth = () => {
+    handleClose();
+    ui.openAuth();
+  };
 
   return (
     <div className="modal-overlay active address-modal-overlay" onClick={handleClose}>
@@ -41,7 +45,21 @@ const AddressModal = ({ isOpen, onClose }: AddressModalProps) => {
           ×
         </button>
 
-        {modalView === 'list' ? (
+        {!isAuth ? (
+          <div className="selection-screen">
+            <div className="selection-header">
+              <h2>Войдите в профиль</h2>
+            </div>
+            <div className="selection-body">
+              <div className="empty-message">Чтобы сохранять и выбирать адреса доставки</div>
+            </div>
+            <div className="selection-footer">
+              <button type="button" className="btn btn--primary btn--lg btn--block" onClick={handleOpenAuth}>
+                Войти
+              </button>
+            </div>
+          </div>
+        ) : modalView === 'list' ? (
           <AddressList 
             onGoToMap={() => setModalView('form')}
             onClose={handleClose}

@@ -9,7 +9,7 @@ type PriceButtonProps = {
 
 const PriceButton = ({ product, isCompact = false }: PriceButtonProps) => {
   const dispatch = useAppDispatch();
-  const cartItem = useAppSelector(state => state.cart.items.find(i => i.id === product.id));
+  const cartItem = useAppSelector(state => state.cart.items.find(i => i.productId === product.id));
   const quantity = cartItem ? cartItem.quantity : 0;
 
   if (quantity === 0) {

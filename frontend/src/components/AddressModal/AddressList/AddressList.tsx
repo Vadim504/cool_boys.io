@@ -1,6 +1,8 @@
 import type { MouseEvent } from 'react';
 import { setSelectedAddress, removeAddress } from '../../../store/addressSlice';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { formatAddressDetails } from '../../../utils/address';
+import type { Address } from '../../../types';
 import './AddressList.css';
 
 type AddressListProps = {
@@ -15,17 +17,17 @@ const AddressList = ({ onGoToMap, onClose }: AddressListProps) => {
   const addresses = useAppSelector((state) => state.addresses.items);
   const currentAddress = useAppSelector((state) => state.addresses.selectedAddress);
 
-  const handleSelect = (addr: string) => {
+  const handleSelect = (addr: Address) => {
     // 2. Выбираем адрес в Redux
     dispatch(setSelectedAddress(addr));
     // Закрываем модалку (функция передана из AddressModal)
     if (onClose) onClose(); 
   };
 
-  const handleDelete = (e: MouseEvent<HTMLButtonElement>, addr: string) => {
+  const handleDelete = (e: MouseEvent<HTMLButtonElement>, addr: Address) => {
     e.stopPropagation(); // Важно: чтобы при клике на крестик не сработал выбор адреса
     // 3. Удаляем адрес в Redux
-    dispatch(removeAddress(addr));
+    dispatch(removeAddress(addr.id));
   };
 
   return (
@@ -39,13 +41,13 @@ const AddressList = ({ onGoToMap, onClose }: AddressListProps) => {
           <div className="empty-message">У вас пока нет сохраненных адресов.</div>
         ) : (
           <div className="address-items-list">
-            {addresses.map((addr, index) => {
-              const [street, city] = addr.split(', ');
-              const isActive = addr === currentAddress;
+            {addresses.map((addr) => {
+              const isActive = addr.id === currentAddress?.id;
+              const details = formatAddressDetails(addr);
 
               return (
                 <div 
-                  key={index} 
+                  key={addr.id}
                   className={`address-card ${isActive ? 'active' : ''}`}
                   onClick={() => handleSelect(addr)}
                 >
@@ -59,8 +61,8 @@ const AddressList = ({ onGoToMap, onClose }: AddressListProps) => {
                   </button>
 
                   <div className="address-texts">
-                    <div className="street-name">{street || addr}</div>
-                    <div className="city-name">{city || 'Казань'}</div>
+                    <div className="street-name">{addr.street}</div>
+                    <div className="city-name">{[addr.city, details].filter(Boolean).join(', ')}</div>
                   </div>
                   
                   <div className="radio-circle">

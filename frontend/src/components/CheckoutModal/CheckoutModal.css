@@ -139,6 +139,14 @@
   font-size: 18px;
 }
 
+.checkout-warning {
+  margin-top: 10px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
+}
+
 .checkout-empty {
   color: var(--color-text-muted);
 }

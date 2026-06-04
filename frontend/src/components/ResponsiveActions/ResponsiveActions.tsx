@@ -1,19 +1,29 @@
 import { useAppSelector } from '../../store/hooks';
 import { useUiNavigation } from '../../hooks/useUiNavigation';
+import { selectCartItemsCount, selectCartTotal } from '../../store/cartSelectors';
+import { formatAddressLine } from '../../utils/address';
 import './ResponsiveActions.css';
 
 const ResponsiveActions = () => {
   const ui = useUiNavigation();
-  const cartItems = useAppSelector((state) => state.cart.items);
   const selectedAddress = useAppSelector((state) => state.addresses.selectedAddress);
   const { isAuth, phoneNumber } = useAppSelector((state) => state.auth);
 
-  const itemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const itemsCount = useAppSelector(selectCartItemsCount);
+  const totalSum = useAppSelector(selectCartTotal);
 
   const handleUserAction = () => {
     if (isAuth) {
       ui.openProfile();
+      return;
+    }
+
+    ui.openAuth();
+  };
+
+  const handleAddressAction = () => {
+    if (isAuth) {
+      ui.openAddressModal();
       return;
     }
 
@@ -25,11 +35,11 @@ const ResponsiveActions = () => {
       <button
         type="button"
         className="responsive-action responsive-address-action"
-        onClick={ui.openAddressModal}
+        onClick={handleAddressAction}
       >
         <span className="responsive-action-label">Адрес</span>
         <span className="responsive-action-value">
-          {selectedAddress || 'Укажите адрес'}
+          {formatAddressLine(selectedAddress) || 'Укажите адрес'}
         </span>
       </button>
 

@@ -12,6 +12,8 @@ import {
   type AddressPick,
   type CityPick,
 } from '../../../utils/geocoding';
+import { createAddress, hasHouseNumber } from '../../../utils/address';
+import type { Address } from '../../../types';
 import './AddressForm.css';
 
 type FormStep = 'city' | 'street';
@@ -28,7 +30,7 @@ type FormValues = {
 
 type AddressFormProps = {
   onBackToList: () => void;
-  onSaveNewAddress: (newAddressString: string) => void;
+  onSaveNewAddress: (newAddress: Address) => void;
 };
 
 const MIN_CITY_SEARCH_LENGTH = 2;
@@ -265,15 +267,31 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
   const filteredBaseCities = filterBaseCities(cityQuery);
 
   const handleFinalSave = () => {
-    if (!formValues.street.trim()) {
+    if (!formValues.city.trim()) {
+      setFormError('Выберите город');
+      return;
+    }
+
+    const street = formValues.street.trim();
+    if (!street) {
       setFormError('Введите улицу и дом');
       return;
     }
 
-    let finalAddress = `${formValues.city}, ${formValues.street.trim()}`;
-    if (formValues.apt) finalAddress += `, кв. ${formValues.apt}`;
+    if (!hasHouseNumber(street)) {
+      setFormError('Укажите номер дома');
+      return;
+    }
 
-    onSaveNewAddress(finalAddress);
+    onSaveNewAddress(createAddress({
+      city: formValues.city,
+      street,
+      apartment: formValues.apt,
+      floor: formValues.floor,
+      entrance: formValues.entrance,
+      intercom: formValues.intercom,
+      comment: formValues.comment,
+    }));
     onBackToList();
   };
 
@@ -468,6 +486,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   autoComplete="address-line2"
                   className="address-input"
                   placeholder="Квартира"
+                  value={formValues.apt}
                   onChange={(event) => setFormValues({ ...formValues, apt: event.target.value })}
                 />
                 <input
@@ -476,6 +495,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   autoComplete="off"
                   className="address-input"
                   placeholder="Этаж"
+                  value={formValues.floor}
                   onChange={(event) => setFormValues({ ...formValues, floor: event.target.value })}
                 />
                 <input
@@ -484,6 +504,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   autoComplete="off"
                   className="address-input"
                   placeholder="Подъезд"
+                  value={formValues.entrance}
                   onChange={(event) =>
                     setFormValues({ ...formValues, entrance: event.target.value })
                   }
@@ -494,6 +515,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                   autoComplete="off"
                   className="address-input"
                   placeholder="Домофон"
+                  value={formValues.intercom}
                   onChange={(event) =>
                     setFormValues({ ...formValues, intercom: event.target.value })
                   }
@@ -506,6 +528,7 @@ const AddressForm = ({ onBackToList, onSaveNewAddress }: AddressFormProps) => {
                 autoComplete="off"
                 className="address-input"
                 placeholder="Комментарий"
+                value={formValues.comment}
                 onChange={(event) =>
                   setFormValues({ ...formValues, comment: event.target.value })
                 }

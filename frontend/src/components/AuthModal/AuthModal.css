@@ -24,6 +24,34 @@
   margin-bottom: 30px;
 }
 
+.auth-mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 4px;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-input);
+}
+
+.auth-mode {
+  border: none;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  padding: 10px 12px;
+}
+
+.auth-mode.active {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-card-hover);
+}
+
 .phone-input-field {
   padding: 18px;
   display: flex;
@@ -43,6 +71,14 @@
 .code-input {
   display: block;
   margin-bottom: var(--space-xl);
+}
+
+.auth-error {
+  margin: -12px 0 18px;
+  color: var(--color-danger);
+  font-size: var(--font-size-md);
+  line-height: 1.35;
+  text-align: left;
 }
 
 .prefix {

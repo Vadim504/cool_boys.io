@@ -1,41 +1,34 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { CartItem, Product } from '../types';
+import { productsData } from '../data/product';
+import type { CartLine, Product } from '../types';
 
 const CART_STORAGE_KEY = 'cartItems';
 
 type CartState = {
-  items: CartItem[];
+  items: CartLine[];
 };
 
-const isCartItem = (item: unknown): item is CartItem => {
+const toCartLine = (item: unknown): CartLine | null => {
   if (!item || typeof item !== 'object') {
-    return false;
-  }
-
-  const cartItem = item as Partial<CartItem>;
-  return (
-    typeof cartItem.id === 'number' &&
-    typeof cartItem.name === 'string' &&
-    typeof cartItem.price === 'number' &&
-    typeof cartItem.weight === 'string' &&
-    typeof cartItem.category === 'string' &&
-    typeof cartItem.image === 'string' &&
-    typeof cartItem.stock === 'number' &&
-    typeof cartItem.quantity === 'number'
-  );
-};
-
-const normalizeCartItem = (item: CartItem): CartItem | null => {
-  const quantity = Math.min(Math.floor(item.quantity), item.stock);
-
-  if (item.stock <= 0 || quantity <= 0) {
     return null;
   }
 
-  return { ...item, quantity };
+  const candidate = item as Partial<CartLine> & Partial<Product>;
+  const productId = typeof candidate.productId === 'number'
+    ? candidate.productId
+    : candidate.id;
+  const product = productsData.find((productItem) => productItem.id === productId);
+  if (!product || typeof candidate.quantity !== 'number') return null;
+
+  const quantity = Math.min(Math.floor(candidate.quantity), product.stock);
+  if (product.stock <= 0 || quantity <= 0) {
+    return null;
+  }
+
+  return { productId: product.id, quantity };
 };
 
-const getCartItems = (): CartItem[] => {
+const getCartItems = (): CartLine[] => {
   try {
     if (typeof localStorage === 'undefined') {
       return [];
@@ -47,15 +40,14 @@ const getCartItems = (): CartItem[] => {
     }
 
     return parsed
-      .filter(isCartItem)
-      .map(normalizeCartItem)
-      .filter((item): item is CartItem => item !== null);
+      .map(toCartLine)
+      .filter((item): item is CartLine => item !== null);
   } catch {
     return [];
   }
 };
 
-const saveCartItems = (items: CartItem[]) => {
+const saveCartItems = (items: CartLine[]) => {
   try {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
@@ -65,7 +57,7 @@ const saveCartItems = (items: CartItem[]) => {
   }
 };
 
-const persistCartItems = (items: CartItem[]) => {
+const persistCartItems = (items: CartLine[]) => {
   saveCartItems(items.map(item => ({ ...item })));
 };
 
@@ -78,7 +70,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<Product>) => {
-      const item = state.items.find(i => i.id === action.payload.id);
+      const item = state.items.find(i => i.productId === action.payload.id);
       const maxStock = action.payload.stock; // Получаем лимит из данных товара
 
       if (item) {
@@ -89,43 +81,46 @@ const cartSlice = createSlice({
       } else {
         // Если товара нет в корзине, проверяем, есть ли он вообще на складе
         if (maxStock > 0) {
-          state.items.push({ ...action.payload, quantity: 1 });
+          state.items.push({ productId: action.payload.id, quantity: 1 });
         }
       }
       persistCartItems(state.items);
     },
     removeFromCart: (state, action: PayloadAction<number>) => {
-      const item = state.items.find(i => i.id === action.payload);
+      const item = state.items.find(i => i.productId === action.payload);
       if (item) {
         if (item.quantity > 1) {
           item.quantity -= 1;
         } else {
-          state.items = state.items.filter(i => i.id !== action.payload);
+          state.items = state.items.filter(i => i.productId !== action.payload);
         }
       }
       persistCartItems(state.items);
     },
     removeItemFromCart: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter(i => i.id !== action.payload);
+      state.items = state.items.filter(i => i.productId !== action.payload);
       persistCartItems(state.items);
     },
     clearCart: (state) => {
       state.items = [];
       saveCartItems([]);
     },
-    addManyToCart: (state, action: PayloadAction<CartItem[]>) => {
-      action.payload.forEach((product) => {
-        const item = state.items.find(i => i.id === product.id);
-        const quantityToAdd = Math.max(0, product.quantity);
+    addManyToCart: (state, action: PayloadAction<CartLine[]>) => {
+      action.payload.forEach((line) => {
+        const product = productsData.find((productItem) => productItem.id === line.productId);
+        if (!product) return;
+
+        const item = state.items.find(i => i.productId === line.productId);
+        const quantityToAdd = Math.max(0, line.quantity);
 
         if (item) {
-          item.quantity = Math.min(item.stock, item.quantity + quantityToAdd);
+          item.quantity = Math.min(product.stock, item.quantity + quantityToAdd);
           return;
         }
 
         const quantity = Math.min(product.stock, quantityToAdd);
         if (quantity > 0) {
-          state.items.push({ ...product, quantity });
+          state.items.push({ productId: product.id, quantity });
         }
       });
       persistCartItems(state.items);

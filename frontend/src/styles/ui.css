@@ -1,10 +1,6 @@
 /**
  * Общие переиспользуемые стили UI.
  * Подключается глобально через index.css.
- *
- * Использование в JSX:
- *   <button className="btn btn--primary btn--block">Оформить</button>
- *   <div className="overlay overlay--center">...</div>
  */
 
 /* ========== Оверлеи и панели ========== */
@@ -466,7 +462,9 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border-input);
   border-radius: var(--radius-sm);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .input:focus {
@@ -535,7 +533,9 @@
   border-radius: var(--radius-lg);
   padding: 0 10px 0 var(--space-lg);
   box-shadow: var(--shadow-card-hover);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .search-box:focus-within {
@@ -553,7 +553,7 @@
 }
 
 .search-icon-ui::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 7px;
   height: 2px;
@@ -585,7 +585,9 @@
   border: 2px solid transparent;
   background: var(--color-surface-elevated);
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .surface-card--selectable:hover {
